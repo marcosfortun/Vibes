@@ -183,6 +183,5 @@ Vibes/
 ├── scripts/
 │   └── up.sh                       # Arranca Docker + Supabase + dev en un comando
 │
-├── .claude/                        # Config local de Claude Code (launch.json, settings)
 └── AGENTS.md / CLAUDE.md           # Reglas para agentes de IA en este repo
 ```
