@@ -55,7 +55,7 @@
       "inviteRequired": "An invitation token is required.",
       "signupFailed": "Could not complete sign up. Check your invitation.",
       "inviteInvalid": "This invitation link is invalid or has expired.",
-      "weakPassword": "Password must be at least 6 characters.",
+      "weakPassword": "Password must be at least 8 characters.",
       "updateFailed": "Could not update the password.",
       "noSession": "The reset link is invalid or has expired."
     }

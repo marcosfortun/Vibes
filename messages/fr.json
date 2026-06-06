@@ -55,7 +55,7 @@
       "inviteRequired": "Un token d'invitation est requis.",
       "signupFailed": "Impossible de finaliser l'inscription. Vérifiez votre invitation.",
       "inviteInvalid": "Ce lien d'invitation est invalide ou expiré.",
-      "weakPassword": "Le mot de passe doit comporter au moins 6 caractères.",
+      "weakPassword": "Le mot de passe doit comporter au moins 8 caractères.",
       "updateFailed": "Impossible de mettre à jour le mot de passe.",
       "noSession": "Le lien de réinitialisation est invalide ou expiré."
     }

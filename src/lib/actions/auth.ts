@@ -98,7 +98,7 @@ export async function updatePassword(
   formData: FormData,
 ): Promise<AuthState> {
   const password = String(formData.get('password') ?? '');
-  if (password.length < 6) return { error: 'weakPassword' };
+  if (password.length < 8) return { error: 'weakPassword' };
 
   const supabase = await createClient();
   const {

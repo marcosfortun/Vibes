@@ -55,7 +55,7 @@
       "inviteRequired": "Se requiere un token de invitación.",
       "signupFailed": "No se pudo completar el registro. Comprueba tu invitación.",
       "inviteInvalid": "Este enlace de invitación no es válido o ha caducado.",
-      "weakPassword": "La contraseña debe tener al menos 6 caracteres.",
+      "weakPassword": "La contraseña debe tener al menos 8 caracteres.",
       "updateFailed": "No se pudo actualizar la contraseña.",
       "noSession": "El enlace de recuperación es inválido o ha caducado."
     }
