@@ -1,0 +1,63 @@
+'use client';
+
+import { useActionState } from 'react';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
+import { login, type AuthState } from '@/lib/actions/auth';
+
+export function LoginForm() {
+  const t = useTranslations('Auth');
+  const [state, formAction, pending] = useActionState<AuthState, FormData>(
+    login,
+    {},
+  );
+
+  return (
+    <form action={formAction} className="flex w-full max-w-sm flex-col gap-4">
+      <h2 className="text-xl font-semibold text-white">{t('login.title')}</h2>
+
+      <label className="flex flex-col gap-1 text-sm text-muted">
+        {t('email')}
+        <input
+          type="email"
+          name="email"
+          required
+          autoComplete="email"
+          className="rounded-xl border border-white/15 bg-surface px-3 py-2 text-white outline-none focus:border-neon-green/60"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1 text-sm text-muted">
+        {t('password')}
+        <input
+          type="password"
+          name="password"
+          required
+          autoComplete="current-password"
+          className="rounded-xl border border-white/15 bg-surface px-3 py-2 text-white outline-none focus:border-neon-green/60"
+        />
+      </label>
+
+      {state.error && (
+        <p role="alert" className="text-sm text-neon-pink">
+          {t(`errors.${state.error}`)}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={pending}
+        className="rounded-full bg-gradient-to-r from-neon-pink to-neon-green px-4 py-2.5 font-semibold text-black disabled:opacity-50"
+      >
+        {t('login.submit')}
+      </button>
+
+      <Link
+        href="/forgot"
+        className="text-center text-sm text-muted hover:text-white"
+      >
+        {t('forgotLink')}
+      </Link>
+    </form>
+  );
+}

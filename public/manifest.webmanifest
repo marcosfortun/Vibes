@@ -1,0 +1,24 @@
+{
+  "name": "Vibes",
+  "short_name": "Vibes",
+  "description": "Recomendaciones de ocio entre amigos",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0D0D11",
+  "theme_color": "#0D0D11",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "2048x2048",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

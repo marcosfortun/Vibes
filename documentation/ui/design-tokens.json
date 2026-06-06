@@ -1,0 +1,108 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "meta": {
+    "name": "Vibes Design Tokens",
+    "version": "1.1.0",
+    "style": "Cyberpunk / Synthwave minimalista con Glassmorphism"
+  },
+  "color": {
+    "background": { "value": "#0D0D11" },
+    "surface": { "value": "#18181C" },
+    "foreground": { "value": "#FFFFFF" },
+    "muted": { "value": "#8E8E93" },
+    "neon": {
+      "pink": { "value": "#FF2A75" },
+      "pinkSoft": { "value": "#FF5E97" },
+      "green": { "value": "#39FF85" },
+      "greenSoft": { "value": "#7CFA9C" }
+    },
+    "danger": { "value": "#FF2A75" }
+  },
+  "gradient": {
+    "neonHorizontal": {
+      "value": "linear-gradient(90deg, #FF2A75 0%, #39FF85 100%)"
+    },
+    "neonBorder": {
+      "value": "linear-gradient(100deg, #FF2A75 0%, #FF5E97 35%, #39FF85 100%)"
+    },
+    "titleAccent": {
+      "value": "linear-gradient(90deg, #FF2A75, #39FF85)"
+    }
+  },
+  "radius": {
+    "card": { "value": "20px" },
+    "control": { "value": "12px" },
+    "pill": { "value": "999px" },
+    "dock": { "value": "30px" }
+  },
+  "spacing": {
+    "xs": { "value": "4px" },
+    "sm": { "value": "8px" },
+    "md": { "value": "16px" },
+    "lg": { "value": "24px" },
+    "xl": { "value": "32px" }
+  },
+  "font": {
+    "family": {
+      "sans": {
+        "value": "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+      }
+    },
+    "weight": {
+      "regular": { "value": 400 },
+      "medium": { "value": 500 },
+      "bold": { "value": 700 },
+      "extrabold": { "value": 800 }
+    },
+    "size": {
+      "xs": { "value": "10px" },
+      "sm": { "value": "13px" },
+      "md": { "value": "15px" },
+      "lg": { "value": "18px" },
+      "xl": { "value": "24px" },
+      "display": { "value": "44px" }
+    }
+  },
+  "shadow": {
+    "neonGlow": {
+      "value": "0 0 18px -4px rgba(255,42,117,0.45), 0 0 18px -4px rgba(0,245,212,0.35)"
+    },
+    "dockAdd": {
+      "value": "0 0 24px -2px rgba(255,42,117,0.6), 0 0 24px -2px rgba(0,245,212,0.45)"
+    }
+  },
+  "effect": {
+    "glassmorphism": {
+      "background": { "value": "rgba(30, 30, 35, 0.6)" },
+      "backdropFilter": { "value": "blur(20px)" },
+      "border": { "value": "1px solid rgba(255, 255, 255, 0.1)" }
+    }
+  },
+  "component": {
+    "card": {
+      "background": { "value": "#18181C" },
+      "border": { "value": "1px transparent (con mask-composite y gradiente neon)" },
+      "radius": { "value": "20px" },
+      "padding": { "value": "16px" },
+      "shadow": { "value": "{shadow.neonGlow}" }
+    },
+    "tabUnderline": {
+      "height": { "value": "2px" },
+      "gradient": { "value": "{gradient.neonHorizontal}" },
+      "marker": { "value": "🌹" }
+    },
+    "dock": {
+      "radius": { "value": "30px" },
+      "padding": { "value": "10px 16px" },
+      "background": { "value": "{effect.glassmorphism.background}" },
+      "backdropFilter": { "value": "{effect.glassmorphism.backdropFilter}" },
+      "border": { "value": "{effect.glassmorphism.border}" },
+      "centerButton": {
+        "size": { "value": "56px" },
+        "raise": { "value": "-24px" },
+        "borderGradient": { "value": "{gradient.neonBorder}" },
+        "glow": { "value": "{shadow.dockAdd}" }
+      }
+    }
+  }
+}

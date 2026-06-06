@@ -1,0 +1,48 @@
+# Supabase local config — Vibes
+# Aplica con: supabase start (requiere Docker) y supabase db reset para correr migraciones.
+project_id = "vibecheck"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[studio]
+enabled = false
+port = 54323
+
+# Storage no se usa en el MVP; desactivado para evitar el health check que rompe el arranque local.
+[storage]
+enabled = false
+
+# Analítica (Logflare/Vector) no necesaria para el backend; desactivada por health checks inestables en local.
+[analytics]
+enabled = false
+
+# Realtime no se usa (sin WebSockets en el diseño); desactivado por health check inestable en local.
+[realtime]
+enabled = false
+
+[inbucket]
+enabled = true
+port = 54324
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000", "http://localhost:3000/**"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+# NOTA despliegue: la "Enable email enumeration prevention" es un flag del panel
+# cloud de Supabase (Authentication > Auth Providers > Email), no de config.toml local.

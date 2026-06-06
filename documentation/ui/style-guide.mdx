@@ -1,0 +1,102 @@
+---
+title: Vibes — Guía de estilos
+version: 1.1.0
+style: Cyberpunk / Synthwave minimalista + Glassmorphism
+---
+
+# Guía de estilos Vibes
+
+Esta guía resume los **design tokens** (ver [design-tokens.json](./design-tokens.json)) y cómo se aplican en
+la interfaz. La fuente de verdad es `src/app/globals.css`: las clases CSS están exportadas allí.
+
+> Vista previa visual rápida en [preview.png](./preview.png). Componente de referencia en [preview.tsx](./preview.tsx).
+
+---
+
+## 1. Paleta
+
+| Token | Hex | Uso |
+| --- | --- | --- |
+| `background` | `#0D0D11` | Fondo de la app |
+| `surface` | `#18181C` | Tarjetas, inputs |
+| `foreground` | `#FFFFFF` | Texto principal y elementos activos |
+| `muted` | `#8E8E93` | Texto secundario, iconos inactivos |
+| `neon.pink` | `#FF2A75` | Acento (borde, glow, alertas) |
+| `neon.green` | `#39FF85` | Acento (borde, foco, "..." de tarjeta) |
+
+Gradiente clave: `linear-gradient(90deg, #FF2A75 → #39FF85)`.
+
+## 2. Tipografía
+
+- Familia: **Inter** con fallback a `system-ui` (en macOS, San Francisco).
+- Pesos: 400 / 500 / 700 / 800.
+- Títulos de tarjeta: `lg` / **bold**, color blanco.
+- Subtítulos descriptivos: `sm`, color `muted`.
+
+## 3. Componentes
+
+### Tarjeta de recomendación
+- `border-radius: 20px`, fondo `surface`.
+- Borde degradado rosa→verde con técnica **mask-composite** (utilidad `.neon-border` en `globals.css`).
+- Glow exterior tenue (`.neon-border-glow`).
+- Estructura: `icono | título + subtítulo | (opcional) score` en la parte superior;
+  fila de interacción abajo (cápsula de rating + acciones circulares).
+
+```html
+<div class="neon-border neon-border-glow p-4"> … </div>
+```
+
+### Pestañas (tabs)
+- Línea inferior degradada de 2px con la **🌹** centrada en la activa.
+- Activas en blanco; inactivas en `muted`.
+
+### Dock inferior flotante
+- Contenedor cápsula (`border-radius: 30px`) con glassmorphism:
+  - `background: rgba(30,30,35,0.6)`
+  - `backdrop-filter: blur(20px)`
+  - `border: 1px solid rgba(255,255,255,0.1)`
+- 5 items: Mi lista, Suerte, **Añadir (central, sobresale)**, Quedada, Perfil.
+- El item central tiene borde degradado y glow (`.dock-add-glow`).
+
+### Cápsula de rating
+- Glass `rounded-full`, 3 botones (👎 👍 ❤️), el activo con anillo `neon.pink`.
+
+### Botones circulares
+- `+` / `−`: borde gris (`white/30`).
+- `…`: borde `neon.green/70` y texto verde.
+
+## 4. Efectos clave
+
+```css
+/* Borde degradado en esquinas redondeadas (sin cortes) */
+.neon-border::before {
+  background: linear-gradient(100deg, #FF2A75, #FF5E97 35%, #39FF85);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+}
+
+/* Glassmorphism dock */
+.glass {
+  background: rgba(30, 30, 35, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+```
+
+## 5. Sistema de iconos
+
+- Librería: **[lucide-react](https://lucide.dev)** (sucesora de Feather). Line icons geométricos, `currentColor` para tintar (rosa o verde según contexto), tree-shakeable.
+- **Categorías:** `categories.icon` guarda el **nombre PascalCase** del icono Lucide (p. ej. `Clapperboard`, `Dices`, `BookOpen`). El admin lo elige desde un `<datalist>` con la whitelist disponible. El componente [`CategoryIcon`](../../src/components/category-icon.tsx) resuelve el nombre y, si no existe, muestra el string tal cual (compatibilidad con emojis antiguos).
+- **Tarjeta:** `ThumbsDown`, `ThumbsUp`, `Heart` (cápsula de rating; corazón con `fill="currentColor"` cuando activo). `Plus`/`Minus` (acción guardar) y `MoreHorizontal` (más opciones).
+- **Dock:** `List` (Mi lista), `Dices` (Suerte), `Plus` (Añadir, central), `Zap` (Quedada), `CircleUserRound` (Perfil).
+- Trazo recomendado: `strokeWidth={1.75}` (más fino que el default de 2, encaja con la estética minimalista neón).
+
+## 6. Reglas de uso
+
+- **Una sola fuente neón por acento.** El rosa marca jerarquía (activo, alertas); el verde es exploratorio (foco, "más opciones").
+- **Glow con moderación.** Solo en tarjetas y botón central; no en texto.
+- **Sin sombras grises pesadas.** El contraste viene del fondo oscuro + bordes neón.
+- **Accesibilidad:** mantener `aria-selected`/`aria-pressed`/`aria-label` en tabs y botones; el color es complemento, no sustituto.

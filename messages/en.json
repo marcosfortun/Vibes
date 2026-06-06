@@ -1,0 +1,157 @@
+{
+  "App": {
+    "title": "Vibes",
+    "tagline": "Good vibes in your circle"
+  },
+  "Home": {
+    "greeting": "Hi, {username}",
+    "friends": "Friends",
+    "meetup": "Meetup",
+    "settings": "Settings",
+    "admin": "Admin",
+    "newRecommendation": "+ New",
+    "tabs": {
+      "myList": "My List",
+      "friends": "From Friends",
+      "trending": "Trending"
+    },
+    "empty": {
+      "myList": "Your list is empty. Save something for later.",
+      "friends": "No recommendations from friends yet.",
+      "trending": "Nothing trending yet."
+    }
+  },
+  "Auth": {
+    "email": "Email",
+    "password": "Password",
+    "logout": "Log out",
+    "forgotLink": "Forgot password?",
+    "login": {
+      "title": "Log in",
+      "submit": "Log in",
+      "needInvite": "No account?"
+    },
+    "forgot": {
+      "title": "Reset password",
+      "hint": "Enter your email and we'll send you a reset link.",
+      "submit": "Send reset link",
+      "sent": "If that email exists, we've sent a reset link."
+    },
+    "update": {
+      "title": "New password",
+      "submit": "Update password"
+    },
+    "signup": {
+      "title": "Sign up",
+      "username": "Username",
+      "submit": "Create account",
+      "needInvite": "You need an invitation link to sign up.",
+      "invalidInvite": "This invitation link is invalid or has expired.",
+      "haveAccount": "Already have an account?"
+    },
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "usernameRequired": "Username is required.",
+      "inviteRequired": "An invitation token is required.",
+      "signupFailed": "Could not complete sign up. Check your invitation.",
+      "inviteInvalid": "This invitation link is invalid or has expired.",
+      "weakPassword": "Password must be at least 6 characters.",
+      "updateFailed": "Could not update the password.",
+      "noSession": "The reset link is invalid or has expired."
+    }
+  },
+  "Install": {
+    "install": "Install Vibes",
+    "done": "You've got good Vibes already"
+  },
+  "Dock": {
+    "myList": "My list",
+    "luck": "Luck",
+    "add": "Add",
+    "meetup": "Meetup",
+    "profile": "Profile"
+  },
+  "Card": {
+    "save": "Save",
+    "remove": "Remove",
+    "saved": "In your list",
+    "moreOptions": "More options",
+    "rate": {
+      "add": "Rate",
+      "dislike": "Didn't like",
+      "like": "Liked",
+      "love": "Loved"
+    }
+  },
+  "New": {
+    "title": "New recommendation",
+    "submit": "Create",
+    "back": "Back",
+    "similarHint": "Similar items already exist:",
+    "fields": {
+      "title": "Title",
+      "description": "Description",
+      "category": "Category",
+      "choose": "Choose a category",
+      "url": "URL (optional)"
+    },
+    "errors": {
+      "titleRequired": "Title is required.",
+      "categoryRequired": "Pick a category.",
+      "invalidUrl": "The URL must start with http:// or https://.",
+      "createFailed": "Could not create the recommendation.",
+      "unauth": "Not authenticated."
+    }
+  },
+  "Friends": {
+    "title": "Friends",
+    "back": "Back",
+    "yourFriends": "Your friends",
+    "noFriends": "No friends yet.",
+    "find": "Find people",
+    "searchPlaceholder": "Search by username…",
+    "add": "Add",
+    "remove": "Remove",
+    "alreadyFriend": "Already a friend",
+    "affinity": "Affinity"
+  },
+  "Quedada": {
+    "title": "Plan a meetup",
+    "hint": "Pick who's here and we'll suggest the top 3 for everyone.",
+    "attendees": "Who's here?",
+    "organize": "Suggest",
+    "results": "Top picks",
+    "empty": "No common picks yet. Save more to your lists!",
+    "noFriends": "Add some friends first.",
+    "back": "Back"
+  },
+  "Settings": {
+    "title": "Settings",
+    "language": "Language",
+    "languages": {
+      "en": "English",
+      "es": "Español",
+      "fr": "Français",
+      "pt": "Português"
+    },
+    "affinityScoring": "Use affinity scoring",
+    "affinityHint": "Weight recommendations by how aligned you are with each friend.",
+    "save": "Save",
+    "back": "Back"
+  },
+  "Admin": {
+    "title": "Admin · Categories",
+    "back": "Back",
+    "create": "Create category",
+    "name": "Name",
+    "icon": "Icon",
+    "color": "Color",
+    "existing": "Existing categories",
+    "delete": "Delete",
+    "errors": {
+      "nameRequired": "Name is required.",
+      "duplicate": "That category already exists.",
+      "failed": "Could not save the category."
+    }
+  }
+}

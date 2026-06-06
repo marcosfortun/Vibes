@@ -1,0 +1,157 @@
+{
+  "App": {
+    "title": "Vibes",
+    "tagline": "Buenas vibras en tu círculo"
+  },
+  "Home": {
+    "greeting": "Hola, {username}",
+    "friends": "Amigos",
+    "meetup": "Quedada",
+    "settings": "Ajustes",
+    "admin": "Admin",
+    "newRecommendation": "+ Nueva",
+    "tabs": {
+      "myList": "Mi Lista",
+      "friends": "De Amigos",
+      "trending": "Tendencias"
+    },
+    "empty": {
+      "myList": "Tu lista está vacía. Guarda algo para después.",
+      "friends": "Aún no hay recomendaciones de amigos.",
+      "trending": "Todavía no hay tendencias."
+    }
+  },
+  "Auth": {
+    "email": "Correo",
+    "password": "Contraseña",
+    "logout": "Cerrar sesión",
+    "forgotLink": "¿Olvidaste tu contraseña?",
+    "login": {
+      "title": "Iniciar sesión",
+      "submit": "Entrar",
+      "needInvite": "¿No tienes cuenta?"
+    },
+    "forgot": {
+      "title": "Restablecer contraseña",
+      "hint": "Introduce tu correo y te enviaremos un enlace.",
+      "submit": "Enviar enlace",
+      "sent": "Si ese correo existe, te hemos enviado un enlace."
+    },
+    "update": {
+      "title": "Nueva contraseña",
+      "submit": "Actualizar contraseña"
+    },
+    "signup": {
+      "title": "Crear cuenta",
+      "username": "Nombre de usuario",
+      "submit": "Crear cuenta",
+      "needInvite": "Necesitas un enlace de invitación para registrarte.",
+      "invalidInvite": "Este enlace de invitación no es válido o ha caducado.",
+      "haveAccount": "¿Ya tienes cuenta?"
+    },
+    "errors": {
+      "invalidCredentials": "Correo o contraseña incorrectos.",
+      "usernameRequired": "El nombre de usuario es obligatorio.",
+      "inviteRequired": "Se requiere un token de invitación.",
+      "signupFailed": "No se pudo completar el registro. Comprueba tu invitación.",
+      "inviteInvalid": "Este enlace de invitación no es válido o ha caducado.",
+      "weakPassword": "La contraseña debe tener al menos 6 caracteres.",
+      "updateFailed": "No se pudo actualizar la contraseña.",
+      "noSession": "El enlace de recuperación es inválido o ha caducado."
+    }
+  },
+  "Install": {
+    "install": "Instalar Vibes",
+    "done": "Ya tienes buenas Vibes"
+  },
+  "Dock": {
+    "myList": "Mi lista",
+    "luck": "Suerte",
+    "add": "Añadir",
+    "meetup": "Quedada",
+    "profile": "Perfil"
+  },
+  "Card": {
+    "save": "Guardar",
+    "remove": "Quitar",
+    "saved": "En tu lista",
+    "moreOptions": "Más opciones",
+    "rate": {
+      "add": "Calificar",
+      "dislike": "No me gusta",
+      "like": "Me gusta",
+      "love": "Me encanta"
+    }
+  },
+  "New": {
+    "title": "Nueva recomendación",
+    "submit": "Crear",
+    "back": "Volver",
+    "similarHint": "Ya existen elementos similares:",
+    "fields": {
+      "title": "Título",
+      "description": "Descripción",
+      "category": "Categoría",
+      "choose": "Elige una categoría",
+      "url": "URL (opcional)"
+    },
+    "errors": {
+      "titleRequired": "El título es obligatorio.",
+      "categoryRequired": "Elige una categoría.",
+      "invalidUrl": "La URL debe empezar por http:// o https://.",
+      "createFailed": "No se pudo crear la recomendación.",
+      "unauth": "No autenticado."
+    }
+  },
+  "Friends": {
+    "title": "Amigos",
+    "back": "Volver",
+    "yourFriends": "Tus amigos",
+    "noFriends": "Aún no tienes amigos.",
+    "find": "Buscar personas",
+    "searchPlaceholder": "Buscar por nombre de usuario…",
+    "add": "Añadir",
+    "remove": "Quitar",
+    "alreadyFriend": "Ya es tu amigo",
+    "affinity": "Afinidad"
+  },
+  "Quedada": {
+    "title": "Organizar quedada",
+    "hint": "Marca quién está presente y te sugerimos el Top 3 para el grupo.",
+    "attendees": "¿Quién está?",
+    "organize": "Sugerir",
+    "results": "Mejores opciones",
+    "empty": "Aún no hay coincidencias. ¡Guardad más en vuestras listas!",
+    "noFriends": "Añade algún amigo primero.",
+    "back": "Volver"
+  },
+  "Settings": {
+    "title": "Ajustes",
+    "language": "Idioma",
+    "languages": {
+      "en": "English",
+      "es": "Español",
+      "fr": "Français",
+      "pt": "Português"
+    },
+    "affinityScoring": "Usar scoring por afinidad",
+    "affinityHint": "Pondera las recomendaciones según lo alineado que estás con cada amigo.",
+    "save": "Guardar",
+    "back": "Volver"
+  },
+  "Admin": {
+    "title": "Admin · Categorías",
+    "back": "Volver",
+    "create": "Crear categoría",
+    "name": "Nombre",
+    "icon": "Icono",
+    "color": "Color",
+    "existing": "Categorías existentes",
+    "delete": "Eliminar",
+    "errors": {
+      "nameRequired": "El nombre es obligatorio.",
+      "duplicate": "Esa categoría ya existe.",
+      "failed": "No se pudo guardar la categoría."
+    }
+  }
+}

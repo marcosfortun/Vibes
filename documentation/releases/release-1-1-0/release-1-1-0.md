@@ -1,0 +1,28 @@
+# Mejoras release 1.1.0
+
+**Hecho**:
+
+- Nuevo UI/UX
+- Incorporar librería de iconos
+- Quita el enlace a signup en la pantalla de login.
+- Añade el nombre de la app en la pantalla de login, en la parte superior, en grande y centrado.
+- Si el usuario no está identificado, o en el momento de crear la cuenta, el idioma mostrado para la interfaz se extrae de la configuración del navegador.
+- Posibilidad de editar manualmente la afinidad con mis amigos.
+- Comprimir los 3 botones de calificación (-1,1,2) en un solo botón.
+- Mejorar distribución de espacios en la tarjeta.
+- Fondo negro en barra inferior de navegación para que no se mezcle con la lista de recomendaciones.
+- Definir lo que hace el botón de los puntitos.
+- En la pantalla de ajustes, los ajustes se deberían guardar al modificarlos. Quitar el botón de guardar y el de volver.
+- Cuando estemos en la sección de amigos, si pulso en "volver", debería cargar la sección de perfil.
+- Añadir documento "brand book" con decisiones artísticas: nombre, logo, marca...
+- Evitar reordenación de la listas mientras se están visualizando. Solo se ordenan al cargar la lista.
+- Desacoplar la lógica de calificación con la de agregar a mi lista.
+- Generar más usuarios de prueba, que no sean amigos de Ana, que tengan algunas recomendaciones creadas, en "mi lista" y calificadas.
+- Las pestañas de arriba (mi lista, de amigos y tendencias), fijarlas en la parte superior.
+- Botón "descargar" para instalar en el escritorio. En las pantallas de login y ajustes.
+- En las secciones que son accesibles desde la barra de navegación inferior (Mi lista, Suerte, Añadir, Quedada y Perfil), no debería haber botones de "volver".
+- Al crear recomendaciones puedo indicar una URL opcional. El click en el título de una recomendación, abre la URL en una pestaña nueva.
+- Añadir categorías: serie de televión, documental, podcast, videojuego, juego VR, juego de mesa, teatro, monólogo, expo, museo, grupo de música, canción, festival, lugares emblemático, ruta de senderismo, ruta ciclismo, vía ferrata, zona de escalada, zona de baño.
+- Al crear una recomendación debe añadirse automáticamente a "mi lista".
+- Cambia el nombre del proyecto y de la app a "Vibes", con el eslogan "Buenas vibras en tu círculo".
+- Cambia el logo por los de la carpeta documentation/logo (versión cuadrada y rectangular).
