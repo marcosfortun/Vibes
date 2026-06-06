@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: t("title"),
     description: t("tagline"),
     manifest: "/manifest.webmanifest",
-    themeColor: "#0D0D11",
+    themeColor: "#000000",
   };
 }
 

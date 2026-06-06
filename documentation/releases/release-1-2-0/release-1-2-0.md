@@ -6,12 +6,29 @@
 **En progreso**:
 
 
+
 **Pendiente**:
 
+- Mejorar el flujo de añadir amigo:
+  - No hay buscador de usuarios.
+  - La única forma de añadir un amigo, es enviarle tu enlace de invitación (WhatsApp, Telegram, etc) y que pulse.
+  - Si la persona que pulsa el enlace de invitación no tiene sesión abierta, se muestra pantalla de "login o crear cuenta".
+  - Después se muestra pantalla de aceptar invitación. Si se acepta, se crea amistad bidireccional y se envía un email a ambos usuarios para notificar la nueva amistad.
+- Solo se permiten amistades bidireccionales. Si eliminas a uno de tus amigos, se elimina la relación de amistad en ambas direcciones.
+- Email de bienvenida cuando un usuario se da de alta.
+
 - Retocar icono rosa de la barra superior de navegación.
-- Traducción automática de las recomendaciones.
-- Revisar sección "añadir".
-- Revisar sección "amigos".
+
+- Mejorar el flujo de crear recomendación:
+  - Buscador por categoría y título. Se van mostrando resultados de una búsqueda en base a recomendaciones similares ya existentes y también de una búsqueda externa (IA, Google Search, IMDB, Steam, Wikiloc, etc). Obligatorio seleccionar un resultado para poder continuar.
+  - Si se ha seleccionado una recomendación ya existente, se añade a "mi lista" y hemos terminado.
+  - Si se ha seleccionado un resultado externo, mostrar el formulario con todos los datos ya completados (descripción, URL, etc). El usuario puede modificar cualquiera de los campos y guardar.
+    - En ese momento se traducen automáticamente todos los textos (título, descripción, etc). Se añade a "mi lista" y hemos terminado.
+- Nuevo campo "tags" donde los usuarios podrán poner un máximo de 5 para resaltar características. Son texto libre con autocompletado.
+- Especialización de las categorías:
+  - rango de precio
+  - localización
+
 - Revisar sección "perfil".
 - La sección "suerte" no carga.
 - Revisar sección "quedada".
