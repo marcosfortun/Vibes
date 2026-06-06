@@ -45,3 +45,7 @@ documentation/test-users.txt
 
 # claude code — config local con permisos y claves de dev
 .claude/settings.local.json
+
+# supabase cli — estado interno generado automáticamente
+supabase/.temp/
+supabase/.branches/
