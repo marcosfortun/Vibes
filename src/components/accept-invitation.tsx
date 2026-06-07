@@ -58,7 +58,7 @@ export function AcceptInvitation({
         type="button"
         onClick={onAccept}
         disabled={pending}
-        className="w-full rounded-full bg-gradient-to-r from-neon-pink to-neon-green px-4 py-2.5 font-semibold text-black disabled:opacity-50"
+        className="btn-primary w-full"
       >
         {pending ? t('accepting') : t('accept')}
       </button>

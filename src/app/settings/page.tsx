@@ -35,20 +35,17 @@ export default async function SettingsPage() {
 
       <InstallButtonInline />
 
-      <nav className="flex flex-col gap-2 border-t border-white/10 pt-5">
-        <Link href="/friends" className="text-sm text-neon-green hover:underline">
+      <nav className="flex flex-col items-start gap-3 border-t border-white/10 pt-5">
+        <Link href="/friends" className="btn-secondary w-full">
           {t('Home.friends')}
         </Link>
         {profile?.role === 'admin' && (
-          <Link href="/admin" className="text-sm text-neon-green hover:underline">
+          <Link href="/admin" className="btn-secondary w-full">
             {t('Home.admin')}
           </Link>
         )}
-        <form action={logout}>
-          <button
-            type="submit"
-            className="rounded-full border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/10"
-          >
+        <form action={logout} className="w-full">
+          <button type="submit" className="btn-secondary w-full">
             {t('Auth.logout')}
           </button>
         </form>

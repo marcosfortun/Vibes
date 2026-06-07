@@ -25,7 +25,7 @@ export function LoginForm({ next = '' }: { next?: string }) {
           name="email"
           required
           autoComplete="email"
-          className="rounded-xl border border-white/15 bg-surface px-3 py-2 text-white outline-none focus:border-neon-green/60"
+          className="field"
         />
       </label>
 
@@ -36,7 +36,7 @@ export function LoginForm({ next = '' }: { next?: string }) {
           name="password"
           required
           autoComplete="current-password"
-          className="rounded-xl border border-white/15 bg-surface px-3 py-2 text-white outline-none focus:border-neon-green/60"
+          className="field"
         />
       </label>
 
@@ -46,11 +46,7 @@ export function LoginForm({ next = '' }: { next?: string }) {
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-full bg-gradient-to-r from-neon-pink to-neon-green px-4 py-2.5 font-semibold text-black disabled:opacity-50"
-      >
+      <button type="submit" disabled={pending} className="btn-primary w-full">
         {t('login.submit')}
       </button>
 

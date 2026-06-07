@@ -19,6 +19,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
 - **Logo a la misma altura** en login, alta e invitación.
 - **Lista de amigos con scroll interno:** la cabecera, el botón Volver y el componente de invitación quedan fijos; solo desplaza la lista.
 - **Refactors de calidad:** estado derivado en render en lugar de `setState` dentro de efectos (`recommendation-card`, `new-recommendation-form`); detección de PWA *standalone* con `useSyncExternalStore` (`install-prompt-provider`).
+- **Sistema de estilos unificado (Dark Glassmorphism):** se elimina la disparidad visual entre pantallas. Nuevas clases reutilizables en `globals.css` siguiendo el `style-guide.md` (§3.D–§3.G):
+  - **Botones** con tres variantes únicas: `.btn-primary` (degradado rosa→verde, 50px, glow), `.btn-secondary` (outline 40px) y `.btn-danger` / `.btn-danger-outline` (rojo neón `#ff0055`).
+  - **Formularios** (`.field`, `.field-select`, `.checkbox`): inputs/selects/textarea con fondo semi-transparente, borde *muted* y focus con glow; `select` con chevron vectorial propio (sin flecha nativa); checkbox custom 20px verde neón con micro-resplandor.
+  - **Cabeceras internas** (§3.F): `BackButton` como círculo de 40px (fondo surface + borde muted) y título 24px (`.page-header`/`.page-title`).
+  - **Listas estructuradas** (§3.G): `.list-row` con fondo `#18181C`, radio 12px, indicador de estado a la izquierda y acciones destructivas a la derecha.
+  - Pantallas migradas: login, signup, forgot, update-password, new, settings, admin, quedada, friends (e invite-link / accept-invitation). Retirados los estilos `zinc-*` y `dark:` heredados.
 
 ### Removed
 - **Buscador de usuarios** y RPC `add_friend`. Añadir amigos es **solo** por enlace de invitación. La RLS de `users` deja de exponer perfiles por `is_searchable` (solo fila propia o amigos).

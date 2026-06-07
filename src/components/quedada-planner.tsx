@@ -40,16 +40,19 @@ export function QuedadaPlanner({
   return (
     <div className="flex w-full max-w-md flex-col gap-6">
       <section>
-        <h2 className="mb-2 text-lg font-semibold">{t('attendees')}</h2>
+        <h2 className="mb-3 text-lg font-semibold text-white">
+          {t('attendees')}
+        </h2>
         {friends.length === 0 ? (
-          <p className="text-sm opacity-60">{t('noFriends')}</p>
+          <p className="text-sm text-muted">{t('noFriends')}</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {friends.map((f) => (
-              <li key={f.id}>
-                <label className="flex items-center gap-2 text-sm">
+              <li key={f.id} className="list-row">
+                <label className="flex w-full cursor-pointer items-center gap-3 text-sm text-white">
                   <input
                     type="checkbox"
+                    className="checkbox"
                     checked={selected.has(f.id)}
                     onChange={() => toggle(f.id)}
                   />
@@ -65,28 +68,29 @@ export function QuedadaPlanner({
         type="button"
         onClick={organize}
         disabled={loading}
-        className="self-start rounded bg-zinc-900 px-4 py-2 font-medium text-white disabled:opacity-50 dark:bg-white dark:text-black"
+        className="btn-primary w-full"
       >
         {t('organize')}
       </button>
 
       {results !== null && (
         <section>
-          <h2 className="mb-2 text-lg font-semibold">{t('results')}</h2>
+          <h2 className="mb-3 text-lg font-semibold text-white">
+            {t('results')}
+          </h2>
           {results.length === 0 ? (
-            <p className="text-sm opacity-60">{t('empty')}</p>
+            <p className="text-sm text-muted">{t('empty')}</p>
           ) : (
             <ol className="flex flex-col gap-2">
               {results.map((r, i) => (
-                <li
-                  key={r.recommendation_id}
-                  className="flex items-center justify-between rounded border border-zinc-200 px-3 py-2 dark:border-zinc-800"
-                >
-                  <span>
-                    <span className="mr-2 font-bold">{i + 1}.</span>
-                    {r.title}
+                <li key={r.recommendation_id} className="list-row">
+                  <span className="flex min-w-0 items-center gap-3 text-white">
+                    <span className="shrink-0 font-bold text-neon-green tabular-nums">
+                      {i + 1}.
+                    </span>
+                    <span className="truncate">{r.title}</span>
                   </span>
-                  <span className="text-sm tabular-nums opacity-60">
+                  <span className="shrink-0 text-sm tabular-nums text-muted">
                     {Math.round(Number(r.sg) * 10) / 10}
                   </span>
                 </li>

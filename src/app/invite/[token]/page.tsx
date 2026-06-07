@@ -59,7 +59,7 @@ export default async function InvitePage(props: PageProps<'/invite/[token]'>) {
         <p className="text-sm text-muted">{t('loginPrompt')}</p>
         <Link
           href={`/signup?invite_token=${token}&next=${encodeURIComponent(nextPath)}`}
-          className="w-full rounded-full bg-gradient-to-r from-neon-pink to-neon-green px-4 py-2.5 font-semibold text-black"
+          className="btn-primary w-full"
         >
           {t('createAccount')}
         </Link>

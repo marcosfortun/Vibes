@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Flower2 } from 'lucide-react';
 import {
   RecommendationCard,
   type CardItem,
@@ -84,6 +85,15 @@ export function HomeTabs({
     <div className="w-full">
       {/* Tablist sticky a ancho completo, con fade inferior */}
       <div className="sticky top-0 z-30 w-full">
+        {/* Degradado rosa→verde reutilizado por el trazo de la rosa de la pestaña activa. */}
+        <svg width="0" height="0" aria-hidden className="absolute">
+          <defs>
+            <linearGradient id="tab-rose-gradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--neon-pink)" />
+              <stop offset="100%" stopColor="var(--neon-green)" />
+            </linearGradient>
+          </defs>
+        </svg>
         <div className="bg-[var(--background)] pt-3">
           <div className="mx-auto flex max-w-2xl">
             {TABS.map((key) => {
@@ -102,7 +112,16 @@ export function HomeTabs({
                   {active && (
                     <span className="pointer-events-none absolute inset-x-2 bottom-0 flex items-center justify-center">
                       <span className="tab-underline h-0.5 w-full rounded-full" />
-                      <span className="absolute text-base leading-none">🌹</span>
+                      <Flower2
+                        size={20}
+                        strokeWidth={2}
+                        stroke="url(#tab-rose-gradient)"
+                        className="absolute"
+                        style={{
+                          filter:
+                            'drop-shadow(0 0 3px rgba(255,42,117,0.7)) drop-shadow(0 0 4px rgba(57,255,133,0.45))',
+                        }}
+                      />
                     </span>
                   )}
                 </button>

@@ -28,21 +28,21 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
     <div className="flex w-full max-w-md flex-col gap-6">
       {/* Alta */}
       <form action={formAction} className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">{t('create')}</h2>
+        <h2 className="text-lg font-semibold text-white">{t('create')}</h2>
+        <input
+          type="text"
+          name="name"
+          required
+          placeholder={t('name')}
+          className="field"
+        />
         <div className="flex gap-2">
-          <input
-            type="text"
-            name="name"
-            required
-            placeholder={t('name')}
-            className="flex-1 rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
-          />
           <input
             type="text"
             name="icon"
             list="lucide-icons"
             placeholder={t('icon')}
-            className="w-40 rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+            className="field flex-1"
           />
           <datalist id="lucide-icons">
             {CATEGORY_ICON_NAMES.map((n) => (
@@ -54,49 +54,42 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
             name="color"
             defaultValue="#2563eb"
             aria-label={t('color')}
-            className="h-10 w-12 rounded border border-zinc-300 dark:border-zinc-700"
+            className="h-[42px] w-14 shrink-0 cursor-pointer rounded-xl border border-white/10 bg-transparent"
           />
         </div>
         {state.error && (
-          <p role="alert" className="text-sm text-red-600">
+          <p role="alert" className="text-sm text-neon-pink">
             {t(`errors.${state.error}`)}
           </p>
         )}
-        <button
-          type="submit"
-          disabled={creating}
-          className="self-start rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-white dark:text-black"
-        >
+        <button type="submit" disabled={creating} className="btn-primary w-full">
           {t('create')}
         </button>
       </form>
 
       {/* Lista */}
       <section>
-        <h2 className="mb-2 text-lg font-semibold">{t('existing')}</h2>
+        <h2 className="mb-3 text-lg font-semibold text-white">{t('existing')}</h2>
         <ul className="flex flex-col gap-2">
           {categories.map((c) => (
-            <li
-              key={c.id}
-              className="flex items-center justify-between rounded border border-zinc-200 px-3 py-2 dark:border-zinc-800"
-            >
-              <span className="flex items-center gap-2">
+            <li key={c.id} className="list-row">
+              <span className="flex min-w-0 items-center gap-3 text-white">
                 <span
-                  className="inline-block h-4 w-4 rounded-full"
+                  className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
                   style={{ backgroundColor: c.color ?? '#71717a' }}
                 />
                 <CategoryIcon
                   name={c.icon}
                   size={18}
-                  className="text-neon-pink"
+                  className="shrink-0 text-neon-pink"
                 />
-                {c.name}
+                <span className="truncate">{c.name}</span>
               </span>
               <button
                 type="button"
                 disabled={pending}
                 onClick={() => startTransition(() => deleteCategory(c.id))}
-                className="text-sm text-red-600 disabled:opacity-50"
+                className="btn-danger shrink-0 text-sm"
               >
                 {t('delete')}
               </button>

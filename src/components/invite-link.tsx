@@ -65,7 +65,6 @@ export function InviteLink({
   return (
     <section className="w-full max-w-md rounded-2xl border border-white/10 bg-surface p-4">
       <h2 className="text-lg font-semibold text-white">{t('inviteTitle')}</h2>
-      <p className="mt-1 text-xs text-muted">{t('inviteHint')}</p>
 
       {token ? (
         <div className="mt-3 flex flex-col gap-3">
@@ -75,16 +74,16 @@ export function InviteLink({
             readOnly
             value={link}
             onFocus={(e) => e.currentTarget.select()}
-            className="w-full rounded-xl border border-white/15 bg-transparent px-3 py-2 text-sm text-white outline-none"
+            className="field text-sm"
           />
 
-          {/* Fila 2: copiar (secundario) + compartir (principal). */}
+          {/* Fila 2: copiar (secundario, izquierda) + compartir (principal, derecha). */}
           <div className="flex gap-2">
             <button
               type="button"
               onClick={copy}
               disabled={pending}
-              className="flex-1 rounded-xl border border-white/20 px-4 py-2 text-sm font-medium text-white hover:bg-white/10 disabled:opacity-50"
+              className="btn-secondary flex-1"
             >
               {copied ? t('copied') : t('copy')}
             </button>
@@ -92,7 +91,7 @@ export function InviteLink({
               type="button"
               onClick={share}
               disabled={pending}
-              className="flex-1 rounded-xl bg-gradient-to-r from-neon-pink to-neon-green px-4 py-2 text-sm font-semibold text-black disabled:opacity-50"
+              className="btn-primary btn-inline flex-1"
             >
               {t('share')}
             </button>
@@ -113,7 +112,7 @@ export function InviteLink({
                 type="button"
                 onClick={revoke}
                 disabled={pending}
-                className="text-sm text-neon-pink hover:underline disabled:opacity-50"
+                className="btn-danger text-sm hover:underline"
               >
                 {t('revoke')}
               </button>
@@ -125,7 +124,7 @@ export function InviteLink({
           type="button"
           onClick={gen}
           disabled={pending}
-          className="mt-3 rounded-full bg-gradient-to-r from-neon-pink to-neon-green px-4 py-2 text-sm font-semibold text-black disabled:opacity-50"
+          className="btn-primary mt-3 w-full"
         >
           {t('generate')}
         </button>
