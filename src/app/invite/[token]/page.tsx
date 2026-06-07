@@ -8,7 +8,7 @@ function Shell({ children }: { children: React.ReactNode }) {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-8 p-8">
       <Image
-        src="/logo.png"
+        src="/logo.jpg"
         alt="Vibes"
         width={2657}
         height={1062}

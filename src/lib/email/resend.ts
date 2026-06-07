@@ -94,7 +94,7 @@ async function sendOne(to: FriendEmailUser, friendUsername: string) {
       outlineButton(cta, url) +
       signature(signoff, team),
     locale,
-    `${url}/logo.png`,
+    `${url}/logo.jpg`,
   );
 
   const text = `${greeting}\n\n${p1}\n\n${p2}\n\n${cta}: ${url}\n\n${signoff}\n${team}`;
@@ -130,7 +130,7 @@ export async function sendWelcomeEmail(user: FriendEmailUser) {
       primaryButton(cta, url) +
       signature(signoff, team),
     locale,
-    `${url}/logo.png`,
+    `${url}/logo.jpg`,
   );
 
   const text = `${greeting}\n\n${p1}\n\n${howToStart}\n- ${step1}\n- ${step2}\n\n${cta}: ${url}\n\n${signoff}\n${team}`;
