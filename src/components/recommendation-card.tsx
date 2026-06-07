@@ -58,9 +58,14 @@ export function RecommendationCard({
       ? RATINGS.find((r) => r.value === currentRating)
       : undefined;
 
+  // El selector solo se muestra si está expandido y aún no hay calificación.
+  // Al llegar un rating (incluso tras revalidación) la cápsula se colapsa sola,
+  // derivado en render: no hace falta un efecto que sincronice `expanded`.
+  const showPicker = expanded && !ratingEntry;
+
   // Cerrar el desplegable al clicar fuera (sin guardar cambios).
   useEffect(() => {
-    if (!expanded) return;
+    if (!showPicker) return;
     function onDocPointerDown(e: PointerEvent) {
       if (
         capsuleRef.current &&
@@ -71,15 +76,10 @@ export function RecommendationCard({
     }
     document.addEventListener('pointerdown', onDocPointerDown);
     return () => document.removeEventListener('pointerdown', onDocPointerDown);
-  }, [expanded]);
-
-  // Si llega un rating tras revalidación, colapsar.
-  useEffect(() => {
-    if (ratingEntry) setExpanded(false);
-  }, [ratingEntry]);
+  }, [showPicker]);
 
   // Estilo común del botón circular: borde + opacity sincronizados.
-  const capsuleOn = expanded || ratingEntry;
+  const capsuleOn = showPicker || ratingEntry;
   const isLove = ratingEntry?.key === 'love';
 
   return (
@@ -127,9 +127,9 @@ export function RecommendationCard({
           className={`flex items-center justify-evenly rounded-full border border-white transition-[width,opacity] duration-150 ${
             isLove ? 'text-neon-pink' : 'text-white'
           } ${capsuleOn ? 'opacity-70' : 'opacity-20'}`}
-          style={{ width: expanded ? 118 : 36, height: 36 }}
+          style={{ width: showPicker ? 118 : 36, height: 36 }}
         >
-          {!expanded ? (
+          {!showPicker ? (
             <button
               type="button"
               disabled={pending}
