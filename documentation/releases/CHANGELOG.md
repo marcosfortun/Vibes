@@ -2,7 +2,38 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [SemVer](https://semver.org/).
 
-## [Unreleased] — versión 1.1.0 (en preparación)
+## [Unreleased] — versión 1.2.0 (en preparación)
+
+### Added
+- **Amistad por enlace de invitación:** cada usuario tiene un enlace personal **reutilizable** (caduca a las 48h, revocable y regenerable). Página `/invite/[token]` con dos caminos: sin sesión → "iniciar sesión o crear cuenta" (preservando el token); con sesión → pantalla de **aceptar** con los nombres invitador → invitado. Compartir con el selector nativo (**Web Share API**) desde la sección Amigos.
+- **Correos informativos en HTML** con la estética de la app (canvas negro, card `#18181C`, borde superior degradado, logo centrado arriba, tipografía y colores del tema):
+  - **A. Bienvenida** al completar el alta (botón principal "Entrar a Vibes").
+  - **B. Restablecimiento de contraseña** vía plantilla de Supabase Auth (`recovery.html`), preservando el flujo PKCE.
+  - **C. Nueva amistad** al aceptar una invitación (botón outline "Ver el feed").
+  - A y C se envían vía Resend (Mailpit en local) **localizados por destinatario** (en/es/fr/pt); remitente unificado **Vibes**.
+- **Infraestructura de email:** `src/lib/email/template.ts` (layout + primitivas) y `src/lib/email/resend.ts`; cliente service-role `src/lib/supabase/admin.ts` para leer los emails de los usuarios al notificar.
+
+### Changed
+- **Idioma de interfaz en cada carga:** con sesión se usa el idioma del **perfil** del usuario; sin sesión, el del **navegador** (`Accept-Language`). Antes dependía de una cookie potencialmente obsoleta (`src/i18n/request.ts`).
+- **Pantalla de creación de cuenta:** misma estética que login (logo + eslogan + inputs/botones neón).
+- **Logo a la misma altura** en login, alta e invitación.
+- **Lista de amigos con scroll interno:** la cabecera, el botón Volver y el componente de invitación quedan fijos; solo desplaza la lista.
+- **Refactors de calidad:** estado derivado en render en lugar de `setState` dentro de efectos (`recommendation-card`, `new-recommendation-form`); detección de PWA *standalone* con `useSyncExternalStore` (`install-prompt-provider`).
+
+### Removed
+- **Buscador de usuarios** y RPC `add_friend`. Añadir amigos es **solo** por enlace de invitación. La RLS de `users` deja de exponer perfiles por `is_searchable` (solo fila propia o amigos).
+
+### Database
+- Migración `20260607120000_friends_invite_flow.sql`:
+  - `invitation_tokens.revoked_at` y tokens **reutilizables** (48h); `invite_token_valid` ya no depende de `is_used`.
+  - Nuevos RPCs `invite_info`, `accept_invitation` (amistad bidireccional, no consume el token), `ensure_invite`, `regenerate_invite`, `revoke_invite`.
+  - `handle_new_user` ya **no** crea la amistad ni consume el token en el alta (la amistad se crea al aceptar).
+  - Retirada de `add_friend`; política `users_select` sin `is_searchable`.
+
+### Config
+- `supabase/config.toml`: `[auth.email.template.recovery]` (asunto + `content_path`) para el correo de reset con estética Vibes.
+
+## [1.1.0] — 2026-06-06
 
 ### Branding
 - **Rebranding VibeCheck → Vibes** en toda la app (i18n `App.title`, manifest, docs internos).
