@@ -62,12 +62,32 @@ El script arranca Docker si está apagado, levanta Supabase si no responde y lan
 
 ## Variables de entorno
 
-`.env.local` (no se commitea) con las claves del Supabase local:
+- **Local:** copia [`.env.example`](.env.example) a **`.env.local`** y rellena los valores.
+  `.env.local` está en `.gitignore` (nunca se commitea). Next.js lo carga solo en `next dev`.
+- **Producción:** las mismas variables se configuran en el **panel de Vercel**
+  (Project Settings → Environment Variables). No hay ningún `.env` en el repo ni en el despliegue.
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key que imprime "supabase start">
+cp .env.example .env.local
+# rellena NEXT_PUBLIC_SUPABASE_ANON_KEY con la clave que imprime `supabase start`/`supabase status`
 ```
+
+| Variable | Ámbito | Local | Producción |
+| --- | --- | --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Pública (cliente + servidor) | `http://127.0.0.1:54321` (Supabase CLI) | `https://<ref>.supabase.co` (Supabase Cloud) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Pública (protegida por RLS) | La imprime `supabase start` | Clave anón del proyecto Cloud |
+| `SUPABASE_SERVICE_ROLE_KEY` | **Secreto** (solo servidor; omite RLS) | La imprime `supabase start` | Clave service-role del proyecto Cloud |
+| `RESEND_API_KEY` | **Secreto** (solo servidor) | *vacío* → usa **Mailpit** | API key de Resend → usa **Resend** |
+| `EMAIL_FROM` | Servidor | `"Vibes <onboarding@resend.dev>"` | Remitente verificado en Resend |
+| `NEXT_PUBLIC_SITE_URL` | Pública | `http://localhost:3000` | URL pública de Vercel |
+| `MAILPIT_API_URL` | Servidor (opcional) | `http://localhost:54324` (por defecto) | — |
+
+> **Convención Next.js:** las `NEXT_PUBLIC_*` se incrustan en el bundle del navegador (son
+> públicas); el resto son **solo de servidor** y no deben prefijarse con `NEXT_PUBLIC_`.
+
+> **Conmutación de entorno por valor, no por `NODE_ENV`:** el código decide el comportamiento
+> según el valor/presencia de las variables. En concreto, el envío de correo usa **Mailpit** si
+> `RESEND_API_KEY` está vacío y **Resend** si tiene valor (`src/lib/email/resend.ts`).
 
 ## Base de datos y migraciones
 
