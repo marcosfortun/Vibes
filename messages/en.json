@@ -108,12 +108,18 @@
     "back": "Back",
     "yourFriends": "Your friends",
     "noFriends": "No friends yet.",
-    "find": "Find people",
-    "searchPlaceholder": "Search by username…",
-    "add": "Add",
     "remove": "Remove",
-    "alreadyFriend": "Already a friend",
-    "affinity": "Affinity"
+    "affinity": "Affinity",
+    "inviteTitle": "Your invite link",
+    "inviteHint": "Anyone who opens this link can add you as a friend. It expires in 48 hours.",
+    "shareText": "Join me on Vibes!",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "regenerate": "Regenerate",
+    "revoke": "Revoke",
+    "expiresHint": "Expires in 48h",
+    "generate": "Generate link",
+    "share": "Share"
   },
   "Quedada": {
     "title": "Plan a meetup",
@@ -152,6 +158,50 @@
       "nameRequired": "Name is required.",
       "duplicate": "That category already exists.",
       "failed": "Could not save the category."
+    }
+  },
+  "Invite": {
+    "title": "Invitation",
+    "invitedYou": "{username} invited you to be friends on Vibes.",
+    "accept": "Accept invitation",
+    "accepting": "Accepting…",
+    "loginPrompt": "Log in or create an account to accept.",
+    "login": "I already have an account",
+    "createAccount": "Create account",
+    "invalidTitle": "Invalid invitation",
+    "invalidBody": "This invitation link is invalid, revoked or has expired.",
+    "alreadyFriends": "You're already friends.",
+    "goToFriends": "Go to friends",
+    "cannotSelf": "You can't accept your own invitation.",
+    "goHome": "Go home",
+    "back": "Back",
+    "errors": {
+      "noSession": "You need to log in first.",
+      "cannotSelf": "You can't accept your own invitation.",
+      "invalid": "This invitation is invalid or has expired."
+    },
+    "reject": "Decline"
+  },
+  "Email": {
+    "welcome": {
+      "subject": "You're all set, {username}! You're connected to Vibes ⚡",
+      "greeting": "Hi {username},",
+      "p1": "Your account is now active and you've successfully joined our shared catalog. From now on, this is your private space to skip the internet's commercial feeds and tune directly into the real tastes of your group of friends.",
+      "howToStart": "How to get started?",
+      "step1": "Go to My List and add your first movies, shows or games to enjoy.",
+      "step2": "Explore your group's feed to discover what your circle is recommending.",
+      "cta": "Enter Vibes",
+      "signoff": "— Connection complete,",
+      "team": "The Vibes team"
+    },
+    "newFriend": {
+      "subject": "New connection! Your network just grew on Vibes ⚡",
+      "greeting": "Hi {username},",
+      "p1": "Your interaction network just registered a new node. {friend} and you are now connected on the platform.",
+      "p2": "From now on, every saved item, vote or rating you log feeds straight into your feed and recalculates your affinities. Everything's ready: it's time to organize a meetup and put the group consensus engine to the test.",
+      "cta": "View the feed",
+      "signoff": "— Sync optimized,",
+      "team": "The Vibes team"
     }
   }
 }

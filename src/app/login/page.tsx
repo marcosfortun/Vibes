@@ -3,8 +3,10 @@ import { getTranslations } from 'next-intl/server';
 import { LoginForm } from './login-form';
 import { InstallButtonFloating } from '@/components/install-button';
 
-export default async function LoginPage() {
+export default async function LoginPage(props: PageProps<'/login'>) {
   const t = await getTranslations('App');
+  const { next } = await props.searchParams;
+  const nextPath = typeof next === 'string' ? next : '';
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-8 p-8">
@@ -19,7 +21,7 @@ export default async function LoginPage() {
         />
         <p className="text-center text-sm text-muted">{t('tagline')}</p>
       </div>
-      <LoginForm />
+      <LoginForm next={nextPath} />
       <InstallButtonFloating />
     </main>
   );

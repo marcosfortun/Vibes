@@ -76,6 +76,7 @@ export type Database = {
           generated_by: string
           id: string
           is_used: boolean
+          revoked_at: string | null
           token: string
         }
         Insert: {
@@ -84,6 +85,7 @@ export type Database = {
           generated_by: string
           id?: string
           is_used?: boolean
+          revoked_at?: string | null
           token?: string
         }
         Update: {
@@ -92,6 +94,7 @@ export type Database = {
           generated_by?: string
           id?: string
           is_used?: boolean
+          revoked_at?: string | null
           token?: string
         }
         Relationships: [
@@ -232,7 +235,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      add_friend: { Args: { target_id: string }; Returns: undefined }
+      accept_invitation: {
+        Args: { t: string }
+        Returns: {
+          created: boolean
+          host_id: string
+        }[]
+      }
+      ensure_invite: { Args: never; Returns: string }
       find_similar_recommendations: {
         Args: { q: string; threshold?: number }
         Returns: {
@@ -240,6 +250,13 @@ export type Database = {
           id: string
           similarity: number
           title: string
+        }[]
+      }
+      invite_info: {
+        Args: { t: string }
+        Returns: {
+          host_id: string
+          host_username: string
         }[]
       }
       invite_token_valid: { Args: { t: string }; Returns: boolean }
@@ -253,7 +270,9 @@ export type Database = {
           title: string
         }[]
       }
+      regenerate_invite: { Args: never; Returns: string }
       remove_friend: { Args: { target_id: string }; Returns: undefined }
+      revoke_invite: { Args: never; Returns: undefined }
     }
     Enums: {
       app_language: "en" | "es" | "fr" | "pt"

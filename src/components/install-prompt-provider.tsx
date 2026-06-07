@@ -5,8 +5,28 @@ import {
   useContext,
   useEffect,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from 'react';
+
+// ¿La app corre como instalada? Standalone display o iOS standalone.
+// Es estado del navegador: se lee con useSyncExternalStore para evitar
+// setState síncrono en un efecto y desajustes de hidratación (SSR → false).
+const STANDALONE_QUERY = '(display-mode: standalone)';
+
+function subscribeStandalone(onChange: () => void) {
+  if (typeof window === 'undefined') return () => {};
+  const mql = window.matchMedia(STANDALONE_QUERY);
+  mql.addEventListener('change', onChange);
+  return () => mql.removeEventListener('change', onChange);
+}
+
+function getStandaloneSnapshot() {
+  return (
+    window.matchMedia(STANDALONE_QUERY).matches ||
+    (navigator as { standalone?: boolean }).standalone === true
+  );
+}
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -28,21 +48,22 @@ const InstallCtx = createContext<Ctx>({
 export function InstallPromptProvider({ children }: { children: ReactNode }) {
   const [promptEvent, setPromptEvent] =
     useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstalled, setIsInstalled] = useState(false);
+  // Instalada durante la sesión (evento appinstalled o install() aceptado).
+  const [installedThisSession, setInstalledThisSession] = useState(false);
+  const isStandalone = useSyncExternalStore(
+    subscribeStandalone,
+    getStandaloneSnapshot,
+    () => false,
+  );
+  const isInstalled = isStandalone || installedThisSession;
 
   useEffect(() => {
-    // ¿Ya está instalada? Standalone display o iOS standalone.
-    const standalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (navigator as { standalone?: boolean }).standalone === true;
-    setIsInstalled(standalone);
-
     function onBeforeInstall(e: Event) {
       e.preventDefault();
       setPromptEvent(e as BeforeInstallPromptEvent);
     }
     function onAppInstalled() {
-      setIsInstalled(true);
+      setInstalledThisSession(true);
       setPromptEvent(null);
     }
 
@@ -64,7 +85,7 @@ export function InstallPromptProvider({ children }: { children: ReactNode }) {
     if (!promptEvent) return;
     await promptEvent.prompt();
     const choice = await promptEvent.userChoice;
-    if (choice.outcome === 'accepted') setIsInstalled(true);
+    if (choice.outcome === 'accepted') setInstalledThisSession(true);
     setPromptEvent(null);
   }
 

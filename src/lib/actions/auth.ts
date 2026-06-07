@@ -4,8 +4,16 @@ import { redirect } from 'next/navigation';
 import { cookies, headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { isLocale, LOCALE_COOKIE } from '@/i18n/config';
+import { sendWelcomeEmail } from '@/lib/email/resend';
 
 export type AuthState = { error?: string; sent?: boolean };
+
+// Solo admite rutas internas absolutas; evita open-redirect (//host, http://…).
+function safeNext(value: unknown): string {
+  const n = typeof value === 'string' ? value : '';
+  if (n.startsWith('/') && !n.startsWith('//')) return n;
+  return '/';
+}
 
 export async function login(
   _prev: AuthState,
@@ -13,6 +21,7 @@ export async function login(
 ): Promise<AuthState> {
   const email = String(formData.get('email') ?? '');
   const password = String(formData.get('password') ?? '');
+  const next = safeNext(formData.get('next'));
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -39,7 +48,7 @@ export async function login(
     }
   }
 
-  redirect('/');
+  redirect(next);
 }
 
 export async function signup(
@@ -52,6 +61,7 @@ export async function signup(
   const inviteToken = String(formData.get('invite_token') ?? '').trim();
   const langRaw = String(formData.get('language') ?? '');
   const language = isLocale(langRaw) ? langRaw : undefined;
+  const next = safeNext(formData.get('next'));
 
   if (!username) return { error: 'usernameRequired' };
   if (!inviteToken) return { error: 'inviteRequired' };
@@ -73,7 +83,12 @@ export async function signup(
   // El trigger handle_new_user valida el token; si falla, Supabase devuelve error genérico.
   if (error) return { error: 'signupFailed' };
 
-  redirect('/');
+  await sendWelcomeEmail({ email, username, language: langRaw });
+
+  // Tras el alta volvemos al destino (normalmente /invite/<token>) para que el
+  // nuevo usuario acepte explícitamente la invitación (la amistad ya no es
+  // automática en el alta).
+  redirect(next);
 }
 
 export async function requestPasswordReset(

@@ -18,7 +18,12 @@ export function BottomDock() {
   const pathname = usePathname();
   const t = useTranslations('Dock');
 
-  if (HIDDEN_ON.includes(pathname) || pathname.startsWith('/auth')) return null;
+  if (
+    HIDDEN_ON.includes(pathname) ||
+    pathname.startsWith('/auth') ||
+    pathname.startsWith('/invite')
+  )
+    return null;
 
   const items: { key: string; href: string; Icon: LucideIcon; active: boolean }[] = [
     { key: 'myList', href: '/', Icon: List, active: pathname === '/' },

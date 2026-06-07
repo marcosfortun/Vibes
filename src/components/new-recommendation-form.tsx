@@ -29,20 +29,21 @@ export function NewRecommendationForm({
   const [title, setTitle] = useState('');
   const [similar, setSimilar] = useState<Similar[]>([]);
 
+  // Con menos de 2 caracteres no hay coincidencias relevantes: se oculta el
+  // aviso derivándolo en render, sin limpiar estado dentro del efecto.
+  const q = title.trim();
+  const showSimilar = q.length >= 2 && similar.length > 0;
+
   // Deduplicación difusa en tiempo de escritura (pg_trgm vía RPC).
   useEffect(() => {
-    const q = title.trim();
-    if (q.length < 2) {
-      setSimilar([]);
-      return;
-    }
+    if (q.length < 2) return;
     const supabase = createClient();
     const handle = setTimeout(async () => {
       const { data } = await supabase.rpc('find_similar_recommendations', { q });
       setSimilar((data ?? []) as Similar[]);
     }, 300);
     return () => clearTimeout(handle);
-  }, [title]);
+  }, [q]);
 
   return (
     <form action={formAction} className="flex w-full flex-col gap-4">
@@ -59,7 +60,7 @@ export function NewRecommendationForm({
         />
       </label>
 
-      {similar.length > 0 && (
+      {showSimilar && (
         <div className="rounded border border-amber-300 bg-amber-50 p-3 text-sm dark:border-amber-700 dark:bg-amber-950">
           <p className="font-medium">{t('similarHint')}</p>
           <ul className="mt-1 flex flex-col gap-0.5">

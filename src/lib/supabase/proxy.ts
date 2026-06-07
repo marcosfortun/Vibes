@@ -38,6 +38,12 @@ export async function updateSession(request: NextRequest) {
     return response;
   }
 
+  // La landing de invitación es accesible con o sin sesión: los no autenticados
+  // ven "iniciar sesión o crear cuenta"; los autenticados ven "aceptar".
+  if (path.startsWith('/invite/')) {
+    return response;
+  }
+
   const publicRoutes = ['/login', '/signup', '/forgot'];
   const isPublic = publicRoutes.includes(path);
 
