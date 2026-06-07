@@ -6,18 +6,16 @@ Aquí tienes la guía de diseño detallada para replicar con exactitud esta inte
 
 ## 1. Paleta de Colores y Estilo Visual
 
-* **Fondo General:** Negro mate profundo o gris casi negro (`#0D0D11` o `#121216`).
+* **Fondo General:** Negro mate profundo (`#000000` / `#18181c`).
 * **Colores de Acento (Gradientes Neon):**
-* **Rosa Neón:** (`#FF2A75` / `#FF5E97`)
-* **Verde/Cian Neón:** (`#00F5D4` / `#01E4C3`)
-
+  * **Rosa Neón:** (`#ff2a75` / `#ff5e97`)
+  * **Verde/Cian Neón:** (`#39ff85` / `#7cfa9c`)
 * **Textos:**
-* **Principal:** Blanco puro (`#FFFFFF`) para títulos y elementos activos.
-* **Secundario/Muted:** Gris claro/medio (`#8E8E93` o `#A1A1AA`) para subtítulos y elementos inactivos.
-
+  * **Principal:** Blanco puro (`#FFFFFF`) para títulos y elementos activos.
+  * **Secundario/Muted:** Gris claro/medio (`#8E8E93` o `#A1A1AA`) para subtítulos y elementos inactivos.
 * **Efectos clave:**
-* **Glow (Resplandor):** Sombras difuminadas (`box-shadow`) con los colores de acento para dar el efecto de luz neón.
-* **Glassmorphism:** Fondos semi-transparentes con desenfoque de fondo (`backdrop-filter: blur(15px)`).
+  * **Glow (Resplandor):** Sombras difuminadas (`box-shadow`) con los colores de acento para dar el efecto de luz neón.
+  * **Glassmorphism:** Fondos semi-transparentes con desenfoque de fondo (`backdrop-filter: blur(15px)`).
 
 ---
 
@@ -79,3 +77,38 @@ background: rgba(30, 30, 35, 0.6);
 backdrop-filter: blur(20px);
 border: 1px solid rgba(255, 255, 255, 0.1);
 ```
+
+---
+
+## 5. Correos electrónicos (Emails)
+
+Todos los correos informativos se envían en **HTML** con una estructura rígida que
+emula la interfaz de la app. Implementación: `src/lib/email/template.ts` (primitivas
++ documento) y `src/lib/email/resend.ts` (composición y envío). Los textos viven en
+i18n (`messages/*.json`, namespace `Email`) y se envían en el idioma del destinatario.
+
+* **Fondo del correo (canvas):** Negro mate `#000000`.
+* **Contenedor central (card):** Fondo `#18181C`, `border-radius: 16px`, con un borde
+  superior de 3px con degradado **Rosa Neón → Verde Neón** (`linear-gradient(90deg,#ff2a75,#39ff85)`).
+* **Tipografía:** Sans-serif del sistema (`Inter, Helvetica, Arial, sans-serif`).
+  Texto principal blanco `#FFFFFF`; secundario gris `#A1A1AA`.
+* **Botón principal:** Píldora (`border-radius: 9999px`) con degradado Rosa→Verde y
+  texto negro `#000000`. Color sólido `#ff2a75` como *fallback* (clientes sin gradiente).
+* **Botón secundario (outline):** Píldora con borde `rgba(255,255,255,0.35)` y texto blanco.
+* **Remitente unificado:** Display Name siempre **Vibes** (`EMAIL_FROM="Vibes <…>"`
+  para Resend; en Supabase Auth, *Sender name = Vibes* en el panel cloud).
+
+Compatibilidad: layout con tablas y estilos en línea. Los valores interpolados de
+usuario se escapan (`escapeHtml`).
+
+### Catálogo de correos
+
+| Correo | Disparador | Remite | Botón |
+| --- | --- | --- | --- |
+| **A. Bienvenida** | Alta con token válido (`sendWelcomeEmail`) | Resend/Mailpit | Principal — *Entrar a Vibes* |
+| **B. Reset de contraseña** | Solicitud desde login (`resetPasswordForEmail`) | **Supabase Auth** (plantilla `supabase/templates/recovery.html`, asunto en `config.toml`) | Principal — *Configurar nueva contraseña* (`{{ .ConfirmationURL }}`) |
+| **C. Nueva amistad** | Aceptar invitación (`sendFriendshipEmails`) | Resend/Mailpit | Secundario/outline — *Ver el feed* |
+
+> **B (reset)** lo gestiona Supabase Auth para preservar el flujo PKCE, por lo que su
+> plantilla es única (español). A y C están localizados por destinatario (en/es/fr/pt).
+> En local todos los correos se capturan en **Mailpit** (`http://localhost:54324`).

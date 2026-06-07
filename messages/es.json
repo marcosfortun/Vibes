@@ -108,12 +108,18 @@
     "back": "Volver",
     "yourFriends": "Tus amigos",
     "noFriends": "Aún no tienes amigos.",
-    "find": "Buscar personas",
-    "searchPlaceholder": "Buscar por nombre de usuario…",
-    "add": "Añadir",
     "remove": "Quitar",
-    "alreadyFriend": "Ya es tu amigo",
-    "affinity": "Afinidad"
+    "affinity": "Afinidad",
+    "inviteTitle": "Tu enlace de invitación",
+    "inviteHint": "Cualquiera que abra este enlace puede añadirte como amigo. Caduca en 48 horas.",
+    "shareText": "¡Únete a mí en Vibes!",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "regenerate": "Regenerar",
+    "revoke": "Revocar",
+    "expiresHint": "Caduca en 48h",
+    "generate": "Generar enlace",
+    "share": "Compartir"
   },
   "Quedada": {
     "title": "Organizar quedada",
@@ -152,6 +158,50 @@
       "nameRequired": "El nombre es obligatorio.",
       "duplicate": "Esa categoría ya existe.",
       "failed": "No se pudo guardar la categoría."
+    }
+  },
+  "Invite": {
+    "title": "Invitación",
+    "invitedYou": "{username} te ha invitado a ser amigos en Vibes.",
+    "accept": "Aceptar invitación",
+    "accepting": "Aceptando…",
+    "loginPrompt": "Inicia sesión o crea una cuenta para aceptar.",
+    "login": "Ya tengo cuenta",
+    "createAccount": "Crear cuenta",
+    "invalidTitle": "Invitación inválida",
+    "invalidBody": "Este enlace de invitación es inválido, ha sido revocado o ha caducado.",
+    "alreadyFriends": "Ya sois amigos.",
+    "goToFriends": "Ir a amigos",
+    "cannotSelf": "No puedes aceptar tu propia invitación.",
+    "goHome": "Ir al inicio",
+    "back": "Volver",
+    "errors": {
+      "noSession": "Primero tienes que iniciar sesión.",
+      "cannotSelf": "No puedes aceptar tu propia invitación.",
+      "invalid": "Esta invitación es inválida o ha caducado."
+    },
+    "reject": "Rechazar"
+  },
+  "Email": {
+    "welcome": {
+      "subject": "¡Todo listo {username}! Conexión establecida con Vibes ⚡",
+      "greeting": "Hola, {username}:",
+      "p1": "Tu cuenta ya está activa y te has integrado con éxito en nuestro catálogo compartido. A partir de ahora, este es tu espacio privado para esquivar los feeds comerciales de internet y sintonizar directamente con las afinidades reales de tu grupo de amigos.",
+      "howToStart": "¿Cómo empezar?",
+      "step1": "Entra en Mi Lista y añade tus primeras películas, series o juegos pendientes de consumir.",
+      "step2": "Explora el feed del grupo para descubrir qué contenido está recomendando tu círculo.",
+      "cta": "Entrar a Vibes",
+      "signoff": "— Conexión completada,",
+      "team": "El equipo de Vibes"
+    },
+    "newFriend": {
+      "subject": "¡Nueva conexión! Tu red se ha expandido en Vibes ⚡",
+      "greeting": "Hola, {username}:",
+      "p1": "Tu red de interacción acaba de registrar un nuevo nodo. {friend} y tú ya estáis conectados en la plataforma.",
+      "p2": "A partir de este momento, cada contenido guardado, voto o calificación que registréis alimentará directamente vuestro feed y recalculará vuestras afinidades. Ya está todo listo: es el momento de organizar una quedada y poner a prueba el motor de consenso grupal.",
+      "cta": "Ver el feed",
+      "signoff": "— Sintonía optimizada,",
+      "team": "El equipo de Vibes"
     }
   }
 }

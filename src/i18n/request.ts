@@ -1,14 +1,32 @@
 import { getRequestConfig } from 'next-intl/server';
-import { cookies, headers } from 'next/headers';
-import { defaultLocale, isLocale, matchLocale } from './config';
+import { headers } from 'next/headers';
+import { createClient } from '@/lib/supabase/server';
+import { defaultLocale, isLocale, matchLocale, type Locale } from './config';
 
-// Locale: 1) cookie (perfil del usuario); 2) idioma del navegador (Accept-Language);
-// 3) por defecto. Así un usuario no identificado o en el signup ve la interfaz en su idioma.
+// Locale resuelto en CADA carga:
+//  - Con sesión activa: idioma del perfil del usuario (tabla users.language).
+//  - Sin sesión: idioma del navegador (Accept-Language).
+//  - Fallback: idioma por defecto.
 export default getRequestConfig(async () => {
-  const store = await cookies();
-  const candidate = store.get('locale')?.value;
+  let locale: Locale | undefined;
 
-  let locale = isLocale(candidate) ? candidate : undefined;
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      const { data } = await supabase
+        .from('users')
+        .select('language')
+        .eq('id', user.id)
+        .single();
+      if (isLocale(data?.language)) locale = data.language;
+    }
+  } catch {
+    // Si la sesión o la consulta fallan, caemos al idioma del navegador.
+  }
+
   if (!locale) {
     const accept = (await headers()).get('accept-language');
     locale = matchLocale(accept) ?? defaultLocale;

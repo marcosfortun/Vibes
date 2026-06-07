@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { login, type AuthState } from '@/lib/actions/auth';
 
-export function LoginForm() {
+export function LoginForm({ next = '' }: { next?: string }) {
   const t = useTranslations('Auth');
   const [state, formAction, pending] = useActionState<AuthState, FormData>(
     login,
@@ -15,6 +15,8 @@ export function LoginForm() {
   return (
     <form action={formAction} className="flex w-full max-w-sm flex-col gap-4">
       <h2 className="text-xl font-semibold text-white">{t('login.title')}</h2>
+
+      <input type="hidden" name="next" defaultValue={next} />
 
       <label className="flex flex-col gap-1 text-sm text-muted">
         {t('email')}

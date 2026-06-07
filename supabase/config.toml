@@ -46,3 +46,12 @@ enable_signup = true
 enable_confirmations = false
 # NOTA despliegue: la "Enable email enumeration prevention" es un flag del panel
 # cloud de Supabase (Authentication > Auth Providers > Email), no de config.toml local.
+
+# Email de restablecimiento de contraseña (B): lo envía Supabase Auth (GoTrue),
+# no nuestra app. Personalizamos asunto + HTML para que herede la estética Vibes.
+# El flujo PKCE de resetPasswordForEmail se mantiene intacto ({{ .ConfirmationURL }}).
+# NOTA despliegue: replicar este asunto/plantilla y el "Sender name = Vibes" en el
+# panel cloud de Supabase (Authentication > Emails), o enrutar el SMTP por Resend.
+[auth.email.template.recovery]
+subject = "Enlace de recuperación de acceso a Vibes ⚡"
+content_path = "./supabase/templates/recovery.html"
