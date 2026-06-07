@@ -1,7 +1,5 @@
 # Mejoras release 1.1.0
 
-**Hecho**:
-
 - Nuevo UI/UX
 - Incorporar librería de iconos
 - Quita el enlace a signup en la pantalla de login.
