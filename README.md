@@ -164,8 +164,8 @@ Vibes/
 ├── messages/                       # Traducciones i18n (en, es, fr, pt)
 │
 ├── public/                         # Estáticos
-│   ├── logo.png                    # Logo rectangular (login)
-│   ├── icon.png / icon.svg         # Iconos de la PWA
+│   ├── logo.jpg                    # Logo rectangular (login, alta, invitación)
+│   ├── icon.jpg                    # Icono de la PWA (manifest)
 │   ├── manifest.webmanifest        # Manifest PWA
 │   └── sw.js                       # Service worker mínimo
 │
