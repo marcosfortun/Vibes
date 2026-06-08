@@ -31,7 +31,7 @@ documentation/
 │       └── ui-X-Y-Z.png        # Imagen de referencia. Solo lectura.
 └── ui/
     ├── style-guide.md          # Fuente de verdad sobre los estilos. Solo lectura.
-    ├── preview.png             # Captura/mockup de un par de pantallas. Solo lectura.
+    ├── preview.jpg             # Captura/mockup de un par de pantallas. Solo lectura.
     ├── design-tokens.json      # Color, gradient, radius, spacing, font, shadow, effect, component.
     ├── style-guide.mdx         # Paleta, tipografía, componentes, reglas.
     └── preview.tsx             # Componente documental autocontenido.
