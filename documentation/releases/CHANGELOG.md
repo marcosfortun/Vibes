@@ -25,7 +25,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
   - **Cabeceras internas** (§3.F): `BackButton` como círculo de 40px (fondo surface + borde muted) y título 24px (`.page-header`/`.page-title`).
   - **Listas estructuradas** (§3.G): `.list-row` con fondo `#18181C`, radio 12px, indicador de estado a la izquierda y acciones destructivas a la derecha.
   - Pantallas migradas: login, signup, forgot, update-password, new, settings, admin, quedada, friends (e invite-link / accept-invitation). Retirados los estilos `zinc-*` y `dark:` heredados.
-- **Rosa de la pestaña activa** (Home): icono neón con trazo en degradado rosa→verde y glow, en lugar del emoji 🌹.
+- **Rosa de la pestaña activa** (Home): se recupera la rosa-tallo de la propuesta inicial de diseño (`documentation/ui/preview.jpg`) — el subrayado en degradado rosa→verde es el tallo y termina en el capullo a la derecha (`public/menu-rose.png`), en lugar del emoji 🌹.
 - **Logo e icono PWA en formato JPG** (más ligero): las pantallas (login, alta, invitación) y los correos usan `/logo.jpg`; el manifest usa `/icon.jpg` (`image/jpeg`). Eliminados `logo.png`, `icon.png` e `icon.svg`.
 
 ### Removed
