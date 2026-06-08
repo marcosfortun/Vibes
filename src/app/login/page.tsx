@@ -12,7 +12,7 @@ export default async function LoginPage(props: PageProps<'/login'>) {
     <main className="flex flex-1 flex-col items-center justify-center gap-8 p-8">
       <div className="flex flex-col items-center gap-3">
         <Image
-          src="/logo.png"
+          src="/logo.jpg"
           alt={t('title')}
           width={2657}
           height={1062}

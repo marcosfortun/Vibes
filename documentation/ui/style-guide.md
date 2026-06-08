@@ -16,6 +16,8 @@ Aquí tienes la guía de diseño detallada para replicar con exactitud esta inte
 * **Efectos clave:**
   * **Glow (Resplandor):** Sombras difuminadas (`box-shadow`) con los colores de acento para dar el efecto de luz neón.
   * **Glassmorphism:** Fondos semi-transparentes con desenfoque de fondo (`backdrop-filter: blur(15px)`).
+* **Color de Alerta / Destructivo (Rojo Neón):** (`#ff0055` o `#ff3366`). Un tono magenta/rojo de alta luminancia para acciones críticas ("Eliminar", "Quitar", desalineaciones algorítmicas) que se integra en el espectro Synthwave sin romper la armonía.
+* **Bordes Muted (Baja Opacidad):** `rgba(255, 255, 255, 0.1)` para líneas divisorias y contenedores secundarios que no deban competir con el resplandor (glow) principal.
 
 ---
 
@@ -63,6 +65,63 @@ Es un menú flotante estilo cápsula que no llega a los bordes de la pantalla.
   * **Añadir (Botón Central):** Es el elemento jerárquico más importante. Sobresale ligeramente por la parte superior del dock. Es un círculo con un degradado perimetral neón (rosa a cian) muy brillante y un icono de `+` en el centro. Tiene un efecto de resplandor circular de fondo.
   * **Quedada:** Icono de un rayo.
   * **Perfil:** Icono de un avatar (silueta de usuario dentro de un círculo).
+
+---
+
+### 3.D. Jerarquía de Botones (Buttons)
+
+Para evitar la disparidad de estilos visuales entre pantallas, se establecen tres únicas variantes obligatorias para toda la aplicación:
+
+* **Botón Principal (Primary - Bloque Completo):**
+  * **Uso:** Acciones clave que avanzan el flujo (Entrar, Guardar, Sugerir, Compartir).
+  * **Estilo:** Fondo con degradado lineal horizontal de Rosa Neón a Verde/Cian Neón. Texto en negro puro (`#000000`) o blanco puro (`#FFFFFF`) con peso Bold.
+  * **Dimensiones:** Alto fijo de `50px`, esquinas redondeadas (`border-radius: 25px`). Ancho adaptable al contenedor (Full width en móviles) con padding horizontal de `24px`.
+  * **Efecto:** Sutil glow perimetral del color de acento dominante.
+* **Botón Secundario / Acción Neutra (Outline):**
+  * **Uso:** Acciones secundarias o de configuración (Copiar, Cerrar Sesión, Añadir categorías).
+  * **Estilo:** Fondo transparente. Borde fino de `1px` sólido en gris secundario (`#8E8E93`) o blanco con opacidad (`rgba(255,255,255,0.2)`). Texto en blanco.
+  * **Dimensiones:** `border-radius: 20px` o idéntico al contexto de la línea. Alto reducido a `40px` para botones en línea.
+* **Botón Destructivo (Danger Link / Button):**
+  * **Uso:** Eliminar ítems o deshacer amistades de forma explícita.
+  * **Estilo:** Texto plano en Rojo Neón (`#ff0055`). Sin fondo ni bordes en listados integrados. Para botones independientes, usa la estructura del Botón Secundario pero sustituyendo el gris por el contorno en Rojo Neón.
+
+---
+
+### 3.E. Componentes de Formulario (Form Inputs & Selects)
+
+Todos los elementos de entrada de datos deben abandonar los estilos nativos del sistema operativo y unificarse bajo la estética Dark Glassmorphism.
+
+* **Campos de Texto e Inputs (`input[type="text"]`, `textarea`):**
+  * **Fondo:** Gris oscuro semi-transparente (`#18181C` con opacidad del 60% al 80%).
+  * **Bordes:** `1px` sólido utilizando el color Muted (`rgba(255, 255, 255, 0.1)`). Esquinas redondeadas fijas a `border-radius: 12px` (evitar esquinas rectas o excesivamente redondas estilo píldora que comprometan la lectura).
+  * **Estado Focus:** Al hacer clic, el borde conmuta de forma animada a Rosa Neón o Verde Neón (según el contexto de la pantalla) con una sombra difuminada (`box-shadow: 0 0 8px [color]`).
+* **Textos:** Tipografía en Blanco Puro (`#FFFFFF`) para el texto introducido y Gris Medio (`#8E8E93`) para el placeholder.
+* **Desplegables (`select`):**
+  * Debe replicar exactamente la misma caja, fondo y bordes que los inputs tradicionales.
+  * **Propiedad Crítica:** Ocultar la flecha nativa del sistema (`appearance: none; -webkit-appearance: none;`). En su lugar, se inyectará un icono vectorial personalizado (flecha hacia abajo o chevron) en color gris claro (`#8E8E93`), posicionado a la derecha con un padding interno de `16px`.
+* **Casillas de Selección (`checkbox`):**
+  * Quedan prohibidos los checkboxes nativos del navegador. El elemento debe renderizarse como un contenedor personalizado de `20px` por `20px`, `border-radius: 6px`, fondo negro profundo (`#000000`) y borde de `1px` en Gris Secundario.
+  * **Estado Activo (Checked):** El interior se tiñe de Verde Neón con un check interno en blanco o negro, activando un micro-resplandor a su alrededor.
+
+---
+
+### 3.F. Cabeceras de Páginas Internas y Navegación Secundaria
+
+Para las pantallas que no corresponden a la Home y requieren flujo de retorno (ej. Configuración de amigos, Panel de administración):
+
+* **Estructura Header:** Un contenedor flexible (`display: flex; align-items: center;`) con una altura de `64px` y márgenes laterales fijos de `16px`.
+* **Botón de Retroceso (`←`):** Un círculo perfecto de `40px` de diámetro, fondo `#18181C` semi-transparente, borde de `1px` Muted y un icono de flecha limpia en color blanco brillante en su interior.
+* **Título de la Página:** Tipografía geométrica tamaño `24px` (`text-2xl`), peso Bold (Negrita), color blanco puro. Separado por un margen izquierdo constante de `16px` respecto al botón de retroceso.
+
+---
+
+### 3.G. Listas Estructuradas (Filas de Categorías y Amigos)
+
+Cuando los elementos no se organicen en tarjetas completas de contenido (Cards), sino en listas verticales (Amigos, Categorías existentes):
+
+* **Fila Contenedora:** Cada registro debe vivir en una fila con fondo `#18181C` de esquinas sutilmente redondeadas (`border-radius: 12px`), separadas entre sí por un espacio constante de `8px` (nunca pegadas en bordes compartidos).
+* **Indicador de Estado / Identidad:** En el extremo izquierdo, se antepone un punto de color brillante o un icono representativo (ej. el círculo de categoría o color de la misma), alineado simétricamente con el texto.
+* **Acciones Derechas:** Los controles de edición o eliminación ("Quitar", "Eliminar") se posicionan en el extremo derecho mediante alineación flexible, manteniendo un área de pulsación cómoda y utilizando el color Rojo Neón para advertencias destructivas.
 
 ---
 

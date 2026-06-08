@@ -28,9 +28,9 @@ export default async function AdminPage() {
 
   return (
     <main className="flex flex-1 flex-col items-center gap-6 p-6">
-      <header className="flex w-full max-w-md items-center gap-3">
+      <header className="page-header w-full max-w-md">
         <BackButton href="/settings" label={t('back')} />
-        <h1 className="text-2xl font-bold">{t('title')}</h1>
+        <h1 className="page-title">{t('title')}</h1>
       </header>
       <AdminCategories categories={categories ?? []} />
     </main>

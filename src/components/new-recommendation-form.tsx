@@ -48,7 +48,7 @@ export function NewRecommendationForm({
   return (
     <form action={formAction} className="flex w-full flex-col gap-4">
 
-      <label className="flex flex-col gap-1 text-sm">
+      <label className="flex flex-col gap-1 text-sm text-muted">
         {t('fields.title')}
         <input
           type="text"
@@ -56,12 +56,12 @@ export function NewRecommendationForm({
           required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+          className="field"
         />
       </label>
 
       {showSimilar && (
-        <div className="rounded border border-amber-300 bg-amber-50 p-3 text-sm dark:border-amber-700 dark:bg-amber-950">
+        <div className="rounded-xl border border-neon-pink/40 bg-neon-pink/10 p-3 text-sm text-white">
           <p className="font-medium">{t('similarHint')}</p>
           <ul className="mt-1 flex flex-col gap-0.5">
             {similar.map((s) => (
@@ -76,33 +76,29 @@ export function NewRecommendationForm({
         </div>
       )}
 
-      <label className="flex flex-col gap-1 text-sm">
+      <label className="flex flex-col gap-1 text-sm text-muted">
         {t('fields.description')}
-        <textarea
-          name="description"
-          rows={3}
-          className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
-        />
+        <textarea name="description" rows={3} className="field" />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm">
+      <label className="flex flex-col gap-1 text-sm text-muted">
         {t('fields.url')}
         <input
           type="url"
           name="url"
           inputMode="url"
           placeholder="https://"
-          className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+          className="field"
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm">
+      <label className="flex flex-col gap-1 text-sm text-muted">
         {t('fields.category')}
         <select
           name="category_id"
           required
           defaultValue=""
-          className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+          className="field field-select"
         >
           <option value="" disabled>
             {t('fields.choose')}
@@ -116,16 +112,12 @@ export function NewRecommendationForm({
       </label>
 
       {state.error && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-neon-pink">
           {t(`errors.${state.error}`)}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="self-start rounded-full bg-gradient-to-r from-neon-pink to-neon-green px-5 py-2 font-semibold text-black disabled:opacity-50"
-      >
+      <button type="submit" disabled={pending} className="btn-primary w-full">
         {t('submit')}
       </button>
     </form>

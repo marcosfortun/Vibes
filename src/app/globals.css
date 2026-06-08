@@ -12,6 +12,10 @@
   --neon-pink-soft: #ff5e97;
   --neon-green: #39ff85;
   --neon-green-soft: #7cfa9c;
+
+  /* Alerta / destructivo + borde tenue (style-guide §1) */
+  --neon-danger: #ff0055;
+  --border-muted: rgba(255, 255, 255, 0.1);
 }
 
 @theme inline {
@@ -21,6 +25,7 @@
   --color-muted: var(--muted);
   --color-neon-pink: var(--neon-pink);
   --color-neon-green: var(--neon-green);
+  --color-neon-danger: var(--neon-danger);
 }
 
 html,
@@ -94,4 +99,221 @@ body {
   box-shadow:
     0 0 24px -2px rgba(255, 42, 117, 0.6),
     0 0 24px -2px rgba(57, 255, 133, 0.45);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Jerarquía de botones (style-guide §3.D)
+   ───────────────────────────────────────────────────────────── */
+
+/* Principal: degradado rosa→cian, 50px, radius 25px, glow perimetral. */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  padding: 0 24px;
+  border-radius: 25px;
+  font-weight: 700;
+  color: #000000;
+  background: linear-gradient(90deg, var(--neon-pink), var(--neon-green));
+  box-shadow:
+    0 0 18px -4px rgba(255, 42, 117, 0.55),
+    0 0 18px -4px rgba(57, 255, 133, 0.45);
+  transition: opacity 0.15s ease;
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+}
+/* Variante de altura para emparejar el principal con un secundario en la misma
+   fila (botones en línea). Declarada después de .btn-primary para ganar por orden. */
+.btn-inline {
+  height: 40px;
+}
+
+/* Secundario / outline: transparente, borde blanco tenue, 40px, radius 20px. */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 20px;
+  font-weight: 500;
+  color: var(--foreground);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    opacity 0.15s ease;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+}
+.btn-secondary:disabled {
+  opacity: 0.5;
+}
+
+/* Destructivo (enlace): texto plano rojo neón, sin caja. */
+.btn-danger {
+  color: var(--neon-danger);
+  background: transparent;
+  transition: opacity 0.15s ease;
+}
+.btn-danger:disabled {
+  opacity: 0.5;
+}
+
+/* Destructivo independiente: estructura de secundario con contorno rojo. */
+.btn-danger-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 20px;
+  font-weight: 500;
+  color: var(--neon-danger);
+  background: transparent;
+  border: 1px solid var(--neon-danger);
+  transition:
+    background-color 0.15s ease,
+    opacity 0.15s ease;
+}
+.btn-danger-outline:hover:not(:disabled) {
+  background: rgba(255, 0, 85, 0.1);
+}
+.btn-danger-outline:disabled {
+  opacity: 0.5;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Formularios (style-guide §3.E)
+   ───────────────────────────────────────────────────────────── */
+
+/* Base unificada para input/textarea/select. */
+.field {
+  width: 100%;
+  background: rgba(24, 24, 28, 0.7);
+  border: 1px solid var(--border-muted);
+  border-radius: 12px;
+  padding: 0.625rem 0.875rem;
+  color: var(--foreground);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.field::placeholder {
+  color: var(--muted);
+}
+.field:focus {
+  border-color: var(--neon-green);
+  box-shadow: 0 0 8px rgba(57, 255, 133, 0.5);
+}
+/* Variante de focus rosa según el contexto de la pantalla. */
+.field-pink:focus {
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 8px rgba(255, 42, 117, 0.5);
+}
+
+/* Select: oculta la flecha nativa e inyecta un chevron gris a 16px. */
+.field-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2.75rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238E8E93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+.field-select option {
+  background: var(--surface);
+  color: var(--foreground);
+}
+
+/* Checkbox custom: 20px, radius 6px, negro + borde gris; checked → verde + glow. */
+.checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: #000000;
+  border: 1px solid var(--muted);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.checkbox:checked {
+  background: var(--neon-green);
+  border-color: var(--neon-green);
+  box-shadow: 0 0 8px rgba(57, 255, 133, 0.6);
+}
+.checkbox:checked::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 5px;
+  height: 9px;
+  border: solid #000000;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.checkbox:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Cabeceras internas (style-guide §3.F)
+   ───────────────────────────────────────────────────────────── */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  height: 64px;
+}
+.page-title {
+  margin-left: 16px;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--foreground);
+}
+/* Botón de retroceso: círculo 40px, surface semi, borde muted. */
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: rgba(24, 24, 28, 0.6);
+  border: 1px solid var(--border-muted);
+  color: var(--foreground);
+  transition: background-color 0.15s ease;
+}
+.back-button:hover {
+  background: rgba(40, 40, 46, 0.8);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Listas estructuradas (style-guide §3.G)
+   ───────────────────────────────────────────────────────────── */
+
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 0.625rem 0.875rem;
 }

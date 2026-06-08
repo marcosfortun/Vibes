@@ -57,7 +57,7 @@ export function SignupForm({
           name="username"
           required
           autoComplete="username"
-          className="rounded-xl border border-white/15 bg-surface px-3 py-2 text-white outline-none focus:border-neon-green/60"
+          className="field"
         />
       </label>
 
@@ -68,7 +68,7 @@ export function SignupForm({
           name="email"
           required
           autoComplete="email"
-          className="rounded-xl border border-white/15 bg-surface px-3 py-2 text-white outline-none focus:border-neon-green/60"
+          className="field"
         />
       </label>
 
@@ -80,7 +80,7 @@ export function SignupForm({
           required
           minLength={6}
           autoComplete="new-password"
-          className="rounded-xl border border-white/15 bg-surface px-3 py-2 text-white outline-none focus:border-neon-green/60"
+          className="field"
         />
       </label>
 
@@ -93,7 +93,7 @@ export function SignupForm({
       <button
         type="submit"
         disabled={pending || !canSignup}
-        className="rounded-full bg-gradient-to-r from-neon-pink to-neon-green px-4 py-2.5 font-semibold text-black disabled:opacity-50"
+        className="btn-primary w-full"
       >
         {t('signup.submit')}
       </button>

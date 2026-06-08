@@ -33,7 +33,7 @@ export function SettingsForm({
           defaultValue={language}
           disabled={pending}
           onChange={save}
-          className="rounded-xl border border-white/15 bg-surface px-3 py-2 text-white outline-none focus:border-neon-green/60"
+          className="field field-select"
         >
           {LANGUAGES.map((l) => (
             <option key={l} value={l}>
@@ -50,7 +50,7 @@ export function SettingsForm({
           defaultChecked={useAffinity}
           disabled={pending}
           onChange={save}
-          className="mt-1"
+          className="checkbox mt-0.5"
         />
         <span>
           {t('affinityScoring')}

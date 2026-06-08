@@ -85,7 +85,9 @@ export function HomeTabs({
       {/* Tablist sticky a ancho completo, con fade inferior */}
       <div className="sticky top-0 z-30 w-full">
         <div className="bg-[var(--background)] pt-3">
-          <div className="mx-auto flex max-w-2xl">
+          {/* px-4: holgura en los bordes para que el capullo de la rosa de la
+              pestaña activa (sobre todo la última) no se corte con el borde. */}
+          <div className="mx-auto flex max-w-2xl px-4">
             {TABS.map((key) => {
               const active = tab === key;
               return (
@@ -100,10 +102,16 @@ export function HomeTabs({
                     {t(`tabs.${key}`)}
                   </span>
                   {active && (
-                    <span className="pointer-events-none absolute inset-x-2 bottom-0 flex items-center justify-center">
-                      <span className="tab-underline h-0.5 w-full rounded-full" />
-                      <span className="absolute text-base leading-none">🌹</span>
-                    </span>
+                    // Rosa-tallo de la propuesta inicial (preview.jpg): el degradado
+                    // es el propio tallo y termina en el capullo a la derecha. Aspecto
+                    // preservado (w-full + h-auto) y centrada sobre la línea inferior.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src="/menu-rose.png"
+                      alt=""
+                      aria-hidden
+                      className="pointer-events-none absolute bottom-0 left-2 w-[calc(100%-1rem)] translate-y-1/2"
+                    />
                   )}
                 </button>
               );

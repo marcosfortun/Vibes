@@ -37,13 +37,15 @@ export default async function FriendsPage() {
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
 
-  // Altura acotada (viewport menos el espacio reservado al dock, pb-28 = 7rem)
-  // para que el scroll quede SOLO dentro de la lista de amigos.
+  // El scroll queda SOLO dentro de la lista de amigos, pero la lista llega hasta
+  // el borde inferior del viewport (pasa por detrás del dock, que la difumina a
+  // negro). `main` ocupa 100dvh y el `-mb-28` cancela el `pb-28` global del body
+  // para que la página en sí no haga scroll.
   return (
-    <main className="mx-auto flex h-[calc(100dvh-7rem)] w-full max-w-md flex-col gap-4 overflow-hidden p-6">
-      <header className="flex shrink-0 items-center gap-3">
+    <main className="mx-auto -mb-28 flex h-[100dvh] w-full max-w-md flex-col gap-4 overflow-hidden px-6 pt-6">
+      <header className="page-header shrink-0">
         <BackButton href="/settings" label={t('back')} />
-        <h1 className="text-2xl font-bold">{t('title')}</h1>
+        <h1 className="page-title">{t('title')}</h1>
       </header>
       <div className="shrink-0">
         <InviteLink initialToken={tok?.token ?? null} baseUrl={baseUrl} />
