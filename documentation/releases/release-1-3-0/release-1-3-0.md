@@ -5,10 +5,10 @@
 - Se reestilan las pantallas con un diseño homogéneo.
 - Retocar icono rosa de la barra superior de navegación.
 - Logo (`/logo.jpg`) e icono de instalación PWA (`/icon.jpg`) en formato JPG en lugar de PNG/SVG, para reducir peso.
+- Creado .env.example para guardarlo en el repo.
 
 **En proceso**:
 
-- Duda: ¿Cómo se gestionan las variables de entorno para los entornos de desarrollo (local) y producción?
 
 **Pendiente**:
 
