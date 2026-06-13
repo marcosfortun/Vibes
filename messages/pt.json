@@ -150,18 +150,32 @@
     "back": "Voltar"
   },
   "Admin": {
-    "title": "Admin · Categorias",
+    "title": "Administração",
     "back": "Voltar",
-    "create": "Criar categoria",
-    "name": "Nome",
-    "icon": "Ícone",
-    "color": "Cor",
-    "existing": "Categorias existentes",
-    "delete": "Excluir",
-    "errors": {
-      "nameRequired": "O nome é obrigatório.",
-      "duplicate": "Essa categoria já existe.",
-      "failed": "Não foi possível salvar a categoria."
+    "menu": {
+      "categories": "Gerenciar categorias"
+    },
+    "categories": {
+      "title": "Categorias",
+      "back": "Voltar",
+      "newTitle": "Nova categoria",
+      "newAria": "Criar categoria",
+      "create": "Criar categoria",
+      "name": "Nome",
+      "icon": "Ícone",
+      "color": "Cor",
+      "empty": "Ainda não há categorias.",
+      "delete": "Excluir",
+      "deleteTitle": "Excluir “{name}”",
+      "migratePrompt": "Mover as recomendações desta categoria para:",
+      "migrateNone": "Crie outra categoria antes de excluir esta.",
+      "confirm": "Excluir",
+      "cancel": "Cancelar",
+      "errors": {
+        "nameRequired": "O nome é obrigatório.",
+        "duplicate": "Essa categoria já existe.",
+        "failed": "Não foi possível salvar a categoria."
+      }
     }
   },
   "Invite": {
