@@ -14,13 +14,21 @@
   - Nombre: Speciality popcorn; Estilo: flat design; Colores: azul marino profundo #17257d y coral vibrante #fe675c; Logo: 6-a-logo.png; Icono: 6-a-icon.png
   - Nombre: Stick stack; Estilo: neobrutalism; Colores: verde lima vibrante #b3fe05 y magenta neón #bc2a95; Logo: 7-a-logo.png; Icono: 7-a-icon.png
   - Nombre: PICO-8 pop; Estilo: pixel art; Colores: amarillo #FFD700 y verde azulado #2E4F4F; Logo: 8-a-logo.png; Icono: 8-a-icon.png
+- Propuesta de categorías iniciales:
+  - En casa: Serie de televisión, Película, Documental, Juego de mesa, Juego VR, Videojuego, Grupo de música, Podcast.
+  - En la ciudad:Expo, Festival, Museo, Lugar emblemático, Monólogo, Teatro, Show.
+  - En el campo: Ruta de ciclismo, Ruta de senderismo, Vía ferrata, Zona de baño, Zona de escalada, Zona de acampada.
+- Pantalla de admin con botonera para opciones de administración.
+- El scroll en la lista de categorías ya no hace desaparecer la cabecera.
+- El formulario para crear categoría ahora tiene su propia pantalla. Añadido botón "+" en la cabecera para crear una nueva categoría.
+- Al eliminar una categoría, te debe preguntar a qué otra categoría migrar las recomendaciones existentes que tengan la categoría que se va a eliminar.
+- La botonera que hay en la pantalla de ajustes, ahora tiene la misma estética que la botonera de la página de admin (icono, nombre y flechita)
 
 **En proceso**:
 
+- El scroll en la lista de skins hace desaparecer la cabecera.
 
 **Pendiente**:
-
-- Revisar sección "perfil".
 
 - Mejorar el flujo de crear recomendación:
   - Buscador por categoría y título. Se van mostrando resultados de una búsqueda en base a recomendaciones similares ya existentes y también de una búsqueda externa (IA, Google Search, IMDB, Steam, Wikiloc, etc). Obligatorio seleccionar un resultado para poder continuar.
@@ -32,7 +40,6 @@
   - rango de precio
   - localización
 
-- Revisar sección "categorías".
 - La sección "suerte" no carga.
 - Revisar sección "quedada".
 - Posibilidad de cargar recomendaciones en masa con un CSV de columnas: category,title,description,url,rating(-1,1,2,0 para añadir a mi lista sin dar una valoración).
