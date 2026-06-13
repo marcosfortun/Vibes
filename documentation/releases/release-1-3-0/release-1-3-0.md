@@ -24,6 +24,7 @@
 - Al eliminar una categoría, te debe preguntar a qué otra categoría migrar las recomendaciones existentes que tengan la categoría que se va a eliminar.
 - La botonera que hay en la pantalla de ajustes, ahora tiene la misma estética que la botonera de la página de admin (icono, nombre y flechita)
 - El scroll en la lista de skins ya no hace desaparecer la cabecera (mismo patrón que amigos y categorías).
+- Nuevo campo "tags" en crear recomendación (texto libre, máx. 5) con autocompletado ordenado por uso. Las etiquetas se muestran como chips de solo lectura en la ficha (entre valorar y guardar): 2 visibles con elipsis y un chip "…" que abre un popup con todas si hay más de 2. Retirado el botón de "más opciones" de la ficha.
 
 **En proceso**:
 
@@ -35,7 +36,6 @@
   - Si se ha seleccionado una recomendación ya existente, se añade a "mi lista" y hemos terminado.
   - Si se ha seleccionado un resultado externo, mostrar el formulario con todos los datos ya completados (descripción, URL, etc). El usuario puede modificar cualquiera de los campos y guardar.
     - En ese momento se traducen automáticamente todos los textos (título, descripción, etc). Se añade a "mi lista" y hemos terminado.
-- Nuevo campo "tags" donde los usuarios podrán poner un máximo de 5 para resaltar características. Son texto libre con autocompletado.
 - Especialización de las categorías:
   - rango de precio
   - localización

@@ -3,7 +3,17 @@ import { HomeTabs, type TabKey } from '@/components/home-tabs';
 import type { CardItem } from '@/components/recommendation-card';
 
 const REC_SELECT =
-  'id,title,description,url,global_score,category:categories(name,color,icon)';
+  'id,title,description,url,global_score,category:categories(name,color,icon),tags:recommendation_tags(tag:tags(name))';
+
+type RawRec = {
+  tags?: { tag: { name: string } | null }[] | null;
+};
+// Aplana el embed recommendation_tags(tags(name)) → string[].
+function flattenTags(raw: RawRec): string[] {
+  return (raw.tags ?? [])
+    .map((rt) => rt.tag?.name)
+    .filter((n): n is string => !!n);
+}
 
 export default async function Home() {
   const supabase = await createClient();
@@ -76,6 +86,7 @@ export default async function Home() {
     .filter((r) => r.recommendation)
     .map((r) => ({
       ...(r.recommendation as unknown as CardItem),
+      tags: flattenTags(r.recommendation as unknown as RawRec),
       state: { saved: true, rating: r.rating },
     })) as CardItem[];
 
@@ -92,6 +103,7 @@ export default async function Home() {
     friends = ((data ?? []) as unknown as CardItem[])
       .map((rec) => ({
         ...rec,
+        tags: flattenTags(rec as unknown as RawRec),
         score: scoreOf(rec),
         state: stateByRec.get(rec.id) ?? null,
       }))
@@ -107,6 +119,7 @@ export default async function Home() {
     .filter((rec) => !savedIds.has(rec.id))
     .map((rec) => ({
       ...rec,
+      tags: flattenTags(rec as unknown as RawRec),
       state: stateByRec.get(rec.id) ?? null,
       score: scoreOf(rec),
     }))

@@ -107,6 +107,36 @@ export type Database = {
           },
         ]
       }
+      recommendation_tags: {
+        Row: {
+          recommendation_id: string
+          tag_id: string
+        }
+        Insert: {
+          recommendation_id: string
+          tag_id: string
+        }
+        Update: {
+          recommendation_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recommendation_tags_recommendation_id_fkey"
+            columns: ["recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recommendation_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recommendations: {
         Row: {
           category_id: string
@@ -154,6 +184,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tags: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
       }
       user_interactions: {
         Row: {
@@ -216,7 +264,7 @@ export type Database = {
           is_searchable?: boolean
           language?: Database["public"]["Enums"]["app_language"]
           role?: Database["public"]["Enums"]["user_role"]
-          skin?: string
+          skin?: string | null
           use_affinity_scoring?: boolean
           username: string
         }
@@ -227,7 +275,7 @@ export type Database = {
           is_searchable?: boolean
           language?: Database["public"]["Enums"]["app_language"]
           role?: Database["public"]["Enums"]["user_role"]
-          skin?: string
+          skin?: string | null
           use_affinity_scoring?: boolean
           username?: string
         }
@@ -238,16 +286,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      admin_delete_category: {
-        Args: { p_category: string; p_migrate_to?: string }
-        Returns: undefined
-      }
       accept_invitation: {
         Args: { t: string }
         Returns: {
           created: boolean
           host_id: string
         }[]
+      }
+      admin_delete_category: {
+        Args: { p_category: string; p_migrate_to?: string }
+        Returns: undefined
+      }
+      create_recommendation: {
+        Args: {
+          p_category?: string
+          p_description?: string
+          p_tags?: string[]
+          p_title: string
+          p_url?: string
+        }
+        Returns: string
       }
       ensure_invite: { Args: never; Returns: string }
       find_similar_recommendations: {
@@ -280,6 +338,13 @@ export type Database = {
       regenerate_invite: { Args: never; Returns: string }
       remove_friend: { Args: { target_id: string }; Returns: undefined }
       revoke_invite: { Args: never; Returns: undefined }
+      suggest_tags: {
+        Args: { p_limit?: number; p_query?: string }
+        Returns: {
+          name: string
+          uses: number
+        }[]
+      }
     }
     Enums: {
       app_language: "en" | "es" | "fr" | "pt"

@@ -7,6 +7,7 @@ import {
   createRecommendation,
   type NewRecState,
 } from '@/lib/actions/recommendations';
+import { TagsInput } from '@/components/tags-input';
 
 type Category = {
   id: string;
@@ -110,6 +111,8 @@ export function NewRecommendationForm({
           ))}
         </select>
       </label>
+
+      <TagsInput />
 
       {state.error && (
         <p role="alert" className="text-sm text-neon-pink">

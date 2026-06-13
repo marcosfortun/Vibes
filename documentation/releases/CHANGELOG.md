@@ -13,6 +13,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
   - A y C se envían vía Resend (Mailpit en local) **localizados por destinatario** (en/es/fr/pt); remitente unificado **Vibes**.
 - **Infraestructura de email:** `src/lib/email/template.ts` (layout + primitivas) y `src/lib/email/resend.ts`; cliente service-role `src/lib/supabase/admin.ts` para leer los emails de los usuarios al notificar.
 
+### Added
+- **Tags de recomendaciones:** nuevo campo de etiquetas (texto libre, máx. 5) en el formulario de creación, con autocompletado basado en las etiquetas existentes ordenadas por frecuencia de uso. En las fichas, las etiquetas aparecen como chips de solo lectura entre los botones de valorar y guardar: se muestran 2 (con ancho máximo y elipsis) y, si hay más, un chip «…» que abre un popup con todas. Se retira el botón de «más opciones» de la ficha.
+
 ### Changed
 - **Panel de administración por pasos:** `/admin` pasa a ser un menú (botonera) de opciones de gestión; la gestión de categorías vive en `/admin/categories`. Navegación: ajustes → admin → categorías.
 - **Lista de categorías con scroll interno** (mismo patrón que Amigos): cabecera fija y degradado inferior sobre el dock. El alta deja de ser un formulario inline y se abre con el botón **+** de la cabecera, en su propia pantalla `/admin/categories/new`.
@@ -41,6 +44,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
   - `handle_new_user` ya **no** crea la amistad ni consume el token en el alta (la amistad se crea al aceptar).
   - Retirada de `add_friend`; política `users_select` sin `is_searchable`.
 - Migración `20260613120000_admin_delete_category.sql`: RPC `admin_delete_category(p_category, p_migrate_to)` (`SECURITY DEFINER`, solo admin) que migra las recomendaciones de una categoría a otra y la elimina de forma atómica.
+- Migración `20260613130000_recommendation_tags.sql`: tablas `tags` y `recommendation_tags` (catálogo compartido, RLS de solo lectura), más RPCs `suggest_tags` (autocompletado por uso) y `create_recommendation` (alta + enlazado de hasta 5 tags, `SECURITY DEFINER`).
 
 ### Config
 - `supabase/config.toml`: `[auth.email.template.recovery]` (asunto + `content_path`) para el correo de reset con estética Vibes.

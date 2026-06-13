@@ -75,7 +75,8 @@
     "save": "Guardar",
     "remove": "Quitar",
     "saved": "En tu lista",
-    "moreOptions": "Más opciones",
+    "allTags": "Todas las etiquetas",
+    "close": "Cerrar",
     "rate": {
       "add": "Calificar",
       "dislike": "No me gusta",
@@ -93,7 +94,10 @@
       "description": "Descripción",
       "category": "Categoría",
       "choose": "Elige una categoría",
-      "url": "URL (opcional)"
+      "url": "URL (opcional)",
+      "tags": "Etiquetas",
+      "tagsPlaceholder": "Añade una etiqueta y pulsa Enter",
+      "removeTag": "Quitar etiqueta"
     },
     "errors": {
       "titleRequired": "El título es obligatorio.",
