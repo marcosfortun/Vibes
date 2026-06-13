@@ -36,7 +36,7 @@ export function BottomDock() {
       active:
         pathname === '/settings' ||
         pathname === '/friends' ||
-        pathname === '/admin',
+        pathname.startsWith('/admin'),
     },
   ];
 

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
+import { Palette, Users, Shield, LogOut, ChevronRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { SettingsForm } from '@/components/settings-form';
 import { InstallButtonInline } from '@/components/install-button';
@@ -35,21 +36,52 @@ export default async function SettingsPage() {
 
       <InstallButtonInline />
 
-      <nav className="flex flex-col items-start gap-3 border-t border-border-muted pt-5">
-        <Link href="/appearance" className="btn-secondary w-full">
-          {t('Settings.changeSkin')}
+      <nav className="flex flex-col gap-3 border-t border-border-muted pt-5">
+        <Link
+          href="/appearance"
+          className="list-row text-foreground transition-colors hover:bg-[var(--glass-bg)]"
+        >
+          <span className="flex min-w-0 items-center gap-3">
+            <Palette size={20} strokeWidth={1.75} className="shrink-0 text-neon-pink" />
+            <span className="truncate">{t('Settings.changeSkin')}</span>
+          </span>
+          <ChevronRight size={18} className="shrink-0 text-muted" />
         </Link>
-        <Link href="/friends" className="btn-secondary w-full">
-          {t('Home.friends')}
+
+        <Link
+          href="/friends"
+          className="list-row text-foreground transition-colors hover:bg-[var(--glass-bg)]"
+        >
+          <span className="flex min-w-0 items-center gap-3">
+            <Users size={20} strokeWidth={1.75} className="shrink-0 text-neon-pink" />
+            <span className="truncate">{t('Home.friends')}</span>
+          </span>
+          <ChevronRight size={18} className="shrink-0 text-muted" />
         </Link>
+
         {profile?.role === 'admin' && (
-          <Link href="/admin" className="btn-secondary w-full">
-            {t('Home.admin')}
+          <Link
+            href="/admin"
+            className="list-row text-foreground transition-colors hover:bg-[var(--glass-bg)]"
+          >
+            <span className="flex min-w-0 items-center gap-3">
+              <Shield size={20} strokeWidth={1.75} className="shrink-0 text-neon-pink" />
+              <span className="truncate">{t('Home.admin')}</span>
+            </span>
+            <ChevronRight size={18} className="shrink-0 text-muted" />
           </Link>
         )}
+
         <form action={logout} className="w-full">
-          <button type="submit" className="btn-secondary w-full">
-            {t('Auth.logout')}
+          <button
+            type="submit"
+            className="list-row w-full text-foreground transition-colors hover:bg-[var(--glass-bg)]"
+          >
+            <span className="flex min-w-0 items-center gap-3">
+              <LogOut size={20} strokeWidth={1.75} className="shrink-0 text-neon-pink" />
+              <span className="truncate">{t('Auth.logout')}</span>
+            </span>
+            <ChevronRight size={18} className="shrink-0 text-muted" />
           </button>
         </form>
       </nav>

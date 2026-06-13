@@ -14,6 +14,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
 - **Infraestructura de email:** `src/lib/email/template.ts` (layout + primitivas) y `src/lib/email/resend.ts`; cliente service-role `src/lib/supabase/admin.ts` para leer los emails de los usuarios al notificar.
 
 ### Changed
+- **Panel de administración por pasos:** `/admin` pasa a ser un menú (botonera) de opciones de gestión; la gestión de categorías vive en `/admin/categories`. Navegación: ajustes → admin → categorías.
+- **Lista de categorías con scroll interno** (mismo patrón que Amigos): cabecera fija y degradado inferior sobre el dock. El alta deja de ser un formulario inline y se abre con el botón **+** de la cabecera, en su propia pantalla `/admin/categories/new`.
+- **Borrado de categoría con migración:** al eliminar una categoría se pregunta a qué otra categoría migrar sus recomendaciones; la operación es atómica (RPC `admin_delete_category`).
 - **Idioma de interfaz en cada carga:** con sesión se usa el idioma del **perfil** del usuario; sin sesión, el del **navegador** (`Accept-Language`). Antes dependía de una cookie potencialmente obsoleta (`src/i18n/request.ts`).
 - **Pantalla de creación de cuenta:** misma estética que login (logo + eslogan + inputs/botones neón).
 - **Logo a la misma altura** en login, alta e invitación.
@@ -37,6 +40,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
   - Nuevos RPCs `invite_info`, `accept_invitation` (amistad bidireccional, no consume el token), `ensure_invite`, `regenerate_invite`, `revoke_invite`.
   - `handle_new_user` ya **no** crea la amistad ni consume el token en el alta (la amistad se crea al aceptar).
   - Retirada de `add_friend`; política `users_select` sin `is_searchable`.
+- Migración `20260613120000_admin_delete_category.sql`: RPC `admin_delete_category(p_category, p_migrate_to)` (`SECURITY DEFINER`, solo admin) que migra las recomendaciones de una categoría a otra y la elimina de forma atómica.
 
 ### Config
 - `supabase/config.toml`: `[auth.email.template.recovery]` (asunto + `content_path`) para el correo de reset con estética Vibes.

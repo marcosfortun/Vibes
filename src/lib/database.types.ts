@@ -238,6 +238,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_delete_category: {
+        Args: { p_category: string; p_migrate_to?: string }
+        Returns: undefined
+      }
       accept_invitation: {
         Args: { t: string }
         Returns: {

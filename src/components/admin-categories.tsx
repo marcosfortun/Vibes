@@ -1,13 +1,9 @@
 'use client';
 
-import { useActionState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
-import {
-  createCategory,
-  deleteCategory,
-  type CategoryState,
-} from '@/lib/actions/categories';
-import { CATEGORY_ICON_NAMES, CategoryIcon } from '@/components/category-icon';
+import { deleteCategory } from '@/lib/actions/categories';
+import { CategoryIcon } from '@/components/category-icon';
 
 export type Category = {
   id: string;
@@ -17,60 +13,17 @@ export type Category = {
 };
 
 export function AdminCategories({ categories }: { categories: Category[] }) {
-  const t = useTranslations('Admin');
-  const [state, formAction, creating] = useActionState<CategoryState, FormData>(
-    createCategory,
-    {},
-  );
+  const t = useTranslations('Admin.categories');
   const [pending, startTransition] = useTransition();
+  // Categoría marcada para eliminar (abre el diálogo de migración).
+  const [target, setTarget] = useState<Category | null>(null);
 
   return (
-    <div className="flex w-full max-w-md flex-col gap-6">
-      {/* Alta */}
-      <form action={formAction} className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-foreground">{t('create')}</h2>
-        <input
-          type="text"
-          name="name"
-          required
-          placeholder={t('name')}
-          className="field"
-        />
-        <div className="flex gap-2">
-          <input
-            type="text"
-            name="icon"
-            list="lucide-icons"
-            placeholder={t('icon')}
-            className="field flex-1"
-          />
-          <datalist id="lucide-icons">
-            {CATEGORY_ICON_NAMES.map((n) => (
-              <option key={n} value={n} />
-            ))}
-          </datalist>
-          <input
-            type="color"
-            name="color"
-            defaultValue="#2563eb"
-            aria-label={t('color')}
-            className="h-[42px] w-14 shrink-0 cursor-pointer rounded-xl border border-border-muted bg-transparent"
-          />
-        </div>
-        {state.error && (
-          <p role="alert" className="text-sm text-neon-pink">
-            {t(`errors.${state.error}`)}
-          </p>
-        )}
-        <button type="submit" disabled={creating} className="btn-primary w-full">
-          {t('create')}
-        </button>
-      </form>
-
-      {/* Lista */}
-      <section>
-        <h2 className="mb-3 text-lg font-semibold text-foreground">{t('existing')}</h2>
-        <ul className="flex flex-col gap-2">
+    <section className="flex min-h-0 w-full flex-1 flex-col">
+      {categories.length === 0 ? (
+        <p className="text-sm text-muted">{t('empty')}</p>
+      ) : (
+        <ul className="flex flex-1 flex-col gap-2 overflow-y-auto pb-28 pr-1">
           {categories.map((c) => (
             <li key={c.id} className="list-row">
               <span className="flex min-w-0 items-center gap-3 text-foreground">
@@ -88,7 +41,7 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
               <button
                 type="button"
                 disabled={pending}
-                onClick={() => startTransition(() => deleteCategory(c.id))}
+                onClick={() => setTarget(c)}
                 className="btn-danger shrink-0 text-sm"
               >
                 {t('delete')}
@@ -96,7 +49,100 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
             </li>
           ))}
         </ul>
-      </section>
+      )}
+
+      {target && (
+        <DeleteDialog
+          category={target}
+          others={categories.filter((c) => c.id !== target.id)}
+          pending={pending}
+          onCancel={() => setTarget(null)}
+          onConfirm={(migrateTo) => {
+            startTransition(async () => {
+              await deleteCategory(target.id, migrateTo);
+              setTarget(null);
+            });
+          }}
+        />
+      )}
+    </section>
+  );
+}
+
+function DeleteDialog({
+  category,
+  others,
+  pending,
+  onCancel,
+  onConfirm,
+}: {
+  category: Category;
+  others: Category[];
+  pending: boolean;
+  onCancel: () => void;
+  onConfirm: (migrateTo?: string) => void;
+}) {
+  const t = useTranslations('Admin.categories');
+  const [migrateTo, setMigrateTo] = useState<string>(others[0]?.id ?? '');
+  const canConfirm = others.length === 0 || migrateTo !== '';
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-6"
+    >
+      <button
+        type="button"
+        aria-hidden
+        tabIndex={-1}
+        onClick={onCancel}
+        className="absolute inset-0 bg-black/60"
+      />
+      <div className="glass relative z-10 flex w-full max-w-sm flex-col gap-4 rounded-2xl p-5">
+        <h2 className="text-lg font-semibold text-foreground">
+          {t('deleteTitle', { name: category.name })}
+        </h2>
+
+        {others.length === 0 ? (
+          <p className="text-sm text-muted">{t('migrateNone')}</p>
+        ) : (
+          <label className="flex flex-col gap-2 text-sm text-muted">
+            {t('migratePrompt')}
+            <select
+              value={migrateTo}
+              onChange={(e) => setMigrateTo(e.target.value)}
+              disabled={pending}
+              className="field field-select text-foreground"
+            >
+              {others.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            disabled={pending}
+            onClick={onCancel}
+            className="btn-secondary"
+          >
+            {t('cancel')}
+          </button>
+          <button
+            type="button"
+            disabled={pending || !canConfirm}
+            onClick={() => onConfirm(others.length === 0 ? undefined : migrateTo)}
+            className="btn-danger-outline"
+          >
+            {t('confirm')}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
