@@ -28,14 +28,16 @@ versionadas** (Docker), sin tocar cloud hasta el despliegue.
 
 ### `categories`
 - **SELECT:** todos los `authenticated`.
-- **INSERT/UPDATE/DELETE:** solo `is_admin()`.
+- **INSERT/UPDATE/DELETE:** solo `is_admin()`. El borrado real se hace vía RPC
+  `admin_delete_category` (migra antes las recomendaciones; ver §Lógica de servidor).
 
 ### `recommendations` (catálogo neutro, **append-only**)
 - **SELECT:** todos los `authenticated`. `REVOKE SELECT(created_by)` → autoría nunca visible.
 - **INSERT:** `authenticated` con `WITH CHECK (created_by = auth.uid())`. Deduplicación pg_trgm
   es app-side (no RLS).
 - **UPDATE/DELETE:** ninguna política de cliente. `global_score` lo mantiene el trigger
-  (`SECURITY DEFINER`).
+  (`SECURITY DEFINER`). La recategorización masiva al borrar una categoría va por el RPC
+  `admin_delete_category` (`SECURITY DEFINER`), única vía que reasigna `category_id`.
 
 ### `user_interactions`
 - **SELECT:** `user_id = auth.uid()` OR (`status = 'completed'` AND existe amistad
@@ -74,6 +76,12 @@ versionadas** (Docker), sin tocar cloud hasta el despliegue.
 ### `organizar_quedada(asistentes[])` — consenso grupal
 - Lee `saved` de los asistentes (salta RLS), excluye lo `completed` por cualquiera de ellos,
   calcula `SG = media de Scoring Personalizado` y devuelve Top 3.
+
+### `admin_delete_category(p_category, p_migrate_to)` — borrado de categoría
+- Solo `is_admin()` (si no, lanza excepción). Operación atómica: reasigna las
+  recomendaciones de `p_category` a `p_migrate_to` (si se indica) y borra la categoría.
+- Necesario porque `recommendations.category_id` es `NOT NULL` y el cliente no tiene
+  `UPDATE` sobre `recommendations`; salta RLS para migrar recs de cualquier autor.
 
 ## Triggers de mantenimiento (resumen; fórmulas en `product-design.md`)
 - Afinidad asimétrica sobre `user_interactions` (INSERT/UPDATE/DELETE) con control de deriva.

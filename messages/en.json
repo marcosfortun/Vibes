@@ -150,18 +150,32 @@
     "back": "Back"
   },
   "Admin": {
-    "title": "Admin · Categories",
+    "title": "Administration",
     "back": "Back",
-    "create": "Create category",
-    "name": "Name",
-    "icon": "Icon",
-    "color": "Color",
-    "existing": "Existing categories",
-    "delete": "Delete",
-    "errors": {
-      "nameRequired": "Name is required.",
-      "duplicate": "That category already exists.",
-      "failed": "Could not save the category."
+    "menu": {
+      "categories": "Manage categories"
+    },
+    "categories": {
+      "title": "Categories",
+      "back": "Back",
+      "newTitle": "New category",
+      "newAria": "Create category",
+      "create": "Create category",
+      "name": "Name",
+      "icon": "Icon",
+      "color": "Color",
+      "empty": "No categories yet.",
+      "delete": "Delete",
+      "deleteTitle": "Delete “{name}”",
+      "migratePrompt": "Move this category's recommendations to:",
+      "migrateNone": "Create another category before deleting this one.",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "errors": {
+        "nameRequired": "Name is required.",
+        "duplicate": "That category already exists.",
+        "failed": "Could not save the category."
+      }
     }
   },
   "Invite": {

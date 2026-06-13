@@ -150,18 +150,32 @@
     "back": "Retour"
   },
   "Admin": {
-    "title": "Admin · Catégories",
+    "title": "Administration",
     "back": "Retour",
-    "create": "Créer une catégorie",
-    "name": "Nom",
-    "icon": "Icône",
-    "color": "Couleur",
-    "existing": "Catégories existantes",
-    "delete": "Supprimer",
-    "errors": {
-      "nameRequired": "Le nom est obligatoire.",
-      "duplicate": "Cette catégorie existe déjà.",
-      "failed": "Impossible d'enregistrer la catégorie."
+    "menu": {
+      "categories": "Gérer les catégories"
+    },
+    "categories": {
+      "title": "Catégories",
+      "back": "Retour",
+      "newTitle": "Nouvelle catégorie",
+      "newAria": "Créer une catégorie",
+      "create": "Créer une catégorie",
+      "name": "Nom",
+      "icon": "Icône",
+      "color": "Couleur",
+      "empty": "Aucune catégorie pour le moment.",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer « {name} »",
+      "migratePrompt": "Déplacer les recommandations de cette catégorie vers :",
+      "migrateNone": "Créez une autre catégorie avant de supprimer celle-ci.",
+      "confirm": "Supprimer",
+      "cancel": "Annuler",
+      "errors": {
+        "nameRequired": "Le nom est obligatoire.",
+        "duplicate": "Cette catégorie existe déjà.",
+        "failed": "Impossible d'enregistrer la catégorie."
+      }
     }
   },
   "Invite": {

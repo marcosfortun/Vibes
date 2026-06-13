@@ -1,7 +1,8 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
+import { Tags, ChevronRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
-import { AdminCategories } from '@/components/admin-categories';
 import { BackButton } from '@/components/back-button';
 
 export default async function AdminPage() {
@@ -21,18 +22,25 @@ export default async function AdminPage() {
   // Solo admin (refuerzo en UI; la RLS ya bloquea escrituras de no-admin).
   if (profile?.role !== 'admin') redirect('/');
 
-  const { data: categories } = await supabase
-    .from('categories')
-    .select('id,name,icon,color')
-    .order('name');
-
   return (
-    <main className="flex flex-1 flex-col items-center gap-6 p-6">
-      <header className="page-header w-full max-w-md">
+    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 p-6">
+      <header className="page-header">
         <BackButton href="/settings" label={t('back')} />
         <h1 className="page-title">{t('title')}</h1>
       </header>
-      <AdminCategories categories={categories ?? []} />
+
+      <nav className="flex flex-col gap-3">
+        <Link
+          href="/admin/categories"
+          className="list-row text-foreground transition-colors hover:bg-[var(--glass-bg)]"
+        >
+          <span className="flex min-w-0 items-center gap-3">
+            <Tags size={20} strokeWidth={1.75} className="shrink-0 text-neon-pink" />
+            <span className="truncate">{t('menu.categories')}</span>
+          </span>
+          <ChevronRight size={18} className="shrink-0 text-muted" />
+        </Link>
+      </nav>
     </main>
   );
 }
