@@ -39,6 +39,24 @@ versionadas** (Docker), sin tocar cloud hasta el despliegue.
   (`SECURITY DEFINER`). La recategorización masiva al borrar una categoría va por el RPC
   `admin_delete_category` (`SECURITY DEFINER`), única vía que reasigna `category_id`.
 
+### `tags` y `recommendation_tags` (catálogo compartido de etiquetas)
+- **SELECT:** todos los `authenticated` (catálogo de lectura global).
+- **INSERT/UPDATE/DELETE:** ninguna política de cliente. Se escriben solo desde el RPC
+  `create_recommendation` (`SECURITY DEFINER`); el autocompletado lee vía `suggest_tags`.
+
+### `providers` y `category_providers` (fuentes de búsqueda externa por categoría)
+- **SELECT:** todos los `authenticated` (lo lee la búsqueda del alta en 2 pasos).
+- **INSERT/UPDATE/DELETE:** ninguna política de cliente. Catálogo de proveedores sembrado
+  por migración (tmdb/steam/ai); las asignaciones por categoría se siembran en
+  `scripts/seed-pruebas.sql` (datos de runtime) — futura gestión vía admin.
+
+### Multi-idioma (i18n)
+- `recommendations.title_i18n/description_i18n`, `categories.name_i18n`, `tags.name_i18n`
+  (jsonb `{en,es,fr,pt}`) + `translated boolean`. Se rellenan al crear (Claude Haiku,
+  server-side). La columna origen se conserva como fallback al pintar si `translated=false`.
+  `recommendations.{title_i18n,description_i18n,translated}` tienen `GRANT SELECT` explícito
+  (catálogo de columnas); el resto va a nivel de tabla.
+
 ### `user_interactions`
 - **SELECT:** `user_id = auth.uid()` OR (`status = 'completed'` AND existe amistad
   `auth.uid() → user_id`). Los `saved` de amigos NO se exponen aquí (solo dentro del RPC de quedada).
@@ -82,6 +100,21 @@ versionadas** (Docker), sin tocar cloud hasta el despliegue.
   recomendaciones de `p_category` a `p_migrate_to` (si se indica) y borra la categoría.
 - Necesario porque `recommendations.category_id` es `NOT NULL` y el cliente no tiene
   `UPDATE` sobre `recommendations`; salta RLS para migrar recs de cualquier autor.
+
+### `create_recommendation(p_title, p_title_i18n, p_description, p_description_i18n, p_url, p_category, p_translated, p_tags)` — alta multi-idioma con tags
+- `created_by = auth.uid()` (lanza excepción si no hay sesión). Inserta la recomendación
+  con sus textos i18n y `translated`, y enlaza hasta 5 tags (cada uno con su `name_i18n`),
+  normalizados a minúsculas, deduplicados y en orden de entrada.
+- Crea los tags que no existan (conserva el i18n del existente). Reemplaza el INSERT directo
+  del cliente porque `recommendations` es append-only y el cliente no escribe en tags.
+
+### `suggest_tags(p_query, p_limit, p_locale)` — autocompletado de tags
+- Devuelve `{name (canónico), label (localizado), uses}` casando por prefijo sobre el label
+  localizado, ordenado por uso (desc). Solo lectura del catálogo.
+
+### `find_similar_in_category(q, p_category, p_locale, threshold, p_limit)` — similares por categoría
+- Recomendaciones internas de una categoría por similitud `pg_trgm` sobre el título
+  localizado. Alimenta el paso 1 del alta (junto con la búsqueda externa).
 
 ## Triggers de mantenimiento (resumen; fórmulas en `product-design.md`)
 - Afinidad asimétrica sobre `user_interactions` (INSERT/UPDATE/DELETE) con control de deriva.

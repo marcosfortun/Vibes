@@ -2,7 +2,9 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
+import { translateItems } from '@/lib/ai/translate';
 
 export type CategoryState = { error?: string; ok?: boolean };
 
@@ -17,9 +19,18 @@ export async function createCategory(
   if (!name) return { error: 'nameRequired' };
 
   const supabase = await createClient();
-  const { error } = await supabase
-    .from('categories')
-    .insert({ name, icon, color });
+
+  // Traducción automática del nombre a los 4 idiomas (si hay API key).
+  const locale = await getLocale();
+  const translated = await translateItems([{ id: 'name', text: name }], locale);
+
+  const { error } = await supabase.from('categories').insert({
+    name,
+    icon,
+    color,
+    name_i18n: translated?.['name'] ?? null,
+    translated: translated !== null,
+  });
 
   if (error) {
     return { error: error.code === '23505' ? 'duplicate' : 'failed' };

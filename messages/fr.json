@@ -75,7 +75,8 @@
     "save": "Enregistrer",
     "remove": "Retirer",
     "saved": "Dans ta liste",
-    "moreOptions": "Plus d'options",
+    "allTags": "Toutes les étiquettes",
+    "close": "Fermer",
     "rate": {
       "add": "Noter",
       "dislike": "Pas aimé",
@@ -93,13 +94,25 @@
       "description": "Description",
       "category": "Catégorie",
       "choose": "Choisis une catégorie",
-      "url": "URL (optionnel)"
+      "url": "URL (optionnel)",
+      "tags": "Étiquettes",
+      "tagsPlaceholder": "Ajoute une étiquette et appuie sur Entrée",
+      "removeTag": "Retirer l'étiquette"
     },
+    "categoryPlaceholder": "Cherche une catégorie",
+    "changeCategory": "Changer",
+    "searchTitlePlaceholder": "Saisis le titre…",
+    "searching": "Recherche…",
+    "selectPrompt": "Sélectionne un résultat pour continuer",
+    "existingBadge": "Au catalogue",
+    "fromScratch": "Créer « {title} » de zéro",
+    "createTag": "Créer « {tag} »",
     "errors": {
       "titleRequired": "Le titre est obligatoire.",
       "categoryRequired": "Choisis une catégorie.",
       "invalidUrl": "L'URL doit commencer par http:// ou https://.",
       "createFailed": "Impossible de créer la recommandation.",
+      "tooLong": "Un champ dépasse la limite de caractères.",
       "unauth": "Non authentifié."
     }
   },

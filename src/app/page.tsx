@@ -1,9 +1,53 @@
+import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { HomeTabs, type TabKey } from '@/components/home-tabs';
 import type { CardItem } from '@/components/recommendation-card';
 
 const REC_SELECT =
-  'id,title,description,url,global_score,category:categories(name,color,icon)';
+  'id,title,title_i18n,description,description_i18n,url,global_score,' +
+  'category:categories(name,name_i18n,color,icon),' +
+  'tags:recommendation_tags(tag:tags(name,name_i18n))';
+
+type I18nJson = Record<string, string> | null;
+type RawRec = {
+  title: string;
+  title_i18n?: I18nJson;
+  description: string | null;
+  description_i18n?: I18nJson;
+  category?: {
+    name: string;
+    name_i18n?: I18nJson;
+    color: string | null;
+    icon: string | null;
+  } | null;
+  tags?: { tag: { name: string; name_i18n?: I18nJson } | null }[] | null;
+};
+
+// Elige la variante localizada del campo i18n; si falta, cae al texto origen.
+function pick(i18n: I18nJson | undefined, source: string, locale: string): string {
+  const v = i18n?.[locale];
+  return v && v.trim() ? v : source;
+}
+
+// Devuelve los campos visibles de una recomendación ya localizados al idioma activo.
+function localizeRec(raw: RawRec, locale: string) {
+  return {
+    title: pick(raw.title_i18n, raw.title, locale),
+    description: raw.description
+      ? pick(raw.description_i18n, raw.description, locale)
+      : raw.description,
+    category: raw.category
+      ? {
+          name: pick(raw.category.name_i18n, raw.category.name, locale),
+          color: raw.category.color,
+          icon: raw.category.icon,
+        }
+      : null,
+    tags: (raw.tags ?? [])
+      .map((rt) => (rt.tag ? pick(rt.tag.name_i18n, rt.tag.name, locale) : null))
+      .filter((n): n is string => !!n),
+  };
+}
 
 export default async function Home() {
   const supabase = await createClient();
@@ -12,6 +56,7 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
   const uid = user!.id;
+  const locale = await getLocale();
 
   const { data: profile } = await supabase
     .from('users')
@@ -74,10 +119,20 @@ export default async function Home() {
     .order('updated_at', { ascending: false });
   const myList = (savedRows ?? [])
     .filter((r) => r.recommendation)
-    .map((r) => ({
-      ...(r.recommendation as unknown as CardItem),
-      state: { saved: true, rating: r.rating },
-    })) as CardItem[];
+    .map((r) => {
+      const rec = r.recommendation as unknown as CardItem;
+      return {
+        ...rec,
+        ...localizeRec(r.recommendation as unknown as RawRec, locale),
+        score: scoreOf(rec),
+        state: { saved: true, rating: r.rating },
+      };
+    }) as CardItem[];
+  // Orden por scoring desc; las ya valoradas por el usuario caen al final
+  // (resta 100000 si rating != null). El número mostrado es el score real.
+  const myListRank = (c: CardItem) =>
+    (c.score ?? 0) - (c.state?.rating != null ? 100000 : 0);
+  myList.sort((a, b) => myListRank(b) - myListRank(a));
 
   // De Amigos: items con rating de algún amigo, excluyendo los que ya están en Mi Lista.
   const friendRecIds = [...personalized.keys()].filter(
@@ -92,6 +147,7 @@ export default async function Home() {
     friends = ((data ?? []) as unknown as CardItem[])
       .map((rec) => ({
         ...rec,
+        ...localizeRec(rec as unknown as RawRec, locale),
         score: scoreOf(rec),
         state: stateByRec.get(rec.id) ?? null,
       }))
@@ -107,6 +163,7 @@ export default async function Home() {
     .filter((rec) => !savedIds.has(rec.id))
     .map((rec) => ({
       ...rec,
+      ...localizeRec(rec as unknown as RawRec, locale),
       state: stateByRec.get(rec.id) ?? null,
       score: scoreOf(rec),
     }))

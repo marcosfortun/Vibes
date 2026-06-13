@@ -75,7 +75,8 @@
     "save": "Salvar",
     "remove": "Remover",
     "saved": "Na sua lista",
-    "moreOptions": "Mais opções",
+    "allTags": "Todas as etiquetas",
+    "close": "Fechar",
     "rate": {
       "add": "Avaliar",
       "dislike": "Não gostei",
@@ -93,13 +94,25 @@
       "description": "Descrição",
       "category": "Categoria",
       "choose": "Escolha uma categoria",
-      "url": "URL (opcional)"
+      "url": "URL (opcional)",
+      "tags": "Etiquetas",
+      "tagsPlaceholder": "Adicione uma etiqueta e pressione Enter",
+      "removeTag": "Remover etiqueta"
     },
+    "categoryPlaceholder": "Busque uma categoria",
+    "changeCategory": "Alterar",
+    "searchTitlePlaceholder": "Escreva o título…",
+    "searching": "Buscando…",
+    "selectPrompt": "Selecione um resultado para continuar",
+    "existingBadge": "No catálogo",
+    "fromScratch": "Criar “{title}” do zero",
+    "createTag": "Criar “{tag}”",
     "errors": {
       "titleRequired": "O título é obrigatório.",
       "categoryRequired": "Escolha uma categoria.",
       "invalidUrl": "A URL deve começar com http:// ou https://.",
       "createFailed": "Não foi possível criar a recomendação.",
+      "tooLong": "Algum campo excede o limite de caracteres.",
       "unauth": "Não autenticado."
     }
   },

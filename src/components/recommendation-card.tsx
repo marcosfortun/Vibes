@@ -6,10 +6,10 @@ import {
   Check,
   Heart,
   Minus,
-  MoreHorizontal,
   Plus,
   ThumbsDown,
   ThumbsUp,
+  X,
   type LucideIcon,
 } from 'lucide-react';
 import { setSaved, setRating } from '@/lib/actions/interactions';
@@ -29,6 +29,7 @@ export type CardItem = {
   // Score a mostrar: personalizado (afinidad) o global. Por defecto, global_score.
   score?: number;
   category: { name: string; color: string | null; icon: string | null } | null;
+  tags?: string[];
   state?: InteractionState;
 };
 
@@ -48,7 +49,12 @@ export function RecommendationCard({
   const t = useTranslations('Card');
   const [pending, startTransition] = useTransition();
   const [expanded, setExpanded] = useState(false);
+  const [tagsOpen, setTagsOpen] = useState(false);
   const capsuleRef = useRef<HTMLDivElement>(null);
+
+  const tags = item.tags ?? [];
+  const visibleTags = tags.slice(0, 2);
+  const hasMoreTags = tags.length > 2;
 
   const state = item.state ?? null;
   const isSaved = !!state?.saved;
@@ -173,29 +179,85 @@ export function RecommendationCard({
           )}
         </div>
 
-        {/* Botones de acción */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            disabled={pending}
-            aria-label={isSaved ? t('remove') : t('save')}
-            onClick={() =>
-              startTransition(() => setSaved(item.id, !isSaved))
-            }
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-current text-foreground opacity-70 transition-opacity disabled:opacity-50"
-          >
-            {isSaved ? <Minus size={18} /> : <Plus size={18} />}
-          </button>
-          <button
-            type="button"
-            aria-label={t('moreOptions')}
-            tabIndex={-1}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-current text-neon-green opacity-70"
-          >
-            <MoreHorizontal size={18} />
-          </button>
-        </div>
+        {/* Tags (solo lectura): hasta 2 chips + chip "…" si hay más. */}
+        {tags.length > 0 && (
+          <div className="flex min-w-0 flex-1 items-center justify-center gap-1.5 overflow-hidden px-1">
+            {visibleTags.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => setTagsOpen(true)}
+                className="max-w-[5.5rem] truncate rounded-full border border-border-muted bg-[var(--field-bg)] px-2 py-0.5 text-[11px] text-muted transition-colors hover:text-foreground"
+              >
+                {tag}
+              </button>
+            ))}
+            {hasMoreTags && (
+              <button
+                type="button"
+                aria-label={t('allTags')}
+                onClick={() => setTagsOpen(true)}
+                className="shrink-0 rounded-full border border-border-muted bg-[var(--field-bg)] px-2 py-0.5 text-[11px] text-muted transition-colors hover:text-foreground"
+              >
+                …
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Guardar / quitar de Mi Lista */}
+        <button
+          type="button"
+          disabled={pending}
+          aria-label={isSaved ? t('remove') : t('save')}
+          onClick={() => startTransition(() => setSaved(item.id, !isSaved))}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-current text-foreground opacity-70 transition-opacity disabled:opacity-50"
+        >
+          {isSaved ? <Minus size={18} /> : <Plus size={18} />}
+        </button>
       </div>
+
+      {/* Popup con todos los tags */}
+      {tagsOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-[60] flex items-center justify-center p-6"
+        >
+          <button
+            type="button"
+            aria-hidden
+            tabIndex={-1}
+            onClick={() => setTagsOpen(false)}
+            className="absolute inset-0 bg-black/60"
+          />
+          <div className="glass relative z-10 flex w-full max-w-sm flex-col gap-3 rounded-2xl p-5">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-base font-semibold text-foreground">
+                {t('allTags')}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setTagsOpen(false)}
+                aria-label={t('close')}
+                className="text-muted transition-colors hover:text-foreground"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-border-muted bg-[var(--field-bg)] px-2.5 py-1 text-sm text-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

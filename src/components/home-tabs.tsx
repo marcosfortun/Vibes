@@ -150,10 +150,7 @@ export function HomeTabs({
           <ul className="flex flex-col gap-4 pb-5 pt-1">
             {items.map((item) => (
               <li key={item.id}>
-                <RecommendationCard
-                  item={item}
-                  showScore={tab === 'trending'}
-                />
+                <RecommendationCard item={item} showScore />
               </li>
             ))}
           </ul>
