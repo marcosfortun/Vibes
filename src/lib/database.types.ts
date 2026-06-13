@@ -205,6 +205,7 @@ export type Database = {
           is_searchable: boolean
           language: Database["public"]["Enums"]["app_language"]
           role: Database["public"]["Enums"]["user_role"]
+          skin: string | null
           use_affinity_scoring: boolean
           username: string
         }
@@ -215,6 +216,7 @@ export type Database = {
           is_searchable?: boolean
           language?: Database["public"]["Enums"]["app_language"]
           role?: Database["public"]["Enums"]["user_role"]
+          skin?: string
           use_affinity_scoring?: boolean
           username: string
         }
@@ -225,6 +227,7 @@ export type Database = {
           is_searchable?: boolean
           language?: Database["public"]["Enums"]["app_language"]
           role?: Database["public"]["Enums"]["user_role"]
+          skin?: string
           use_affinity_scoring?: boolean
           username?: string
         }

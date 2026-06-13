@@ -6,6 +6,8 @@ import {
   RecommendationCard,
   type CardItem,
 } from '@/components/recommendation-card';
+import { DEFAULT_SKIN } from '@/lib/skins';
+import { useActiveSkin } from '@/lib/use-active-skin';
 
 export type TabKey = 'myList' | 'friends' | 'trending';
 
@@ -55,6 +57,7 @@ export function HomeTabs({
   defaultTab: TabKey;
 }) {
   const t = useTranslations('Home');
+  const skin = useActiveSkin(DEFAULT_SKIN);
   const [tab, setTab] = useState<TabKey>(defaultTab);
   // Cada vez que se activa una pestaña, se bumpea su contador → reset de su orden.
   const [activations, setActivations] = useState<Record<TabKey, number>>({
@@ -98,21 +101,29 @@ export function HomeTabs({
                   onClick={() => selectTab(key)}
                   className="relative flex-1 px-2 pb-4 pt-1 text-center text-sm font-medium transition-colors"
                 >
-                  <span className={active ? 'text-white' : 'text-muted'}>
+                  <span className={active ? 'text-foreground' : 'text-muted'}>
                     {t(`tabs.${key}`)}
                   </span>
-                  {active && (
-                    // Rosa-tallo de la propuesta inicial (preview.jpg): el degradado
-                    // es el propio tallo y termina en el capullo a la derecha. Aspecto
-                    // preservado (w-full + h-auto) y centrada sobre la línea inferior.
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src="/menu-rose.png"
-                      alt=""
-                      aria-hidden
-                      className="pointer-events-none absolute bottom-0 left-2 w-[calc(100%-1rem)] translate-y-1/2"
-                    />
-                  )}
+                  {active &&
+                    (skin === 'cyberbotanical' ? (
+                      // Rosa-tallo de la propuesta inicial (preview.jpg): exclusiva
+                      // de "La vie en rose". El degradado es el tallo y termina en el
+                      // capullo a la derecha. Aspecto preservado, centrada sobre la línea.
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src="/menu-rose.png"
+                        alt=""
+                        aria-hidden
+                        className="pointer-events-none absolute bottom-0 left-2 w-[calc(100%-1rem)] translate-y-1/2"
+                      />
+                    ) : (
+                      // Resto de skins: subrayado simple con el acento de la skin.
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute bottom-0 left-2 h-[3px] w-[calc(100%-1rem)] rounded-full"
+                        style={{ background: 'var(--accent-gradient)' }}
+                      />
+                    ))}
                 </button>
               );
             })}

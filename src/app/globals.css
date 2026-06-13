@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
-:root {
+/* ─────────────────────────────────────────────────────────────
+   Skins. Cada skin es un bloque de variables que el resto del CSS
+   consume. cyberbotanical es el tema por defecto (también en :root,
+   como fallback sin atributo). Los bloques [data-skin="..."] permiten
+   anidar previsualizaciones: un contenedor con data-skin redefine las
+   variables para su subárbol. Registro de skins: src/lib/skins.ts
+   ───────────────────────────────────────────────────────────── */
+
+:root,
+[data-skin="cyberbotanical"] {
   /* Fondo cyberpunk/synthwave */
   --background: #000000;
   --surface: #18181c;
@@ -16,6 +25,229 @@
   /* Alerta / destructivo + borde tenue (style-guide §1) */
   --neon-danger: #ff0055;
   --border-muted: rgba(255, 255, 255, 0.1);
+
+  /* Efectos parametrizados por skin (consumidos por las clases de abajo). */
+  --card-border: linear-gradient(
+    100deg,
+    var(--neon-pink) 0%,
+    var(--neon-pink-soft) 35%,
+    var(--neon-green) 100%
+  );
+  --card-border-opacity: 0.9;
+  --card-glow: 0 0 18px -4px rgba(255, 42, 117, 0.45),
+    0 0 18px -4px rgba(0, 245, 212, 0.35);
+
+  --glass-bg: rgba(30, 30, 35, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: 20px;
+
+  --accent-gradient: linear-gradient(90deg, var(--neon-pink), var(--neon-green));
+  --accent-pink: var(--neon-pink);
+  --accent-green: var(--neon-green);
+
+  --btn-primary-bg: var(--accent-gradient);
+  --btn-primary-fg: #000000;
+  --btn-primary-glow: 0 0 18px -4px rgba(255, 42, 117, 0.55),
+    0 0 18px -4px rgba(57, 255, 133, 0.45);
+
+  --dock-add-glow: 0 0 24px -2px rgba(255, 42, 117, 0.6),
+    0 0 24px -2px rgba(57, 255, 133, 0.45);
+
+  --field-bg: rgba(24, 24, 28, 0.7);
+  --field-focus-border: var(--neon-green);
+  --field-focus-glow: 0 0 8px rgba(57, 255, 133, 0.5);
+  --field-focus-border-pink: var(--neon-pink);
+  --field-focus-glow-pink: 0 0 8px rgba(255, 42, 117, 0.5);
+  --checkbox-checked-glow: 0 0 8px rgba(57, 255, 133, 0.6);
+
+  /* Estructura por skin (radio de tarjeta, grosor de borde, tipografía). */
+  --card-radius: 20px;
+  --card-border-width: 1px;
+  --app-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Skin minimal: clara y neutra, sin neón ni glow, bordes sólidos finos. */
+[data-skin="minimal"] {
+  --background: #f4f4f6;
+  --surface: #ffffff;
+  --foreground: #1b1b1f;
+  --muted: #70707a;
+
+  --neon-pink: #d6336c;
+  --neon-pink-soft: #e0608c;
+  --neon-green: #2f9e6b;
+  --neon-green-soft: #57b98c;
+
+  --neon-danger: #d12953;
+  --border-muted: rgba(0, 0, 0, 0.12);
+
+  --card-border: rgba(0, 0, 0, 0.14);
+  --card-border-opacity: 1;
+  --card-glow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-blur: 12px;
+
+  --accent-gradient: var(--foreground);
+  --accent-pink: #d6336c;
+  --accent-green: #2f9e6b;
+
+  --btn-primary-bg: var(--foreground);
+  --btn-primary-fg: #ffffff;
+  --btn-primary-glow: none;
+
+  --dock-add-glow: 0 2px 10px rgba(0, 0, 0, 0.18);
+
+  --field-bg: #ffffff;
+  --field-focus-border: var(--foreground);
+  --field-focus-glow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+  --field-focus-border-pink: var(--foreground);
+  --field-focus-glow-pink: 0 0 0 2px rgba(0, 0, 0, 0.08);
+  --checkbox-checked-glow: none;
+
+  --card-radius: 20px;
+  --card-border-width: 1px;
+  --app-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Skin flat design ("Speciality popcorn"): plano, claro, sin sombras; azul
+   marino como tinta y coral como acento. */
+[data-skin="flat design"] {
+  --background: #eef1f8;
+  --surface: #ffffff;
+  --foreground: #17257d;
+  --muted: #6b7390;
+
+  --neon-pink: #fe675c;
+  --neon-pink-soft: #ff8a82;
+  --neon-green: #17257d;
+  --neon-green-soft: #3a4aa6;
+
+  --neon-danger: #e23b30;
+  --border-muted: rgba(23, 37, 125, 0.16);
+
+  --card-border: rgba(23, 37, 125, 0.18);
+  --card-border-opacity: 1;
+  --card-glow: none;
+
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(23, 37, 125, 0.12);
+  --glass-blur: 10px;
+
+  --accent-gradient: #fe675c;
+  --accent-pink: #fe675c;
+  --accent-green: #17257d;
+
+  --btn-primary-bg: #fe675c;
+  --btn-primary-fg: #ffffff;
+  --btn-primary-glow: none;
+
+  --dock-add-glow: 0 2px 8px rgba(23, 37, 125, 0.18);
+
+  --field-bg: #ffffff;
+  --field-focus-border: #fe675c;
+  --field-focus-glow: 0 0 0 2px rgba(254, 103, 92, 0.25);
+  --field-focus-border-pink: #fe675c;
+  --field-focus-glow-pink: 0 0 0 2px rgba(254, 103, 92, 0.25);
+  --checkbox-checked-glow: none;
+
+  --card-radius: 14px;
+  --card-border-width: 1px;
+  --app-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Skin neobrutalism ("Stick stack"): bordes negros gruesos, sombras duras
+   desplazadas, lima + magenta de alto contraste. */
+[data-skin="neobrutalism"] {
+  --background: #fdf7e3;
+  --surface: #ffffff;
+  --foreground: #111111;
+  --muted: #5a5a5a;
+
+  --neon-pink: #bc2a95;
+  --neon-pink-soft: #d24fae;
+  --neon-green: #8fcb04;
+  --neon-green-soft: #b3fe05;
+
+  --neon-danger: #e2255f;
+  --border-muted: #111111;
+
+  --card-border: #111111;
+  --card-border-opacity: 1;
+  --card-glow: 5px 5px 0 0 #111111;
+
+  --glass-bg: #ffffff;
+  --glass-border: #111111;
+  --glass-blur: 0px;
+
+  --accent-gradient: #b3fe05;
+  --accent-pink: #bc2a95;
+  --accent-green: #8fcb04;
+
+  --btn-primary-bg: #b3fe05;
+  --btn-primary-fg: #111111;
+  --btn-primary-glow: 4px 4px 0 0 #111111;
+
+  --dock-add-glow: 3px 3px 0 0 #111111;
+
+  --field-bg: #ffffff;
+  --field-focus-border: #111111;
+  --field-focus-glow: 3px 3px 0 0 #bc2a95;
+  --field-focus-border-pink: #111111;
+  --field-focus-glow-pink: 3px 3px 0 0 #bc2a95;
+  --checkbox-checked-glow: 2px 2px 0 0 #111111;
+
+  --card-radius: 4px;
+  --card-border-width: 3px;
+  --app-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Skin pixel art ("PICO-8 pop"): fondo verde azulado oscuro, amarillo de
+   acento, tipografía monoespaciada y esquinas rectas. */
+[data-skin="pixel art"] {
+  --background: #1b2e2e;
+  --surface: #2e4f4f;
+  --foreground: #fff4c2;
+  --muted: #8fb0aa;
+
+  --neon-pink: #ffd700;
+  --neon-pink-soft: #ffe34d;
+  --neon-green: #5fd6b6;
+  --neon-green-soft: #8fe6cf;
+
+  --neon-danger: #ff5d5d;
+  --border-muted: rgba(255, 215, 0, 0.35);
+
+  --card-border: #ffd700;
+  --card-border-opacity: 1;
+  --card-glow: none;
+
+  --glass-bg: rgba(46, 79, 79, 0.85);
+  --glass-border: rgba(255, 215, 0, 0.4);
+  --glass-blur: 0px;
+
+  --accent-gradient: #ffd700;
+  --accent-pink: #ffd700;
+  --accent-green: #5fd6b6;
+
+  --btn-primary-bg: #ffd700;
+  --btn-primary-fg: #1b2e2e;
+  --btn-primary-glow: none;
+
+  --dock-add-glow: 0 0 0 2px #ffd700;
+
+  --field-bg: #2e4f4f;
+  --field-focus-border: #ffd700;
+  --field-focus-glow: 0 0 0 2px rgba(255, 215, 0, 0.4);
+  --field-focus-border-pink: #ffd700;
+  --field-focus-glow-pink: 0 0 0 2px rgba(255, 215, 0, 0.4);
+  --checkbox-checked-glow: none;
+
+  --card-radius: 0px;
+  --card-border-width: 2px;
+  --app-font: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Courier New",
+    monospace;
 }
 
 @theme inline {
@@ -26,79 +258,70 @@
   --color-neon-pink: var(--neon-pink);
   --color-neon-green: var(--neon-green);
   --color-neon-danger: var(--neon-danger);
+  --color-border-muted: var(--border-muted);
 }
 
 html,
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family:
-    "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--app-font);
 }
 
 /* Borde degradado rosa→cian con esquinas redondeadas (sin cortes) */
 .neon-border {
   position: relative;
   background: var(--surface);
-  border-radius: 20px;
+  border-radius: var(--card-radius);
 }
 .neon-border::before {
   content: "";
   position: absolute;
   inset: 0;
-  padding: 1px;
+  padding: var(--card-border-width);
   border-radius: inherit;
-  background: linear-gradient(
-    100deg,
-    var(--neon-pink) 0%,
-    var(--neon-pink-soft) 35%,
-    var(--neon-green) 100%
-  );
+  background: var(--card-border);
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-  opacity: 0.9;
+  opacity: var(--card-border-opacity);
 }
 .neon-border-glow::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow:
-    0 0 18px -4px rgba(255, 42, 117, 0.45),
-    0 0 18px -4px rgba(0, 245, 212, 0.35);
+  box-shadow: var(--card-glow);
   pointer-events: none;
 }
 
 /* Glassmorphism (dock, cápsulas) */
 .glass {
-  background: rgba(30, 30, 35, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
 }
 
 /* Subrayado degradado de la pestaña activa */
 .tab-underline {
-  background: linear-gradient(90deg, var(--neon-pink), var(--neon-green));
+  background: var(--accent-gradient);
 }
 
 /* Texto/icono con tinte neón */
 .text-neon-pink {
-  color: var(--neon-pink);
+  color: var(--accent-pink);
 }
 .text-neon-green {
-  color: var(--neon-green);
+  color: var(--accent-green);
 }
 
 /* Botón central del dock con resplandor */
 .dock-add-glow {
-  box-shadow:
-    0 0 24px -2px rgba(255, 42, 117, 0.6),
-    0 0 24px -2px rgba(57, 255, 133, 0.45);
+  box-shadow: var(--dock-add-glow);
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -114,11 +337,9 @@ body {
   padding: 0 24px;
   border-radius: 25px;
   font-weight: 700;
-  color: #000000;
-  background: linear-gradient(90deg, var(--neon-pink), var(--neon-green));
-  box-shadow:
-    0 0 18px -4px rgba(255, 42, 117, 0.55),
-    0 0 18px -4px rgba(57, 255, 133, 0.45);
+  color: var(--btn-primary-fg);
+  background: var(--btn-primary-bg);
+  box-shadow: var(--btn-primary-glow);
   transition: opacity 0.15s ease;
 }
 .btn-primary:disabled {
@@ -141,14 +362,14 @@ body {
   font-weight: 500;
   color: var(--foreground);
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-muted);
   transition:
     background-color 0.15s ease,
     border-color 0.15s ease,
     opacity 0.15s ease;
 }
 .btn-secondary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--glass-bg);
 }
 .btn-secondary:disabled {
   opacity: 0.5;
@@ -194,7 +415,7 @@ body {
 /* Base unificada para input/textarea/select. */
 .field {
   width: 100%;
-  background: rgba(24, 24, 28, 0.7);
+  background: var(--field-bg);
   border: 1px solid var(--border-muted);
   border-radius: 12px;
   padding: 0.625rem 0.875rem;
@@ -208,13 +429,13 @@ body {
   color: var(--muted);
 }
 .field:focus {
-  border-color: var(--neon-green);
-  box-shadow: 0 0 8px rgba(57, 255, 133, 0.5);
+  border-color: var(--field-focus-border);
+  box-shadow: var(--field-focus-glow);
 }
 /* Variante de focus rosa según el contexto de la pantalla. */
 .field-pink:focus {
-  border-color: var(--neon-pink);
-  box-shadow: 0 0 8px rgba(255, 42, 117, 0.5);
+  border-color: var(--field-focus-border-pink);
+  box-shadow: var(--field-focus-glow-pink);
 }
 
 /* Select: oculta la flecha nativa e inyecta un chevron gris a 16px. */
@@ -241,7 +462,7 @@ body {
   width: 20px;
   height: 20px;
   border-radius: 6px;
-  background: #000000;
+  background: var(--surface);
   border: 1px solid var(--muted);
   cursor: pointer;
   transition:
@@ -252,7 +473,7 @@ body {
 .checkbox:checked {
   background: var(--neon-green);
   border-color: var(--neon-green);
-  box-shadow: 0 0 8px rgba(57, 255, 133, 0.6);
+  box-shadow: var(--checkbox-checked-glow);
 }
 .checkbox:checked::after {
   content: "";
@@ -295,13 +516,13 @@ body {
   height: 40px;
   flex-shrink: 0;
   border-radius: 9999px;
-  background: rgba(24, 24, 28, 0.6);
+  background: var(--surface);
   border: 1px solid var(--border-muted);
   color: var(--foreground);
   transition: background-color 0.15s ease;
 }
 .back-button:hover {
-  background: rgba(40, 40, 46, 0.8);
+  background: var(--glass-bg);
 }
 
 /* ─────────────────────────────────────────────────────────────

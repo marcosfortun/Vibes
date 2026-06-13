@@ -35,7 +35,10 @@ export default async function SettingsPage() {
 
       <InstallButtonInline />
 
-      <nav className="flex flex-col items-start gap-3 border-t border-white/10 pt-5">
+      <nav className="flex flex-col items-start gap-3 border-t border-border-muted pt-5">
+        <Link href="/appearance" className="btn-secondary w-full">
+          {t('Settings.changeSkin')}
+        </Link>
         <Link href="/friends" className="btn-secondary w-full">
           {t('Home.friends')}
         </Link>

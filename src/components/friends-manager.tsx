@@ -12,7 +12,7 @@ export function FriendsManager({ friends }: { friends: Friend[] }) {
 
   return (
     <section className="flex min-h-0 w-full flex-1 flex-col">
-      <h2 className="mb-3 shrink-0 text-lg font-semibold text-white">
+      <h2 className="mb-3 shrink-0 text-lg font-semibold text-foreground">
         {t('yourFriends')}
       </h2>
       {friends.length === 0 ? (
@@ -21,7 +21,7 @@ export function FriendsManager({ friends }: { friends: Friend[] }) {
         <ul className="flex flex-1 flex-col gap-2 overflow-y-auto pb-28 pr-1">
           {friends.map((f) => (
               <li key={f.id} className="list-row">
-                <span className="flex min-w-0 items-center gap-3 text-white">
+                <span className="flex min-w-0 items-center gap-3 text-foreground">
                   <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-neon-green shadow-[0_0_8px_var(--neon-green)]" />
                   <span className="truncate">{f.username}</span>
                 </span>

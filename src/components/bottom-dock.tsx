@@ -63,9 +63,9 @@ export function BottomDock() {
             <Icon
               size={22}
               strokeWidth={1.75}
-              className={active ? 'text-white' : 'text-muted'}
+              className={active ? 'text-foreground' : 'text-muted'}
             />
-            <span className={`text-[10px] ${active ? 'text-white' : 'text-muted'}`}>
+            <span className={`text-[10px] ${active ? 'text-foreground' : 'text-muted'}`}>
               {t(key)}
             </span>
             <span
@@ -89,7 +89,7 @@ export function BottomDock() {
               backgroundClip: 'padding-box, border-box',
             }}
           >
-            <Plus size={28} strokeWidth={2} className="text-white" />
+            <Plus size={28} strokeWidth={2} className="text-foreground" />
           </span>
           <span className="text-[10px] text-muted">{t('add')}</span>
           <span className="h-1 w-1" />
@@ -105,9 +105,9 @@ export function BottomDock() {
             <Icon
               size={22}
               strokeWidth={1.75}
-              className={active ? 'text-white' : 'text-muted'}
+              className={active ? 'text-foreground' : 'text-muted'}
             />
-            <span className={`text-[10px] ${active ? 'text-white' : 'text-muted'}`}>
+            <span className={`text-[10px] ${active ? 'text-foreground' : 'text-muted'}`}>
               {t(key)}
             </span>
             <span

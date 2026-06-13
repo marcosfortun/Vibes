@@ -61,7 +61,7 @@ export function NewRecommendationForm({
       </label>
 
       {showSimilar && (
-        <div className="rounded-xl border border-neon-pink/40 bg-neon-pink/10 p-3 text-sm text-white">
+        <div className="rounded-xl border border-neon-pink/40 bg-neon-pink/10 p-3 text-sm text-foreground">
           <p className="font-medium">{t('similarHint')}</p>
           <ul className="mt-1 flex flex-col gap-0.5">
             {similar.map((s) => (

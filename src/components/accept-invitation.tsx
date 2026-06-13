@@ -42,7 +42,7 @@ export function AcceptInvitation({
       {/* Mensaje vistoso: invitador → invitado, en grande. */}
       <div className="flex items-center justify-center gap-3">
         <span className="text-3xl font-bold text-neon-pink">{hostUsername}</span>
-        <ArrowRight size={32} strokeWidth={2.5} className="text-white" />
+        <ArrowRight size={32} strokeWidth={2.5} className="text-foreground" />
         <span className="text-3xl font-bold text-neon-green">{selfUsername}</span>
       </div>
 
@@ -67,7 +67,7 @@ export function AcceptInvitation({
         type="button"
         onClick={() => router.push('/')}
         disabled={pending}
-        className="text-sm text-muted hover:text-white disabled:opacity-50"
+        className="text-sm text-muted hover:text-foreground disabled:opacity-50"
       >
         {t('reject')}
       </button>

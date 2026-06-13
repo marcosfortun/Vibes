@@ -142,6 +142,10 @@
     },
     "affinityScoring": "Utiliser le score d'affinité",
     "affinityHint": "Pondère les recommandations selon ton alignement avec chaque ami.",
+    "skins": {
+      "title": "Apparence"
+    },
+    "changeSkin": "Changer l'apparence",
     "save": "Enregistrer",
     "back": "Retour"
   },

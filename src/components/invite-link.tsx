@@ -63,8 +63,8 @@ export function InviteLink({
   }
 
   return (
-    <section className="w-full max-w-md rounded-2xl border border-white/10 bg-surface p-4">
-      <h2 className="text-lg font-semibold text-white">{t('inviteTitle')}</h2>
+    <section className="w-full max-w-md rounded-2xl border border-border-muted bg-surface p-4">
+      <h2 className="text-lg font-semibold text-foreground">{t('inviteTitle')}</h2>
 
       {token ? (
         <div className="mt-3 flex flex-col gap-3">

@@ -142,6 +142,10 @@
     },
     "affinityScoring": "Usar pontuação por afinidade",
     "affinityHint": "Pondera as recomendações conforme seu alinhamento com cada amigo.",
+    "skins": {
+      "title": "Aparência"
+    },
+    "changeSkin": "Mudar aparência",
     "save": "Salvar",
     "back": "Voltar"
   },

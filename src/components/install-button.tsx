@@ -15,7 +15,7 @@ export function InstallButtonFloating() {
       type="button"
       onClick={install}
       aria-label={t('install')}
-      className="fixed bottom-6 right-6 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-current text-white opacity-20 transition-opacity hover:opacity-70"
+      className="fixed bottom-6 right-6 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-current text-foreground opacity-20 transition-opacity hover:opacity-70"
     >
       <Download size={18} />
     </button>
@@ -37,7 +37,7 @@ export function InstallButtonInline() {
         onClick={install}
         disabled={isInstalled}
         aria-label={isInstalled ? t('done') : t('install')}
-        className={`flex h-9 w-9 items-center justify-center rounded-full border border-current text-white transition-opacity disabled:cursor-default ${
+        className={`flex h-9 w-9 items-center justify-center rounded-full border border-current text-foreground transition-opacity disabled:cursor-default ${
           isInstalled ? 'opacity-20' : 'opacity-70 hover:opacity-100'
         }`}
       >

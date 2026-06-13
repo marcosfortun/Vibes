@@ -97,12 +97,12 @@ export function RecommendationCard({
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block truncate text-lg font-bold text-white hover:underline"
+              className="block truncate text-lg font-bold text-foreground hover:underline"
             >
               {item.title}
             </a>
           ) : (
-            <h3 className="truncate text-lg font-bold text-white">
+            <h3 className="truncate text-lg font-bold text-foreground">
               {item.title}
             </h3>
           )}
@@ -124,8 +124,8 @@ export function RecommendationCard({
         {/* Cápsula de rating (transparente; border y opacidad sincronizados) */}
         <div
           ref={capsuleRef}
-          className={`flex items-center justify-evenly rounded-full border border-white transition-[width,opacity] duration-150 ${
-            isLove ? 'text-neon-pink' : 'text-white'
+          className={`flex items-center justify-evenly rounded-full border border-foreground transition-[width,opacity] duration-150 ${
+            isLove ? 'text-neon-pink' : 'text-foreground'
           } ${capsuleOn ? 'opacity-70' : 'opacity-20'}`}
           style={{ width: showPicker ? 118 : 36, height: 36 }}
         >
@@ -165,7 +165,7 @@ export function RecommendationCard({
                   setExpanded(false);
                   startTransition(() => setRating(item.id, value));
                 }}
-                className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-white/10"
+                className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-foreground/10"
               >
                 <Icon size={16} strokeWidth={2} />
               </button>
@@ -182,7 +182,7 @@ export function RecommendationCard({
             onClick={() =>
               startTransition(() => setSaved(item.id, !isSaved))
             }
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-current text-white opacity-70 transition-opacity disabled:opacity-50"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-current text-foreground opacity-70 transition-opacity disabled:opacity-50"
           >
             {isSaved ? <Minus size={18} /> : <Plus size={18} />}
           </button>

@@ -28,7 +28,7 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
     <div className="flex w-full max-w-md flex-col gap-6">
       {/* Alta */}
       <form action={formAction} className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-white">{t('create')}</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t('create')}</h2>
         <input
           type="text"
           name="name"
@@ -54,7 +54,7 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
             name="color"
             defaultValue="#2563eb"
             aria-label={t('color')}
-            className="h-[42px] w-14 shrink-0 cursor-pointer rounded-xl border border-white/10 bg-transparent"
+            className="h-[42px] w-14 shrink-0 cursor-pointer rounded-xl border border-border-muted bg-transparent"
           />
         </div>
         {state.error && (
@@ -69,11 +69,11 @@ export function AdminCategories({ categories }: { categories: Category[] }) {
 
       {/* Lista */}
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-white">{t('existing')}</h2>
+        <h2 className="mb-3 text-lg font-semibold text-foreground">{t('existing')}</h2>
         <ul className="flex flex-col gap-2">
           {categories.map((c) => (
             <li key={c.id} className="list-row">
-              <span className="flex min-w-0 items-center gap-3 text-white">
+              <span className="flex min-w-0 items-center gap-3 text-foreground">
                 <span
                   className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
                   style={{ backgroundColor: c.color ?? '#71717a' }}
