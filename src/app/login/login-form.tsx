@@ -14,7 +14,7 @@ export function LoginForm({ next = '' }: { next?: string }) {
 
   return (
     <form action={formAction} className="flex w-full max-w-sm flex-col gap-4">
-      <h2 className="text-xl font-semibold text-white">{t('login.title')}</h2>
+      <h2 className="text-xl font-semibold text-foreground">{t('login.title')}</h2>
 
       <input type="hidden" name="next" defaultValue={next} />
 
@@ -52,7 +52,7 @@ export function LoginForm({ next = '' }: { next?: string }) {
 
       <Link
         href="/forgot"
-        className="text-center text-sm text-muted hover:text-white"
+        className="text-center text-sm text-muted hover:text-foreground"
       >
         {t('forgotLink')}
       </Link>

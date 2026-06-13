@@ -24,7 +24,7 @@ export function SignupForm({
 
   return (
     <form action={formAction} className="flex w-full max-w-sm flex-col gap-4">
-      <h2 className="text-xl font-semibold text-white">{t('signup.title')}</h2>
+      <h2 className="text-xl font-semibold text-foreground">{t('signup.title')}</h2>
 
       <input type="hidden" name="invite_token" defaultValue={inviteToken} />
       <input type="hidden" name="next" defaultValue={next} />

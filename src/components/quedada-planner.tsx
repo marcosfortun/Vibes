@@ -40,7 +40,7 @@ export function QuedadaPlanner({
   return (
     <div className="flex w-full max-w-md flex-col gap-6">
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-white">
+        <h2 className="mb-3 text-lg font-semibold text-foreground">
           {t('attendees')}
         </h2>
         {friends.length === 0 ? (
@@ -49,7 +49,7 @@ export function QuedadaPlanner({
           <ul className="flex flex-col gap-2">
             {friends.map((f) => (
               <li key={f.id} className="list-row">
-                <label className="flex w-full cursor-pointer items-center gap-3 text-sm text-white">
+                <label className="flex w-full cursor-pointer items-center gap-3 text-sm text-foreground">
                   <input
                     type="checkbox"
                     className="checkbox"
@@ -75,7 +75,7 @@ export function QuedadaPlanner({
 
       {results !== null && (
         <section>
-          <h2 className="mb-3 text-lg font-semibold text-white">
+          <h2 className="mb-3 text-lg font-semibold text-foreground">
             {t('results')}
           </h2>
           {results.length === 0 ? (
@@ -84,7 +84,7 @@ export function QuedadaPlanner({
             <ol className="flex flex-col gap-2">
               {results.map((r, i) => (
                 <li key={r.recommendation_id} className="list-row">
-                  <span className="flex min-w-0 items-center gap-3 text-white">
+                  <span className="flex min-w-0 items-center gap-3 text-foreground">
                     <span className="shrink-0 font-bold text-neon-green tabular-nums">
                       {i + 1}.
                     </span>

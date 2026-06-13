@@ -40,7 +40,7 @@ export function ForgotForm() {
 
       <Link
         href="/login"
-        className="text-center text-sm text-muted hover:text-white"
+        className="text-center text-sm text-muted hover:text-foreground"
       >
         {t('login.title')}
       </Link>

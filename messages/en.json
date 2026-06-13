@@ -142,6 +142,10 @@
     },
     "affinityScoring": "Use affinity scoring",
     "affinityHint": "Weight recommendations by how aligned you are with each friend.",
+    "skins": {
+      "title": "Appearance"
+    },
+    "changeSkin": "Change appearance",
     "save": "Save",
     "back": "Back"
   },

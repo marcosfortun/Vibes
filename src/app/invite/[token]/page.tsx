@@ -1,20 +1,13 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { AcceptInvitation } from '@/components/accept-invitation';
+import { BrandLogo } from '@/components/brand-logo';
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-8 p-8">
-      <Image
-        src="/logo.jpg"
-        alt="Vibes"
-        width={2657}
-        height={1062}
-        priority
-        className="h-auto w-full max-w-[280px]"
-      />
+      <BrandLogo className="h-auto w-full max-w-[280px]" />
       <div className="flex w-full max-w-sm flex-col items-center gap-5 text-center">
         {children}
       </div>
@@ -34,7 +27,7 @@ export default async function InvitePage(props: PageProps<'/invite/[token]'>) {
   if (!host) {
     return (
       <Shell>
-        <h1 className="text-2xl font-bold text-white">{t('invalidTitle')}</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t('invalidTitle')}</h1>
         <p className="text-muted">{t('invalidBody')}</p>
         <Link href="/login" className="text-sm text-neon-green hover:underline">
           {t('back')}
@@ -52,7 +45,7 @@ export default async function InvitePage(props: PageProps<'/invite/[token]'>) {
     const nextPath = `/invite/${token}`;
     return (
       <Shell>
-        <h1 className="text-2xl font-bold text-white">{t('title')}</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
         <p className="text-muted">
           {t('invitedYou', { username: host.host_username })}
         </p>
@@ -69,7 +62,7 @@ export default async function InvitePage(props: PageProps<'/invite/[token]'>) {
         >
           {t('login')}
         </Link>
-        <Link href="/login" className="text-sm text-muted hover:text-white">
+        <Link href="/login" className="text-sm text-muted hover:text-foreground">
           {t('reject')}
         </Link>
       </Shell>
@@ -80,7 +73,7 @@ export default async function InvitePage(props: PageProps<'/invite/[token]'>) {
   if (user.id === host.host_id) {
     return (
       <Shell>
-        <h1 className="text-2xl font-bold text-white">{t('title')}</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
         <p className="text-muted">{t('cannotSelf')}</p>
         <Link href="/" className="text-sm text-neon-green hover:underline">
           {t('goHome')}
@@ -100,7 +93,7 @@ export default async function InvitePage(props: PageProps<'/invite/[token]'>) {
   if (existing) {
     return (
       <Shell>
-        <h1 className="text-2xl font-bold text-white">{t('title')}</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
         <p className="text-muted">{t('alreadyFriends')}</p>
         <Link href="/friends" className="text-sm text-neon-green hover:underline">
           {t('goToFriends')}
