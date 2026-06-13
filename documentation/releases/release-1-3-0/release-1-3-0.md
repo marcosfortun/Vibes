@@ -28,13 +28,15 @@
 - Multi-idioma automático (en/es/fr/pt) en recomendaciones, categorías y tags: se traducen al crear (Claude Haiku, no gestionable por el usuario) y se muestran en el idioma del usuario; sin API key o si falla, `translated=false` y fallback al texto origen.
 - Categorías con lista de proveedores (0–3) para la búsqueda externa: catálogo TMDB/Steam/IA y asignación por categoría (sembrada; gestión visual en admin pendiente).
 - Crear recomendación en 2 pasos: (1) autocompletado de categoría + buscador de título que combina recomendaciones internas similares y resultados externos (TMDB/Steam/IA), top 8 por similitud, selección obligatoria (o "crear desde cero"); existente → a Mi Lista; externa → (2) formulario pre-rellenado y editable que al guardar traduce y crea.
+- Autocompletado de etiquetas: opción "crear etiqueta" cuando lo escrito no coincide exactamente con ninguna existente, y desplegado hacia arriba para no desbordar la pantalla.
+- Límites de caracteres al crear una recomendación (título, descripción, URL y etiqueta), aplicados en el formulario y validados en servidor.
+- El scoring se muestra siempre en las tarjetas de recomendaciones.
+- "Mi Lista" se ordena por scoring descendente, dejando al final las recomendaciones ya valoradas por el usuario (resta 100000 al scoring si tiene valoración).
 
 **En proceso**:
 
 
 **Pendiente**:
-- Proveedores por categoría: gestión visual desde el admin (hoy se siembran).
-- Búsqueda externa: añadir más adaptadores reales (IMDB/Filmaffinity/Wikiloc) además de TMDB/Steam/IA.
 
 - La sección "suerte" no carga.
 - Revisar sección "quedada".
@@ -49,3 +51,5 @@
 - Especialización de las categorías:
   - rango de precio
   - localización
+- Búsqueda externa: añadir más adaptadores reales (IMDB/Filmaffinity/Wikiloc) además de TMDB/Steam/IA.
+- Proveedores por categoría: gestión visual desde el admin (hoy se siembran).

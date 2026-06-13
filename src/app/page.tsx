@@ -119,11 +119,20 @@ export default async function Home() {
     .order('updated_at', { ascending: false });
   const myList = (savedRows ?? [])
     .filter((r) => r.recommendation)
-    .map((r) => ({
-      ...(r.recommendation as unknown as CardItem),
-      ...localizeRec(r.recommendation as unknown as RawRec, locale),
-      state: { saved: true, rating: r.rating },
-    })) as CardItem[];
+    .map((r) => {
+      const rec = r.recommendation as unknown as CardItem;
+      return {
+        ...rec,
+        ...localizeRec(r.recommendation as unknown as RawRec, locale),
+        score: scoreOf(rec),
+        state: { saved: true, rating: r.rating },
+      };
+    }) as CardItem[];
+  // Orden por scoring desc; las ya valoradas por el usuario caen al final
+  // (resta 100000 si rating != null). El número mostrado es el score real.
+  const myListRank = (c: CardItem) =>
+    (c.score ?? 0) - (c.state?.rating != null ? 100000 : 0);
+  myList.sort((a, b) => myListRank(b) - myListRank(a));
 
   // De Amigos: items con rating de algún amigo, excluyendo los que ya están en Mi Lista.
   const friendRecIds = [...personalized.keys()].filter(

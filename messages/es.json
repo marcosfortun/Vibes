@@ -106,11 +106,13 @@
     "selectPrompt": "Selecciona un resultado para continuar",
     "existingBadge": "En el catálogo",
     "fromScratch": "Crear «{title}» desde cero",
+    "createTag": "Crear «{tag}»",
     "errors": {
       "titleRequired": "El título es obligatorio.",
       "categoryRequired": "Elige una categoría.",
       "invalidUrl": "La URL debe empezar por http:// o https://.",
       "createFailed": "No se pudo crear la recomendación.",
+      "tooLong": "Algún campo supera el límite de caracteres.",
       "unauth": "No autenticado."
     }
   },

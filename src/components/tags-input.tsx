@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { LIMITS } from '@/lib/limits';
 
 const MAX_TAGS = 5;
 
@@ -48,12 +49,23 @@ export function TagsInput({ initialTags = [] }: { initialTags?: string[] }) {
   }, [q, full, tags, locale]);
 
   function add(name: string, label: string) {
-    const canonical = name.trim().toLowerCase();
+    const canonical = name.trim().toLowerCase().slice(0, LIMITS.tag);
     if (!canonical || tags.some((t) => t.name === canonical) || full) return;
-    setTags([...tags, { name: canonical, label: label.trim() || canonical }]);
+    setTags([
+      ...tags,
+      { name: canonical, label: (label.trim() || canonical).slice(0, LIMITS.tag) },
+    ]);
     setInput('');
     setSuggestions([]);
   }
+
+  // Mostrar "crear etiqueta" si lo escrito no coincide exactamente con ninguna
+  // sugerencia ni con un tag ya añadido.
+  const canCreate =
+    q.length > 0 &&
+    !tags.some((t) => t.name === q) &&
+    !suggestions.some((s) => s.name === q);
+  const showDropdown = open && (suggestions.length > 0 || canCreate);
 
   function remove(name: string) {
     setTags(tags.filter((x) => x.name !== name));
@@ -113,10 +125,13 @@ export function TagsInput({ initialTags = [] }: { initialTags?: string[] }) {
               }
             }}
             placeholder={t('fields.tagsPlaceholder')}
+            maxLength={LIMITS.tag}
             className="field"
           />
-          {open && suggestions.length > 0 && (
-            <ul className="absolute z-20 mt-1 max-h-48 w-full overflow-auto rounded-xl border border-border-muted bg-[var(--surface)] py-1 shadow-lg">
+          {showDropdown && (
+            // Se despliega hacia ARRIBA (bottom-full) para no desbordar la
+            // pantalla, ya que el campo está cerca del final del formulario.
+            <ul className="absolute bottom-full z-20 mb-1 max-h-48 w-full overflow-auto rounded-xl border border-border-muted bg-[var(--surface)] py-1 shadow-lg">
               {suggestions.map((s) => (
                 <li key={s.name}>
                   <button
@@ -132,6 +147,19 @@ export function TagsInput({ initialTags = [] }: { initialTags?: string[] }) {
                   </button>
                 </li>
               ))}
+              {canCreate && (
+                <li>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => add(input, input)}
+                    className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-neon-pink transition-colors hover:bg-[var(--glass-bg)]"
+                  >
+                    <Plus size={14} className="shrink-0" />
+                    <span className="truncate">{t('createTag', { tag: input.trim() })}</span>
+                  </button>
+                </li>
+              )}
             </ul>
           )}
         </div>

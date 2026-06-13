@@ -6,6 +6,7 @@ import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { translateItems } from '@/lib/ai/translate';
 import { externalSearch } from '@/lib/providers/search';
+import { LIMITS } from '@/lib/limits';
 
 export type NewRecState = { error?: string };
 
@@ -184,13 +185,20 @@ export async function createRecommendation(
   const urlRaw = String(formData.get('url') ?? '').trim();
   const tags = formData
     .getAll('tags')
-    .map((t) => norm(String(t)))
+    .map((t) => norm(String(t)).slice(0, LIMITS.tag))
     .filter(Boolean)
     .slice(0, 5);
 
   if (!title) return { error: 'titleRequired' };
   if (!categoryId) return { error: 'categoryRequired' };
   if (urlRaw && !/^https?:\/\//.test(urlRaw)) return { error: 'invalidUrl' };
+  if (
+    title.length > LIMITS.title ||
+    description.length > LIMITS.description ||
+    urlRaw.length > LIMITS.url
+  ) {
+    return { error: 'tooLong' };
+  }
 
   const supabase = await createClient();
   const {

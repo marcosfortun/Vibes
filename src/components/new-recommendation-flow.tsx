@@ -11,6 +11,7 @@ import {
   type NewRecState,
 } from '@/lib/actions/recommendations';
 import { TagsInput } from '@/components/tags-input';
+import { LIMITS } from '@/lib/limits';
 
 type Category = { id: string; name: string };
 type Prefill = {
@@ -289,6 +290,7 @@ function DetailsStep({
           type="text"
           name="title"
           required
+          maxLength={LIMITS.title}
           defaultValue={prefill.title}
           className="field"
         />
@@ -299,6 +301,7 @@ function DetailsStep({
         <textarea
           name="description"
           rows={3}
+          maxLength={LIMITS.description}
           defaultValue={prefill.description}
           className="field"
         />
@@ -310,6 +313,7 @@ function DetailsStep({
           type="url"
           name="url"
           inputMode="url"
+          maxLength={LIMITS.url}
           placeholder="https://"
           defaultValue={prefill.url}
           className="field"
