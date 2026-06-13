@@ -18,9 +18,11 @@ export default async function AppearancePage() {
     .eq('id', user!.id)
     .single();
 
+  // Mismo patrón que /friends y /admin/categories: la cabecera queda fija y la
+  // lista hace scroll hasta el borde inferior, donde el dock la difumina.
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 p-6">
-      <header className="page-header">
+    <main className="mx-auto -mb-28 flex h-[100dvh] w-full max-w-md flex-col gap-4 overflow-hidden px-6 pt-6">
+      <header className="page-header shrink-0">
         <BackButton href="/settings" label={t('back')} />
         <h1 className="page-title">{t('skins.title')}</h1>
       </header>

@@ -24,8 +24,8 @@ export function SkinSelector({ current }: { current: SkinStyle }) {
   }
 
   return (
-    <section className="flex flex-col gap-3">
-      <div className="flex flex-col gap-3">
+    <section className="flex min-h-0 w-full flex-1 flex-col">
+      <div className="flex flex-1 flex-col gap-3 overflow-y-auto pb-28 pr-1">
         {SKINS.map((skin) => {
           const isActive = skin.style === active;
           return (

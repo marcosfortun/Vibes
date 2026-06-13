@@ -23,10 +23,10 @@
 - El formulario para crear categoría ahora tiene su propia pantalla. Añadido botón "+" en la cabecera para crear una nueva categoría.
 - Al eliminar una categoría, te debe preguntar a qué otra categoría migrar las recomendaciones existentes que tengan la categoría que se va a eliminar.
 - La botonera que hay en la pantalla de ajustes, ahora tiene la misma estética que la botonera de la página de admin (icono, nombre y flechita)
+- El scroll en la lista de skins ya no hace desaparecer la cabecera (mismo patrón que amigos y categorías).
 
 **En proceso**:
 
-- El scroll en la lista de skins hace desaparecer la cabecera.
 
 **Pendiente**:
 
