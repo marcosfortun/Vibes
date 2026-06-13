@@ -1,20 +1,28 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 const MAX_TAGS = 5;
 
-type Suggestion = { name: string; uses: number };
+type Suggestion = { name: string; label: string; uses: number };
+type Tag = { name: string; label: string };
 
-// Campo de tags: texto libre (máx 5) con autocompletado basado en los tags ya
-// existentes, ordenados de mayor a menor uso. Cada tag se envía como un input
-// oculto name="tags" para que lo recoja la server action.
-export function TagsInput() {
+// Campo de tags: texto libre (máx 5) con autocompletado por uso (localizado).
+// Cada tag guarda su nombre canónico (en minúsculas, lo que se envía) y un
+// label localizado (lo que se muestra). Se envían como inputs ocultos name="tags".
+export function TagsInput({ initialTags = [] }: { initialTags?: string[] }) {
   const t = useTranslations('New');
-  const [tags, setTags] = useState<string[]>([]);
+  const locale = useLocale();
+  const [tags, setTags] = useState<Tag[]>(
+    initialTags
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .slice(0, MAX_TAGS)
+      .map((s) => ({ name: s.toLowerCase(), label: s })),
+  );
   const [input, setInput] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [open, setOpen] = useState(false);
@@ -23,34 +31,32 @@ export function TagsInput() {
   const full = tags.length >= MAX_TAGS;
 
   useEffect(() => {
-    if (full) {
-      setSuggestions([]);
-      return;
-    }
+    if (full) return; // con 5 tags el input no se muestra; add() ya limpia sugerencias
     const supabase = createClient();
     const handle = setTimeout(async () => {
       const { data } = await supabase.rpc('suggest_tags', {
         p_query: q,
         p_limit: 8,
+        p_locale: locale,
       });
       const list = ((data ?? []) as Suggestion[]).filter(
-        (s) => !tags.includes(s.name),
+        (s) => !tags.some((tg) => tg.name === s.name),
       );
       setSuggestions(list);
     }, 200);
     return () => clearTimeout(handle);
-  }, [q, full, tags]);
+  }, [q, full, tags, locale]);
 
-  function add(raw: string) {
-    const v = raw.trim().toLowerCase();
-    if (!v || tags.includes(v) || tags.length >= MAX_TAGS) return;
-    setTags([...tags, v]);
+  function add(name: string, label: string) {
+    const canonical = name.trim().toLowerCase();
+    if (!canonical || tags.some((t) => t.name === canonical) || full) return;
+    setTags([...tags, { name: canonical, label: label.trim() || canonical }]);
     setInput('');
     setSuggestions([]);
   }
 
-  function remove(tag: string) {
-    setTags(tags.filter((x) => x !== tag));
+  function remove(name: string) {
+    setTags(tags.filter((x) => x.name !== name));
   }
 
   return (
@@ -62,22 +68,21 @@ export function TagsInput() {
         </span>
       </span>
 
-      {/* Valores enviados en el submit */}
       {tags.map((tag) => (
-        <input key={tag} type="hidden" name="tags" value={tag} />
+        <input key={tag.name} type="hidden" name="tags" value={tag.name} />
       ))}
 
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
             <span
-              key={tag}
+              key={tag.name}
               className="inline-flex items-center gap-1 rounded-full border border-border-muted bg-[var(--field-bg)] px-2.5 py-1 text-sm text-foreground"
             >
-              {tag}
+              {tag.label}
               <button
                 type="button"
-                onClick={() => remove(tag)}
+                onClick={() => remove(tag.name)}
                 aria-label={t('fields.removeTag')}
                 className="text-muted transition-colors hover:text-neon-pink"
               >
@@ -102,9 +107,9 @@ export function TagsInput() {
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ',') {
                 e.preventDefault();
-                add(input);
+                add(input, input);
               } else if (e.key === 'Backspace' && !input && tags.length) {
-                remove(tags[tags.length - 1]);
+                remove(tags[tags.length - 1].name);
               }
             }}
             placeholder={t('fields.tagsPlaceholder')}
@@ -116,12 +121,11 @@ export function TagsInput() {
                 <li key={s.name}>
                   <button
                     type="button"
-                    // mousedown antes que blur para no cerrar la lista al clicar
                     onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => add(s.name)}
+                    onClick={() => add(s.name, s.label)}
                     className="flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left text-sm transition-colors hover:bg-[var(--glass-bg)]"
                   >
-                    <span className="truncate text-foreground">{s.name}</span>
+                    <span className="truncate text-foreground">{s.label}</span>
                     <span className="shrink-0 text-xs tabular-nums text-muted">
                       {s.uses}
                     </span>

@@ -99,6 +99,13 @@
       "tagsPlaceholder": "Ajoute une étiquette et appuie sur Entrée",
       "removeTag": "Retirer l'étiquette"
     },
+    "categoryPlaceholder": "Cherche une catégorie",
+    "changeCategory": "Changer",
+    "searchTitlePlaceholder": "Saisis le titre…",
+    "searching": "Recherche…",
+    "selectPrompt": "Sélectionne un résultat pour continuer",
+    "existingBadge": "Au catalogue",
+    "fromScratch": "Créer « {title} » de zéro",
     "errors": {
       "titleRequired": "Le titre est obligatoire.",
       "categoryRequired": "Choisis une catégorie.",

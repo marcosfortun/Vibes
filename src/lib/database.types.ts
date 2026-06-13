@@ -16,6 +16,8 @@ export type Database = {
           icon: string | null
           id: string
           name: string
+          name_i18n: Json | null
+          translated: boolean
         }
         Insert: {
           color?: string | null
@@ -23,6 +25,8 @@ export type Database = {
           icon?: string | null
           id?: string
           name: string
+          name_i18n?: Json | null
+          translated?: boolean
         }
         Update: {
           color?: string | null
@@ -30,8 +34,43 @@ export type Database = {
           icon?: string | null
           id?: string
           name?: string
+          name_i18n?: Json | null
+          translated?: boolean
         }
         Relationships: []
+      }
+      category_providers: {
+        Row: {
+          category_id: string
+          position: number
+          provider_id: string
+        }
+        Insert: {
+          category_id: string
+          position: number
+          provider_id: string
+        }
+        Update: {
+          category_id?: string
+          position?: number
+          provider_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_providers_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "category_providers_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       friendships: {
         Row: {
@@ -107,6 +146,27 @@ export type Database = {
           },
         ]
       }
+      providers: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+        }
+        Relationships: []
+      }
       recommendation_tags: {
         Row: {
           recommendation_id: string
@@ -143,9 +203,12 @@ export type Database = {
           created_at: string
           created_by: string
           description: string | null
+          description_i18n: Json | null
           global_score: number
           id: string
           title: string
+          title_i18n: Json | null
+          translated: boolean
           url: string | null
         }
         Insert: {
@@ -153,9 +216,12 @@ export type Database = {
           created_at?: string
           created_by: string
           description?: string | null
+          description_i18n?: Json | null
           global_score?: number
           id?: string
           title: string
+          title_i18n?: Json | null
+          translated?: boolean
           url?: string | null
         }
         Update: {
@@ -163,9 +229,12 @@ export type Database = {
           created_at?: string
           created_by?: string
           description?: string | null
+          description_i18n?: Json | null
           global_score?: number
           id?: string
           title?: string
+          title_i18n?: Json | null
+          translated?: boolean
           url?: string | null
         }
         Relationships: [
@@ -190,16 +259,22 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          name_i18n: Json | null
+          translated: boolean
         }
         Insert: {
           created_at?: string
           id?: string
           name: string
+          name_i18n?: Json | null
+          translated?: boolean
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
+          name_i18n?: Json | null
+          translated?: boolean
         }
         Relationships: []
       }
@@ -299,15 +374,33 @@ export type Database = {
       }
       create_recommendation: {
         Args: {
-          p_category?: string
-          p_description?: string
-          p_tags?: string[]
+          p_category: string
+          p_description: string
+          p_description_i18n: Json
+          p_tags?: Json
           p_title: string
-          p_url?: string
+          p_title_i18n: Json
+          p_translated: boolean
+          p_url: string
         }
         Returns: string
       }
       ensure_invite: { Args: never; Returns: string }
+      find_similar_in_category: {
+        Args: {
+          p_category: string
+          p_limit?: number
+          p_locale?: string
+          q: string
+          threshold?: number
+        }
+        Returns: {
+          id: string
+          similarity: number
+          title: string
+          title_i18n: Json
+        }[]
+      }
       find_similar_recommendations: {
         Args: { q: string; threshold?: number }
         Returns: {
@@ -339,8 +432,9 @@ export type Database = {
       remove_friend: { Args: { target_id: string }; Returns: undefined }
       revoke_invite: { Args: never; Returns: undefined }
       suggest_tags: {
-        Args: { p_limit?: number; p_query?: string }
+        Args: { p_limit?: number; p_locale?: string; p_query?: string }
         Returns: {
+          label: string
           name: string
           uses: number
         }[]

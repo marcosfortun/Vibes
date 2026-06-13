@@ -99,6 +99,13 @@
       "tagsPlaceholder": "Adicione uma etiqueta e pressione Enter",
       "removeTag": "Remover etiqueta"
     },
+    "categoryPlaceholder": "Busque uma categoria",
+    "changeCategory": "Alterar",
+    "searchTitlePlaceholder": "Escreva o título…",
+    "searching": "Buscando…",
+    "selectPrompt": "Selecione um resultado para continuar",
+    "existingBadge": "No catálogo",
+    "fromScratch": "Criar “{title}” do zero",
     "errors": {
       "titleRequired": "O título é obrigatório.",
       "categoryRequired": "Escolha uma categoria.",

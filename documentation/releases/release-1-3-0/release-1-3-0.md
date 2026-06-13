@@ -25,20 +25,16 @@
 - La botonera que hay en la pantalla de ajustes, ahora tiene la misma estética que la botonera de la página de admin (icono, nombre y flechita)
 - El scroll en la lista de skins ya no hace desaparecer la cabecera (mismo patrón que amigos y categorías).
 - Nuevo campo "tags" en crear recomendación (texto libre, máx. 5) con autocompletado ordenado por uso. Las etiquetas se muestran como chips de solo lectura en la ficha (entre valorar y guardar): 2 visibles con elipsis y un chip "…" que abre un popup con todas si hay más de 2. Retirado el botón de "más opciones" de la ficha.
+- Multi-idioma automático (en/es/fr/pt) en recomendaciones, categorías y tags: se traducen al crear (Claude Haiku, no gestionable por el usuario) y se muestran en el idioma del usuario; sin API key o si falla, `translated=false` y fallback al texto origen.
+- Categorías con lista de proveedores (0–3) para la búsqueda externa: catálogo TMDB/Steam/IA y asignación por categoría (sembrada; gestión visual en admin pendiente).
+- Crear recomendación en 2 pasos: (1) autocompletado de categoría + buscador de título que combina recomendaciones internas similares y resultados externos (TMDB/Steam/IA), top 8 por similitud, selección obligatoria (o "crear desde cero"); existente → a Mi Lista; externa → (2) formulario pre-rellenado y editable que al guardar traduce y crea.
 
 **En proceso**:
 
 
 **Pendiente**:
-
-- Mejorar el flujo de crear recomendación:
-  - Buscador por categoría y título. Se van mostrando resultados de una búsqueda en base a recomendaciones similares ya existentes y también de una búsqueda externa (IA, Google Search, IMDB, Steam, Wikiloc, etc). Obligatorio seleccionar un resultado para poder continuar.
-  - Si se ha seleccionado una recomendación ya existente, se añade a "mi lista" y hemos terminado.
-  - Si se ha seleccionado un resultado externo, mostrar el formulario con todos los datos ya completados (descripción, URL, etc). El usuario puede modificar cualquiera de los campos y guardar.
-    - En ese momento se traducen automáticamente todos los textos (título, descripción, etc). Se añade a "mi lista" y hemos terminado.
-- Especialización de las categorías:
-  - rango de precio
-  - localización
+- Proveedores por categoría: gestión visual desde el admin (hoy se siembran).
+- Búsqueda externa: añadir más adaptadores reales (IMDB/Filmaffinity/Wikiloc) además de TMDB/Steam/IA.
 
 - La sección "suerte" no carga.
 - Revisar sección "quedada".
@@ -49,3 +45,7 @@
 - Al eliminar una categoría la app pregunta al admin otra categoría para poder cambiar todas las recomendaciones con la categoría eliminada.
 - En la lista de tendencias el tiempo también debería influir en el orden.
 - Caché: categorías, idioma.
+
+- Especialización de las categorías:
+  - rango de precio
+  - localización

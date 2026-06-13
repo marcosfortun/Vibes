@@ -188,4 +188,39 @@ from (values
 join public.users u on u.email = v.email
 join public.recommendations r on r.title = v.title;
 
+-- 5) Proveedores por categoría (búsqueda externa del alta en 2 pasos).
+--    Las categorías son datos de runtime, por eso el mapeo por defecto vive aquí
+--    (no en la migración). Orden: menor position = se intenta primero.
+--    Cine/TV → [TMDB, IA]; Juegos → [Steam, IA]; resto → [IA].
+delete from public.category_providers
+  where category_id in (select id from public.categories);
+
+insert into public.category_providers (category_id, provider_id, position)
+select c.id, p.id, v.position
+from (values
+  ('Serie de televisión', 'tmdb', 1), ('Serie de televisión', 'ai', 2),
+  ('Película',            'tmdb', 1), ('Película',            'ai', 2),
+  ('Documental',          'tmdb', 1), ('Documental',          'ai', 2),
+  ('Videojuego',          'steam', 1), ('Videojuego',         'ai', 2),
+  ('Juego VR',            'steam', 1), ('Juego VR',           'ai', 2),
+  ('Juego de mesa',       'ai', 1),
+  ('Grupo de música',     'ai', 1),
+  ('Podcast',             'ai', 1),
+  ('Expo',                'ai', 1),
+  ('Festival',            'ai', 1),
+  ('Museo',               'ai', 1),
+  ('Lugar emblemático',   'ai', 1),
+  ('Monólogo',            'ai', 1),
+  ('Teatro',              'ai', 1),
+  ('Show',                'ai', 1),
+  ('Ruta de ciclismo',    'ai', 1),
+  ('Ruta de senderismo',  'ai', 1),
+  ('Vía ferrata',         'ai', 1),
+  ('Zona de baño',        'ai', 1),
+  ('Zona de escalada',    'ai', 1),
+  ('Zona de acampada',    'ai', 1)
+) as v(cat, kind, position)
+join public.categories c on c.name = v.cat
+join public.providers p on p.kind = v.kind;
+
 commit;

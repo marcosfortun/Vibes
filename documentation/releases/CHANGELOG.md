@@ -14,6 +14,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
 - **Infraestructura de email:** `src/lib/email/template.ts` (layout + primitivas) y `src/lib/email/resend.ts`; cliente service-role `src/lib/supabase/admin.ts` para leer los emails de los usuarios al notificar.
 
 ### Added
+- **Multi-idioma automático (en/es/fr/pt):** recomendaciones, categorías y tags se traducen al crear (Claude Haiku, server-side) y se muestran en el idioma del usuario. Sin `ANTHROPIC_API_KEY` o si la traducción falla, se marca `translated=false` y se hace fallback al texto origen al pintar. Columnas JSONB `*_i18n` + `translated` en `recommendations`, `categories` y `tags`.
+- **Proveedores por categoría:** catálogo `providers` (TMDB, Steam, IA) + relación `category_providers` (0–3, con orden). Alimentan la búsqueda externa del alta; se intentan por orden y, si fallan, la app sigue sin resultados externos.
+- **Alta de recomendación en 2 pasos:** (1) buscador con autocompletado de categoría + título que combina recomendaciones internas similares y resultados externos (TMDB/Steam/IA), top 8 por similitud, selección obligatoria (o "crear desde cero"); seleccionar una existente la añade a Mi Lista; seleccionar una externa lleva a (2) un formulario pre-rellenado y editable que, al guardar, traduce y crea.
 - **Tags de recomendaciones:** nuevo campo de etiquetas (texto libre, máx. 5) en el formulario de creación, con autocompletado basado en las etiquetas existentes ordenadas por frecuencia de uso. En las fichas, las etiquetas aparecen como chips de solo lectura entre los botones de valorar y guardar: se muestran 2 (con ancho máximo y elipsis) y, si hay más, un chip «…» que abre un popup con todas. Se retira el botón de «más opciones» de la ficha.
 
 ### Changed
@@ -45,6 +48,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
   - Retirada de `add_friend`; política `users_select` sin `is_searchable`.
 - Migración `20260613120000_admin_delete_category.sql`: RPC `admin_delete_category(p_category, p_migrate_to)` (`SECURITY DEFINER`, solo admin) que migra las recomendaciones de una categoría a otra y la elimina de forma atómica.
 - Migración `20260613130000_recommendation_tags.sql`: tablas `tags` y `recommendation_tags` (catálogo compartido, RLS de solo lectura), más RPCs `suggest_tags` (autocompletado por uso) y `create_recommendation` (alta + enlazado de hasta 5 tags, `SECURITY DEFINER`).
+- Migraciones `20260613140000`–`20260613140300`: columnas i18n (`*_i18n` + `translated`) en `recommendations`/`categories`/`tags`; tablas `providers` + `category_providers` (RLS de solo lectura, seed del catálogo); RPCs v2 `create_recommendation` (i18n + tags i18n), `suggest_tags` (con locale) y `find_similar_in_category`.
 
 ### Config
 - `supabase/config.toml`: `[auth.email.template.recovery]` (asunto + `content_path`) para el correo de reset con estética Vibes.

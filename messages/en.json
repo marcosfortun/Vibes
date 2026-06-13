@@ -99,6 +99,13 @@
       "tagsPlaceholder": "Add a tag and press Enter",
       "removeTag": "Remove tag"
     },
+    "categoryPlaceholder": "Search for a category",
+    "changeCategory": "Change",
+    "searchTitlePlaceholder": "Type the title…",
+    "searching": "Searching…",
+    "selectPrompt": "Select a result to continue",
+    "existingBadge": "In catalog",
+    "fromScratch": "Create “{title}” from scratch",
     "errors": {
       "titleRequired": "Title is required.",
       "categoryRequired": "Pick a category.",
