@@ -53,6 +53,7 @@
       "invalidCredentials": "Correo o contraseña incorrectos.",
       "usernameRequired": "El nombre de usuario es obligatorio.",
       "inviteRequired": "Se requiere un token de invitación.",
+      "usernameTaken": "Ese nombre de usuario ya está en uso. Elige otro.",
       "signupFailed": "No se pudo completar el registro. Comprueba tu invitación.",
       "inviteInvalid": "Este enlace de invitación no es válido o ha caducado.",
       "weakPassword": "La contraseña debe tener al menos 8 caracteres.",

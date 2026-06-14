@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
+import { logSupabaseError } from '@/lib/supabase/log';
 import { SignupForm } from './signup-form';
 import { BrandLogo } from '@/components/brand-logo';
 import { InstallButtonFloating } from '@/components/install-button';
@@ -14,9 +15,10 @@ export default async function SignupPage(props: PageProps<'/signup'>) {
   let tokenValid = false;
   if (inviteToken) {
     const supabase = await createClient();
-    const { data } = await supabase.rpc('invite_token_valid', {
+    const { data, error } = await supabase.rpc('invite_token_valid', {
       t: inviteToken,
     });
+    logSupabaseError('SignupPage.invite_token_valid', error);
     tokenValid = Boolean(data);
   }
 

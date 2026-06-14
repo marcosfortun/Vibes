@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
+import { logSupabaseError } from '@/lib/supabase/log';
 import { AcceptInvitation } from '@/components/accept-invitation';
 import { BrandLogo } from '@/components/brand-logo';
 
@@ -21,7 +22,10 @@ export default async function InvitePage(props: PageProps<'/invite/[token]'>) {
   const supabase = await createClient();
 
   // invite_info devuelve 0 filas si el token no es válido (no expone email).
-  const { data: info } = await supabase.rpc('invite_info', { t: token });
+  const { data: info, error: infoError } = await supabase.rpc('invite_info', {
+    t: token,
+  });
+  logSupabaseError('InvitePage.invite_info', infoError);
   const host = info?.[0];
 
   if (!host) {
