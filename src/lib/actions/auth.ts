@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation';
 import { cookies, headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
+import { logSupabaseError } from '@/lib/supabase/log';
 import { isLocale, LOCALE_COOKIE } from '@/i18n/config';
 import { sendWelcomeEmail } from '@/lib/email/resend';
 
@@ -69,10 +70,21 @@ export async function signup(
   const supabase = await createClient();
 
   // Validación previa del token para dar un error claro (en vez del genérico del trigger).
-  const { data: tokenValid } = await supabase.rpc('invite_token_valid', {
-    t: inviteToken,
-  });
+  const { data: tokenValid, error: tokenError } = await supabase.rpc(
+    'invite_token_valid',
+    { t: inviteToken },
+  );
+  logSupabaseError('signup.invite_token_valid', tokenError);
   if (!tokenValid) return { error: 'inviteInvalid' };
+
+  // Comprobación de disponibilidad de username antes de llegar al trigger (que
+  // devolvería un unexpected_failure genérico en caso de colisión de unicidad).
+  const { data: usernameOk, error: usernameError } = await supabase.rpc(
+    'username_available',
+    { u: username },
+  );
+  logSupabaseError('signup.username_available', usernameError);
+  if (!usernameOk) return { error: 'usernameTaken' };
 
   const { error } = await supabase.auth.signUp({
     email,
@@ -80,8 +92,12 @@ export async function signup(
     options: { data: { username, invite_token: inviteToken, language } },
   });
 
-  // El trigger handle_new_user valida el token; si falla, Supabase devuelve error genérico.
-  if (error) return { error: 'signupFailed' };
+  // El trigger handle_new_user valida el token; si falla, Supabase devuelve error
+  // genérico (el detalle vive en los Postgres logs de Supabase, no aquí).
+  if (error) {
+    logSupabaseError('signup.signUp', error);
+    return { error: 'signupFailed' };
+  }
 
   await sendWelcomeEmail({ email, username, language: langRaw });
 

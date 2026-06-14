@@ -53,6 +53,7 @@
       "invalidCredentials": "Incorrect email or password.",
       "usernameRequired": "Username is required.",
       "inviteRequired": "An invitation token is required.",
+      "usernameTaken": "That username is already taken. Please choose another.",
       "signupFailed": "Could not complete sign up. Check your invitation.",
       "inviteInvalid": "This invitation link is invalid or has expired.",
       "weakPassword": "Password must be at least 8 characters.",

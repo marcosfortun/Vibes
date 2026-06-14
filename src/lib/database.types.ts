@@ -439,6 +439,7 @@ export type Database = {
           uses: number
         }[]
       }
+      username_available: { Args: { u: string }; Returns: boolean }
     }
     Enums: {
       app_language: "en" | "es" | "fr" | "pt"

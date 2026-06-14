@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
+import { logSupabaseError } from '@/lib/supabase/log';
 import { translateItems } from '@/lib/ai/translate';
 
 export type CategoryState = { error?: string; ok?: boolean };
@@ -33,6 +34,7 @@ export async function createCategory(
   });
 
   if (error) {
+    logSupabaseError('createCategory.categories.insert', error);
     return { error: error.code === '23505' ? 'duplicate' : 'failed' };
   }
 
@@ -47,10 +49,11 @@ export async function createCategory(
 // atómicamente en el RPC admin_delete_category (SECURITY DEFINER, valida admin).
 export async function deleteCategory(id: string, targetId?: string) {
   const supabase = await createClient();
-  await supabase.rpc('admin_delete_category', {
+  const { error } = await supabase.rpc('admin_delete_category', {
     p_category: id,
     p_migrate_to: targetId ?? undefined,
   });
+  logSupabaseError('deleteCategory.admin_delete_category', error);
   revalidatePath('/admin/categories');
   revalidatePath('/new');
 }

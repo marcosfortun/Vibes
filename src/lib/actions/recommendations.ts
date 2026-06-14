@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
+import { logSupabaseError } from '@/lib/supabase/log';
 import { translateItems } from '@/lib/ai/translate';
 import { externalSearch } from '@/lib/providers/search';
 import { LIMITS } from '@/lib/limits';
@@ -78,13 +79,17 @@ export async function searchCandidates(
   const locale = await getLocale();
 
   // Internas (misma categoría, por similitud trigram sobre el título localizado).
-  const { data: internalRows } = await supabase.rpc('find_similar_in_category', {
-    q,
-    p_category: categoryId,
-    p_locale: locale,
-    threshold: 0.15,
-    p_limit: 8,
-  });
+  const { data: internalRows, error: internalError } = await supabase.rpc(
+    'find_similar_in_category',
+    {
+      q,
+      p_category: categoryId,
+      p_locale: locale,
+      threshold: 0.15,
+      p_limit: 8,
+    },
+  );
+  logSupabaseError('searchCandidates.find_similar_in_category', internalError);
 
   const internal: Candidate[] = (internalRows ?? []).map((r) => {
     const title = pick(
@@ -245,14 +250,18 @@ export async function createRecommendation(
     p_translated: ok,
     p_tags: pTags,
   });
-  if (error || !recId) return { error: 'createFailed' };
+  if (error || !recId) {
+    logSupabaseError('createRecommendation.create_recommendation', error);
+    return { error: 'createFailed' };
+  }
 
-  await supabase.from('user_interactions').insert({
+  const { error: saveError } = await supabase.from('user_interactions').insert({
     user_id: user.id,
     recommendation_id: recId,
     saved: true,
     rating: null,
   });
+  logSupabaseError('createRecommendation.user_interactions.insert', saveError);
 
   revalidatePath('/');
   redirect('/');
