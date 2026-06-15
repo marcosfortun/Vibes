@@ -12,7 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
-const HIDDEN_ON = ['/login', '/signup', '/forgot', '/update-password'];
+const HIDDEN_ON = ['/login', '/signup', '/welcome'];
 
 export function BottomDock() {
   const pathname = usePathname();

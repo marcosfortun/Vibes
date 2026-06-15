@@ -61,18 +61,15 @@ export function skinFor(style: SkinStyle): Skin {
   return SKINS.find((s) => s.style === style) ?? SKINS[0];
 }
 
-export const DEFAULT_SKIN: SkinStyle = 'cyberbotanical';
+// Skin por defecto cuando no hay preferencia (ni en BD ni en localStorage):
+// "Stick stack" (neobrutalism). Es la skin de marca de la app multi-estilo.
+export const DEFAULT_SKIN: SkinStyle = 'neobrutalism';
 
 // Clave de localStorage donde se persiste la skin (sobrevive al logout).
 export const SKIN_STORAGE_KEY = 'vibes-skin';
 
 export function isSkinStyle(value: unknown): value is SkinStyle {
   return SKINS.some((s) => s.style === value);
-}
-
-// Elige una skin al azar (se usa cuando el usuario no tiene ninguna fijada).
-export function randomSkinStyle(): SkinStyle {
-  return SKINS[Math.floor(Math.random() * SKINS.length)].style;
 }
 
 // Normaliza un valor arbitrario (p. ej. de BD) a una skin válida.

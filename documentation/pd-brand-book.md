@@ -2,63 +2,111 @@
 
 **Autor:** Marcos Fortún
 
-**Fecha:** 28 de mayo de 2026
+**Proyecto:** Vibes — Plataforma de Recomendación de Ocio para Grupos Cerrados
 
-**Proyecto:** Vibes - Plataforma de Recomendación de Ocio para Grupos Cerrados
+> Nota de versión: este manual se reescribe en la release 1.4.0. La identidad de
+> Vibes deja de girar en torno a un único estilo ("La vie en rose") y adopta el
+> concepto **camaleón**: una app de múltiples estilos que se adapta a los gustos
+> de cada usuario. "La vie en rose" pasa a ser **una** de las skins disponibles.
 
 ---
 
 ## 1. Introducción y Filosofía del Proyecto
 
-El proyecto **Vibes** nace no solo como una solución de ingeniería de software para optimizar y centralizar el consumo de ocio en un grupo cerrado de amigos, sino también como una obra independiente (*indie app*) con una marcada impronta de autor. Al tratarse de un entorno controlado, alejado de las dinámicas comerciales y de captación masiva del software tradicional, la identidad visual y el *branding* se permiten licencias expresivas únicas, cargadas de simbolismo personal y metáforas conceptuales profundas.
+**Vibes** nace como una solución de ingeniería para centralizar y optimizar el
+consumo de ocio en un grupo cerrado de amigos, pero también como una obra de autor
+(*indie app*). Al ser un entorno controlado, alejado de la captación masiva, la
+identidad visual se permite licencias expresivas y simbolismo personal.
+
+A partir de la 1.4.0, esa libertad expresiva se formaliza en una tesis de producto:
+**la interfaz no impone un estilo, lo elige el usuario.** Vibes es un camaleón.
 
 ---
 
 ## 2. Elección del Nombre: Vibes
 
-La evolución de la marca desde el nombre técnico inicial "VibeCheck" hacia el definitivo **Vibes** responde a una necesidad de síntesis, minimalismo y elegancia tipográfica. Las razones estratégicas de esta elección comprenden:
+La evolución desde "VibeCheck" hacia **Vibes** responde a síntesis y elegancia:
 
-* **Alineación Generacional:** Evoca un entorno casual, joven y directo, eliminando barreras corporativas y adaptándose al lenguaje nativo del grupo de amigos.
-* **Sustento Algorítmico:** El término hace referencia directa al núcleo del MVP: medir las vibraciones y afinidades colectivas. Herramientas como el algoritmo de consenso grupal para organizar quedadas consisten, en su esencia, en un balance de las "vibraciones" y afinidades de los integrantes en tiempo real.
-* **Impacto Estructural:** La introducción de la **V** mayúscula inicial confiere estabilidad, autoridad visual y un eje geométrico vertical sumamente potente, ideal para la construcción del isotipo.
-
----
-
-## 3. Sistema Visual y Dirección de Arte
-
-### 3.1 Estilo Cyber-Botanical (Tech-Organic)
-
-La interfaz de usuario implementa una dirección de arte disruptiva denominada **Cyber-Botanical** o **Tech-Organic**. Este estilo se caracteriza por la colisión controlada entre dos mundos aparentemente opuestos: la rigidez geométrica del software oscuro (*Dark Mode*, efectos de *Glassmorphism*, luces de neón sintéticas de inspiración *Synthwave*) y la fluidez orgánica de la naturaleza.
-
-### 3.2 Paleta de Colores Justificada
-
-Lejos de ser una decisión puramente arbitraria, el esquema cromático se apoya en un contraste binario de alta intensidad luminosa sobre fondo negro puro:
-
-* **Rosa Neón (Vibrancia y Tecnología):** Representa el dinamismo de las interacciones, el pulso eléctrico de los votos individuales y la modernidad de la infraestructura técnica (Next.js, Supabase, Vercel). Es el color de la acción y del factor humano.
-* **Verde Neón (Crecimiento y Naturaleza):** Simboliza el desarrollo del catálogo, la evolución del algoritmo de afinidad asimétrica que crece orgánicamente con el uso, y la frescura botánica que sirve como firma del autor. Es el color de la estabilidad y el ecosistema compartido.
+* **Alineación generacional:** entorno casual, joven y directo.
+* **Sustento algorítmico:** el núcleo del producto mide las "vibraciones" y
+  afinidades colectivas (consenso grupal para organizar quedadas).
+* **Impacto estructural:** la **V** mayúscula aporta un eje geométrico vertical
+  potente, ideal para el isotipo.
 
 ---
 
-## 4. Logotipo e Isotipo Central: La V Foliar
+## 3. El Concepto Camaleón (núcleo de marca)
 
-El logotipo definitivo consagra formalmente la identidad *Tech-Organic*. El análisis de su anatomía revela una integración simbiótica impecable:
+La marca Vibes no es un único lenguaje visual sino un **sistema de skins**
+intercambiables. Cada skin es una dirección de arte completa y coherente (color,
+tipografía, forma, sombra, radios) aplicada mediante el atributo `data-skin` en la
+raíz del documento y un juego de variables CSS por estilo (`globals.css`).
 
-* **El Trazo Izquierdo (La Rigidez):** Un vector rectilíneo y grueso en rosa neón que ancla el logotipo al mundo digital, simulando la precisión de una línea de código.
-* **El Trazo Derecho (La Fluidez):** Una línea verde neón que abandona la geometría estricta para curvarse hacia arriba, transformándose orgánicamente en una hoja nervada y culminando en el capullo de una rosa iluminada.
+Justificación conceptual: el ocio es identidad personal. Igual que cada amigo del
+grupo tiene un gusto distinto, la app se **mimetiza** con quien la usa. El camaleón
+no diluye la marca: la marca *es* la capacidad de adaptarse manteniendo el mismo
+esqueleto funcional (las mismas tarjetas, el mismo dock, el mismo isotipo "V").
 
-### 4.1 El Guiño del Autor y su Traducción Conceptual
+La skin viaja con el usuario más allá de la pantalla: **los correos** (bienvenida,
+nueva amistad) se renderizan en la skin activa del destinatario, de modo que la
+experiencia es coherente dentro y fuera de la app.
 
-La inclusión del elemento botánico (la rosa) nace de una pasión personal del autor por las plantas, las flores y el medio natural. En un producto comercial masivo, este rasgo podría considerarse fuera de lugar; en Vibes, se convierte en el alma de la aplicación. Para dotar a este guiño de coherencia arquitectónica, se establece un paralelismo directo entre los ciclos biológicos y los flujos de datos del sistema:
+### 3.1 Skin por defecto
 
-| Concepto Botánico | Equivalencia en el MVP (Flujo Técnico) |
+Cuando no hay preferencia (ni en BD ni en localStorage), Vibes se presenta en
+**Stick stack** (`neobrutalism`): es la cara de marca por defecto y la que viste los
+correos de sistema (OTP) durante el alta, antes de que el usuario elija la suya.
+
+---
+
+## 4. Catálogo de Skins
+
+| Técnico (`users.skin`) | Comercial | Dirección de arte |
+| --- | --- | --- |
+| `neobrutalism` | **Stick stack** | Neobrutalismo: bordes negros gruesos, sombras duras desplazadas, lima + magenta de alto contraste sobre crema. *(Skin por defecto.)* |
+| `cyberbotanical` | **La vie en rose** | Cyber-Botanical: dark mode, glassmorphism y neón synthwave (rosa + verde) sobre negro puro. La identidad original de Vibes. |
+| `flat design` | **Speciality popcorn** | Flat design: superficies planas, azul índigo profundo y coral, sin glow. |
+| `minimal` | **Simple man** | Minimalista claro y neutro: gris/blanco, acentos sobrios, sin neón. |
+| `pixel art` | **PICO-8 pop** | Retro 8-bit: fondo verde azulado, amarillo de acento, tipografía monoespaciada, esquinas rectas. |
+
+Cada skin define su propia paleta, tipografía (`--app-font`), radio de tarjeta y
+tratamiento de borde/sombra. Al añadir una skin nueva: ampliar `SKINS` en
+`src/lib/skins.ts`, su bloque `[data-skin="…"]` en `globals.css`, el CHECK
+`users_skin_valid` en migración y su paleta de correo en `src/lib/email/palettes.ts`.
+
+---
+
+## 5. La skin "La vie en rose" (Cyber-Botanical) — legado de autor
+
+La dirección original sigue viva como skin propia. Su simbología:
+
+* **Rosa neón:** dinamismo de las interacciones, pulso de los votos, modernidad
+  técnica. El color de la acción y del factor humano.
+* **Verde neón:** crecimiento del catálogo, evolución del algoritmo de afinidad y
+  firma botánica del autor. El color del ecosistema compartido.
+
+### 5.1 La V Foliar
+
+El isotipo integra rigidez digital y fluidez orgánica: un trazo izquierdo recto en
+rosa (línea de código) y un trazo derecho verde que se curva en hoja nervada hasta
+el capullo de una rosa. Cada skin reinterpreta el isotipo con sus propios assets
+(`/logo-<skin>.png`, `/icon-<skin>.png`).
+
+### 5.2 Paralelismo botánico (modelo mental del MVP)
+
+| Concepto botánico | Equivalencia en el producto |
 | --- | --- |
-| **La Semilla** | El estado **"Mi Lista"** (`status = 'saved'`). Un ítem de ocio latente depositado por el usuario, a la espera de ser consumido y florecer en una interacción real. |
-| **El Crecimiento y Ramificación** | El **Algoritmo de Afinidad Dinámica Asimétrica**. Las relaciones entre amigos no son estáticas; crecen, mutan y se ramifican de forma bidireccional mediante el *trigger* de interacciones coincidente. |
-| **El Huerto Comunitario** | El **Catálogo Neutro Descentralizado**. Un terreno común donde todos los usuarios siembran recomendaciones sin marcas públicas de autoría, aislando la privacidad del grupo y enriqueciendo el suelo colectivo de forma anónima. |
-| **La Polinización** | El **Módulo "Organizar Quedada"**. El cruce y entretejido instantáneo de las listas y afinidades de los asistentes para arrojar un fruto óptimo: el Top 3 de recomendaciones colectivas. |
+| **La semilla** | "Mi Lista" (`saved`): ocio latente a la espera de florecer. |
+| **Crecimiento y ramificación** | Algoritmo de afinidad dinámica asimétrica. |
+| **El huerto comunitario** | Catálogo neutro descentralizado, sin autoría pública. |
+| **La polinización** | "Organizar Quedada": cruce de listas y afinidades → Top 3. |
 
 ---
 
-## 5. Conclusión
+## 6. Conclusión
 
-El *branding* de Vibes demuestra que el desarrollo técnico y la sensibilidad estética/personal no son excluyentes. El logo electo condensa con precisión quirúrgica el propósito de la app: un ecosistema tecnológico vivo, alimentado por la amistad y los gustos compartidos, protegido bajo una capa de diseño vanguardista y único.
+Vibes demuestra que técnica y sensibilidad estética no son excluyentes. Con el
+concepto camaleón, la marca se redefine: no es un color ni un estilo, sino un
+ecosistema vivo que se adapta a cada persona del grupo manteniendo intacta su alma
+funcional y su isotipo. La identidad de Vibes es, precisamente, su capacidad de ser
+muchas y seguir siendo una.

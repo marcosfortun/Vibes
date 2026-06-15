@@ -23,43 +23,43 @@
   },
   "Auth": {
     "email": "E-mail",
-    "password": "Senha",
     "logout": "Sair",
-    "forgotLink": "Esqueceu a senha?",
+    "codeLabel": "Código de 6 dígitos",
     "login": {
       "title": "Entrar",
-      "submit": "Entrar",
-      "needInvite": "Não tem conta?"
-    },
-    "forgot": {
-      "title": "Redefinir senha",
-      "hint": "Digite seu e-mail e enviaremos um link.",
-      "submit": "Enviar link",
-      "sent": "Se esse e-mail existir, enviamos um link."
-    },
-    "update": {
-      "title": "Nova senha",
-      "submit": "Atualizar senha"
+      "hint": "Enviaremos um código de uso único para o seu e-mail.",
+      "sendCode": "Enviar código",
+      "verifyHint": "Digite o código que enviamos para {email}.",
+      "verify": "Entrar",
+      "resend": "Reenviar código"
     },
     "signup": {
       "title": "Criar conta",
       "username": "Nome de usuário",
-      "submit": "Criar conta",
+      "hint": "Enviaremos um código de uso único para validar o seu e-mail.",
+      "sendCode": "Enviar código",
+      "verifyHint": "Digite o código que enviamos para {email}.",
+      "verify": "Verificar e continuar",
+      "resend": "Reenviar código",
       "needInvite": "Você precisa de um link de convite para se registrar.",
       "invalidInvite": "Este link de convite é inválido ou expirou.",
       "haveAccount": "Já tem conta?"
     },
     "errors": {
-      "invalidCredentials": "E-mail ou senha incorretos.",
+      "emailRequired": "Digite seu e-mail.",
+      "codeRequired": "Digite o código que enviamos.",
+      "invalidCode": "O código está incorreto ou expirou.",
       "usernameRequired": "O nome de usuário é obrigatório.",
       "inviteRequired": "É necessário um token de convite.",
       "usernameTaken": "Esse nome de usuário já está em uso. Escolha outro.",
       "signupFailed": "Não foi possível concluir o registro. Verifique seu convite.",
-      "inviteInvalid": "Este link de convite é inválido ou expirou.",
-      "weakPassword": "A senha deve ter pelo menos 8 caracteres.",
-      "updateFailed": "Não foi possível atualizar a senha.",
-      "noSession": "O link de recuperação é inválido ou expirou."
+      "inviteInvalid": "Este link de convite é inválido ou expirou."
     }
+  },
+  "Welcome": {
+    "title": "Escolha seu estilo",
+    "subtitle": "O Vibes se adapta a você. Pode mudar quando quiser no seu perfil.",
+    "continue": "Começar"
   },
   "Install": {
     "install": "Instalar Vibes",

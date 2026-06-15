@@ -1,13 +1,27 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { cookies, headers } from 'next/headers';
+import { revalidatePath } from 'next/cache';
+import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { logSupabaseError } from '@/lib/supabase/log';
 import { isLocale, LOCALE_COOKIE } from '@/i18n/config';
 import { sendWelcomeEmail } from '@/lib/email/resend';
+import { isSkinStyle } from '@/lib/skins';
 
-export type AuthState = { error?: string; sent?: boolean };
+// Auth sin contraseñas: Email OTP (código de un solo uso de 6 dígitos, caduca a
+// la hora). Login y signup son formularios de dos pasos despachados por el campo
+// oculto `step`:
+//   step 'request' → se valida y se envía el código al correo.
+//   step 'verify'  → se introduce el código y se abre sesión.
+export type AuthState = {
+  step?: 'request' | 'verify';
+  email?: string;
+  next?: string;
+  error?: string;
+};
+
+const ONE_YEAR = 60 * 60 * 24 * 365;
 
 // Solo admite rutas internas absolutas; evita open-redirect (//host, http://…).
 function safeNext(value: unknown): string {
@@ -16,131 +30,186 @@ function safeNext(value: unknown): string {
   return '/';
 }
 
+// Sincroniza la cookie de idioma con la preferencia del perfil tras iniciar sesión.
+async function syncLocaleFromProfile(userId: string) {
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from('users')
+    .select('language')
+    .eq('id', userId)
+    .single();
+  if (isLocale(profile?.language)) {
+    const store = await cookies();
+    store.set(LOCALE_COOKIE, profile!.language, { path: '/', maxAge: ONE_YEAR });
+  }
+}
+
+// type 'email' es el válido para los códigos OTP enviados por signInWithOtp.
+async function verifyAndOpenSession(
+  email: string,
+  token: string,
+): Promise<{ userId: string } | { error: string }> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: 'email',
+  });
+  if (error || !data.user) {
+    logSupabaseError('verifyOtp', error);
+    return { error: 'invalidCode' };
+  }
+  await syncLocaleFromProfile(data.user.id);
+  return { userId: data.user.id };
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// LOGIN — usuario existente.
+// ─────────────────────────────────────────────────────────────────────────
 export async function login(
   _prev: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
-  const email = String(formData.get('email') ?? '');
-  const password = String(formData.get('password') ?? '');
+  const step = String(formData.get('step') ?? 'request');
+  const email = String(formData.get('email') ?? '').trim().toLowerCase();
   const next = safeNext(formData.get('next'));
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  // Respuesta opaca: nunca distinguimos email inexistente de contraseña incorrecta.
-  if (error) return { error: 'invalidCredentials' };
-
-  // Sincroniza el idioma de la interfaz con la preferencia del perfil.
-  if (data.user) {
-    const { data: profile } = await supabase
-      .from('users')
-      .select('language')
-      .eq('id', data.user.id)
-      .single();
-    if (isLocale(profile?.language)) {
-      const store = await cookies();
-      store.set(LOCALE_COOKIE, profile!.language, {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 365,
-      });
-    }
+  if (step === 'verify') {
+    const token = String(formData.get('token') ?? '').trim();
+    if (!token) return { step: 'verify', email, next, error: 'codeRequired' };
+    const res = await verifyAndOpenSession(email, token);
+    if ('error' in res) return { step: 'verify', email, next, error: res.error };
+    redirect(next);
   }
 
-  redirect(next);
+  // step 'request': enviar el código. Respuesta opaca: nunca revelamos si el
+  // email existe (se avanza a 'verify' aunque el usuario no exista).
+  if (!email) return { step: 'request', next, error: 'emailRequired' };
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: { shouldCreateUser: false },
+  });
+  if (error) logSupabaseError('login.signInWithOtp', error);
+
+  return { step: 'verify', email, next };
 }
 
+// ─────────────────────────────────────────────────────────────────────────
+// SIGNUP — alta invite-only. El trigger handle_new_user crea public.users a
+// partir de raw_user_meta_data (username, invite_token, language) y valida el
+// token. La amistad se crea después, al aceptar la invitación.
+// ─────────────────────────────────────────────────────────────────────────
 export async function signup(
   _prev: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
-  const email = String(formData.get('email') ?? '');
-  const password = String(formData.get('password') ?? '');
+  const step = String(formData.get('step') ?? 'request');
+  const email = String(formData.get('email') ?? '').trim().toLowerCase();
+  const next = safeNext(formData.get('next'));
+
+  if (step === 'verify') {
+    const token = String(formData.get('token') ?? '').trim();
+    if (!token) return { step: 'verify', email, next, error: 'codeRequired' };
+    const res = await verifyAndOpenSession(email, token);
+    if ('error' in res) return { step: 'verify', email, next, error: res.error };
+    // Elección de skin (paso final del alta) y, tras ella, el destino original.
+    redirect(`/welcome?next=${encodeURIComponent(next)}`);
+  }
+
+  // Reenvío: el usuario ya se creó al pedir el primer código, así que reenviamos
+  // sin re-validar invitación/username (evita el falso "username en uso").
+  if (step === 'resend') {
+    if (!email) return { step: 'request', email, next, error: 'emailRequired' };
+    const supabase = await createClient();
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: false },
+    });
+    if (error) logSupabaseError('signup.resend.signInWithOtp', error);
+    return { step: 'verify', email, next };
+  }
+
+  // step 'request': validar invitación + username y enviar el código.
   const username = String(formData.get('username') ?? '').trim();
   const inviteToken = String(formData.get('invite_token') ?? '').trim();
   const langRaw = String(formData.get('language') ?? '');
   const language = isLocale(langRaw) ? langRaw : undefined;
-  const next = safeNext(formData.get('next'));
 
-  if (!username) return { error: 'usernameRequired' };
-  if (!inviteToken) return { error: 'inviteRequired' };
+  if (!email) return { step: 'request', email, next, error: 'emailRequired' };
+  if (!username) return { step: 'request', email, next, error: 'usernameRequired' };
+  if (!inviteToken) return { step: 'request', email, next, error: 'inviteRequired' };
 
   const supabase = await createClient();
 
-  // Validación previa del token para dar un error claro (en vez del genérico del trigger).
   const { data: tokenValid, error: tokenError } = await supabase.rpc(
     'invite_token_valid',
     { t: inviteToken },
   );
   logSupabaseError('signup.invite_token_valid', tokenError);
-  if (!tokenValid) return { error: 'inviteInvalid' };
+  if (!tokenValid) return { step: 'request', email, next, error: 'inviteInvalid' };
 
-  // Comprobación de disponibilidad de username antes de llegar al trigger (que
-  // devolvería un unexpected_failure genérico en caso de colisión de unicidad).
   const { data: usernameOk, error: usernameError } = await supabase.rpc(
     'username_available',
     { u: username },
   );
   logSupabaseError('signup.username_available', usernameError);
-  if (!usernameOk) return { error: 'usernameTaken' };
+  if (!usernameOk) return { step: 'request', email, next, error: 'usernameTaken' };
 
-  const { error } = await supabase.auth.signUp({
+  const { error } = await supabase.auth.signInWithOtp({
     email,
-    password,
-    options: { data: { username, invite_token: inviteToken, language } },
+    options: {
+      shouldCreateUser: true,
+      data: { username, invite_token: inviteToken, language },
+    },
   });
-
-  // El trigger handle_new_user valida el token; si falla, Supabase devuelve error
-  // genérico (el detalle vive en los Postgres logs de Supabase, no aquí).
   if (error) {
-    logSupabaseError('signup.signUp', error);
-    return { error: 'signupFailed' };
+    logSupabaseError('signup.signInWithOtp', error);
+    return { step: 'request', email, next, error: 'signupFailed' };
   }
 
-  await sendWelcomeEmail({ email, username, language: langRaw });
-
-  // Tras el alta volvemos al destino (normalmente /invite/<token>) para que el
-  // nuevo usuario acepte explícitamente la invitación (la amistad ya no es
-  // automática en el alta).
-  redirect(next);
+  return { step: 'verify', email, next };
 }
 
-export async function requestPasswordReset(
-  _prev: AuthState,
-  formData: FormData,
-): Promise<AuthState> {
-  const email = String(formData.get('email') ?? '');
-  const origin =
-    (await headers()).get('origin') ?? 'http://localhost:3000';
-
-  const supabase = await createClient();
-  await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/callback?next=/update-password`,
-  });
-
-  // Respuesta opaca: no revelamos si el email existe.
-  return { sent: true };
-}
-
-export async function updatePassword(
-  _prev: AuthState,
-  formData: FormData,
-): Promise<AuthState> {
-  const password = String(formData.get('password') ?? '');
-  if (password.length < 8) return { error: 'weakPassword' };
+// Paso final del alta: guardar la skin elegida y enviar el correo de bienvenida
+// (con esa skin). Se invoca desde /welcome.
+export async function finishOnboarding(formData: FormData): Promise<void> {
+  const skin = String(formData.get('skin') ?? '');
+  const next = safeNext(formData.get('next'));
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: 'noSession' };
+  if (!user) redirect('/login');
 
-  const { error } = await supabase.auth.updateUser({ password });
-  if (error) return { error: 'updateFailed' };
+  if (isSkinStyle(skin)) {
+    const { error } = await supabase
+      .from('users')
+      .update({ skin })
+      .eq('id', user.id);
+    logSupabaseError('finishOnboarding.users.update', error);
+  }
 
-  redirect('/');
+  const { data: profile } = await supabase
+    .from('users')
+    .select('username, language, skin')
+    .eq('id', user.id)
+    .single();
+
+  // Bienvenida con la skin elegida (no fatal: nunca debe tumbar el alta).
+  if (user.email && profile) {
+    await sendWelcomeEmail({
+      email: user.email,
+      username: profile.username,
+      language: profile.language,
+      skin: isSkinStyle(profile.skin) ? profile.skin : undefined,
+    });
+  }
+
+  revalidatePath('/', 'layout');
+  redirect(next);
 }
 
 export async function logout(): Promise<void> {
