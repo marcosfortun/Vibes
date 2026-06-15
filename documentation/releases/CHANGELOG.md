@@ -14,53 +14,75 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
 ### Removed
 - **Contraseñas y todo lo asociado:** pantallas `/forgot` y `/update-password`, callback PKCE `/auth/callback`, plantilla `recovery` y las acciones `requestPasswordReset`/`updatePassword`/login por contraseña.
 
-### Added
-- Helper `logSupabaseError` (visibilidad de errores de Supabase en logs de Vercel) aplicado a las llamadas `.rpc()`/mutaciones.
-
-### Database
-- Migración `20260614120000_signup_diagnostics.sql`: RPC `username_available` (error de username claro antes del trigger).
-
 ### Config
 - `config.toml`: `[auth.sessions]` sin caducidad; `[auth.email]` con `otp_length=6`, `otp_expiry=3600`; plantillas `magic_link`/`confirmation` → `supabase/templates/otp.html` (muestra `{{ .Token }}`).
 
-## [Unreleased] — versión 1.2.0 (en preparación)
+## [1.3.1] — 2026-06-15
+
+Hotfix de diagnóstico del alta (rama `hotfix/1.3.1`).
 
 ### Added
-- **Amistad por enlace de invitación:** cada usuario tiene un enlace personal **reutilizable** (caduca a las 48h, revocable y regenerable). Página `/invite/[token]` con dos caminos: sin sesión → "iniciar sesión o crear cuenta" (preservando el token); con sesión → pantalla de **aceptar** con los nombres invitador → invitado. Compartir con el selector nativo (**Web Share API**) desde la sección Amigos.
-- **Correos informativos en HTML** con la estética de la app (canvas negro, card `#18181C`, borde superior degradado, logo centrado arriba, tipografía y colores del tema):
+- **Logging centralizado de errores de Supabase** (`src/lib/supabase/log.ts`, helper `logSupabaseError`): registra `message/code/details/hint/status/name` en los logs de Vercel, aplicado a las llamadas `.rpc()` y mutaciones de auth, friends, categories, recommendations y páginas server. Da visibilidad al detalle de las excepciones de triggers/funciones que antes se tragaban.
+
+### Fixed
+- **Diagnóstico del 500 en signup:** comprobación previa de disponibilidad de username (error `usernameTaken` claro en vez del `unexpected_failure` genérico del trigger). *(La causa raíz real resultó ser el envío del correo de confirmación de GoTrue; se aborda al completo en la 1.4.0.)*
+
+### Database
+- Migración `20260614120000_signup_diagnostics.sql`: RPC `username_available`.
+
+## [1.3.0] — 2026-06-14
+
+### Added
+- **Selector de apariencia (skins):** la app pasa a ser multi-estilo. Cinco skins con nombre comercial y técnico: **Stick stack** (`neobrutalism`), **La vie en rose** (`cyberbotanical`), **Simple man** (`minimal`), **Speciality popcorn** (`flat design`) y **PICO-8 pop** (`pixel art`). Cada skin define paleta, tipografía, radios y bordes vía bloques `[data-skin]` en `globals.css`, con assets de marca propios (`/logo-*`, `/icon-*`). Persistencia en **localStorage** (sobrevive al logout) + preferencia en `users.skin`; script de arranque que fija `data-skin` antes del primer pintado (sin parpadeo). Cuando no hay preferencia, se elige una al azar.
+- **Tags de recomendaciones:** nuevo campo de etiquetas (texto libre, máx. 5) en el formulario de creación, con autocompletado por las etiquetas existentes ordenadas por frecuencia de uso. En las fichas aparecen como chips de solo lectura entre valorar y guardar: 2 visibles con elipsis y un chip «…» que abre un popup con todas. Se retira el botón de «más opciones» de la ficha.
+- **Multi-idioma automático (en/es/fr/pt):** recomendaciones, categorías y tags se traducen al crear (Claude Haiku, server-side) y se muestran en el idioma del usuario. Sin `ANTHROPIC_API_KEY` o si la traducción falla, se marca `translated=false` y se hace fallback al texto origen. Columnas JSONB `*_i18n` + `translated`.
+- **Proveedores por categoría:** catálogo `providers` (TMDB, Steam, IA) + relación `category_providers` (0–3, con orden) que alimentan la búsqueda externa del alta; se intentan por orden y, si fallan, la app sigue sin resultados externos.
+- **Alta de recomendación en 2 pasos:** (1) buscador con autocompletado de categoría + título que combina recomendaciones internas similares y resultados externos (TMDB/Steam/IA), top 8 por similitud, selección obligatoria (o "crear desde cero"); existente → a Mi Lista; externa → (2) formulario pre-rellenado y editable que al guardar traduce y crea.
+- **Refinos del alta y las tarjetas:** el autocompletado de etiquetas ofrece "crear etiqueta" cuando no hay coincidencia exacta y se despliega hacia arriba; límites de caracteres en título/descripción/URL/etiqueta (formulario + validación servidor); el scoring se muestra en todas las tarjetas; "Mi Lista" se ordena por scoring descendente dejando al final las recomendaciones ya valoradas.
+- **`.env.example`** en el repo, documentando las variables de entorno necesarias.
+
+### Changed
+- **Sistema de estilos unificado (Dark Glassmorphism):** se elimina la disparidad visual entre pantallas. Nuevas clases reutilizables en `globals.css` siguiendo el `style-guide.md` (§3.D–§3.G):
+  - **Botones** con tres variantes únicas: `.btn-primary` (degradado rosa→verde, 50px, glow), `.btn-secondary` (outline 40px) y `.btn-danger` / `.btn-danger-outline` (rojo neón `#ff0055`).
+  - **Formularios** (`.field`, `.field-select`, `.checkbox`): inputs/selects/textarea con fondo semi-transparente, borde *muted* y focus con glow; `select` con chevron vectorial propio; checkbox custom 20px verde neón.
+  - **Cabeceras internas** (§3.F): `BackButton` como círculo de 40px y título 24px (`.page-header`/`.page-title`).
+  - **Listas estructuradas** (§3.G): `.list-row` con fondo `#18181C`, radio 12px, indicador de estado y acciones destructivas. Retirados los estilos `zinc-*` y `dark:` heredados.
+- **Panel de administración por pasos:** `/admin` pasa a ser un menú (botonera); la gestión de categorías vive en `/admin/categories`. Navegación: ajustes → admin → categorías.
+- **Borrado de categoría con migración:** al eliminar una categoría se pregunta a qué otra migrar sus recomendaciones; la operación es atómica (RPC `admin_delete_category`).
+- **Listas con scroll interno** (categorías, amigos y skins): cabecera fija y degradado inferior sobre el dock; el scroll ya no hace desaparecer la cabecera. El alta de categoría deja de ser inline y se abre con el botón **+** en su propia pantalla `/admin/categories/new`.
+- **Botonera de ajustes** con la misma estética que la de admin (icono + nombre + chevron).
+- **Idioma de interfaz en cada carga:** con sesión se usa el idioma del **perfil**; sin sesión, el del **navegador** (`Accept-Language`). Antes dependía de una cookie potencialmente obsoleta (`src/i18n/request.ts`).
+- **Pantalla de creación de cuenta** con la estética de login; **logo a la misma altura** en login, alta e invitación.
+- **Rosa-tallo en la pestaña activa** (Home): se recupera la rosa-tallo del diseño original — el subrayado en degradado rosa→verde es el tallo y termina en el capullo (`public/menu-rose.png`), en lugar del emoji 🌹.
+- **Logo e icono PWA en formato JPG** (más ligero): las pantallas y los correos usan `/logo.jpg`; el manifest usa `/icon.jpg`. Eliminados `logo.png`, `icon.png` e `icon.svg`.
+
+### Database
+- Migración `20260612120000_user_skin.sql`: columna `users.skin` (nullable) con CHECK del catálogo de estilos; grants `select/update(skin)` a `authenticated`.
+- Migración `20260613120000_admin_delete_category.sql`: RPC `admin_delete_category(p_category, p_migrate_to)` (`SECURITY DEFINER`, solo admin) que migra recomendaciones de una categoría a otra y la elimina atómicamente.
+- Migración `20260613130000_recommendation_tags.sql`: tablas `tags` y `recommendation_tags` (RLS de solo lectura) + RPCs `suggest_tags` y `create_recommendation`.
+- Migraciones `20260613140000`–`20260613140300`: columnas i18n (`*_i18n` + `translated`) en `recommendations`/`categories`/`tags`; tablas `providers` + `category_providers` (seed del catálogo); RPCs v2 `create_recommendation` (i18n + tags), `suggest_tags` (con locale) y `find_similar_in_category`.
+
+## [1.2.0] — 2026-06-07
+
+### Added
+- **Amistad por enlace de invitación:** cada usuario tiene un enlace personal **reutilizable** (caduca a las 48h, revocable y regenerable). Página `/invite/[token]` con dos caminos: sin sesión → "iniciar sesión o crear cuenta" (preservando el token); con sesión → pantalla de **aceptar** con los nombres invitador → invitado. Compartir con el selector nativo (**Web Share API**) desde la sección Amigos. Al aceptar se crea la amistad **bidireccional**; el alta deja de crearla automáticamente (flujo uniforme: nuevos y existentes pasan por aceptar).
+- **Correos informativos en HTML** con la estética de la app (canvas negro, card `#18181C`, borde superior degradado, logo centrado, tipografía y colores del tema):
   - **A. Bienvenida** al completar el alta (botón principal "Entrar a Vibes").
   - **B. Restablecimiento de contraseña** vía plantilla de Supabase Auth (`recovery.html`), preservando el flujo PKCE.
   - **C. Nueva amistad** al aceptar una invitación (botón outline "Ver el feed").
   - A y C se envían vía Resend (Mailpit en local) **localizados por destinatario** (en/es/fr/pt); remitente unificado **Vibes**.
-- **Infraestructura de email:** `src/lib/email/template.ts` (layout + primitivas) y `src/lib/email/resend.ts`; cliente service-role `src/lib/supabase/admin.ts` para leer los emails de los usuarios al notificar.
-
-### Added
-- **Refinos del alta y las tarjetas:** el autocompletado de etiquetas ofrece "crear etiqueta" cuando no hay coincidencia exacta y se despliega hacia arriba; límites de caracteres en título/descripción/URL/etiqueta (formulario + validación servidor); el scoring se muestra en todas las tarjetas; "Mi Lista" se ordena por scoring descendente dejando al final las recomendaciones ya valoradas.
-- **Multi-idioma automático (en/es/fr/pt):** recomendaciones, categorías y tags se traducen al crear (Claude Haiku, server-side) y se muestran en el idioma del usuario. Sin `ANTHROPIC_API_KEY` o si la traducción falla, se marca `translated=false` y se hace fallback al texto origen al pintar. Columnas JSONB `*_i18n` + `translated` en `recommendations`, `categories` y `tags`.
-- **Proveedores por categoría:** catálogo `providers` (TMDB, Steam, IA) + relación `category_providers` (0–3, con orden). Alimentan la búsqueda externa del alta; se intentan por orden y, si fallan, la app sigue sin resultados externos.
-- **Alta de recomendación en 2 pasos:** (1) buscador con autocompletado de categoría + título que combina recomendaciones internas similares y resultados externos (TMDB/Steam/IA), top 8 por similitud, selección obligatoria (o "crear desde cero"); seleccionar una existente la añade a Mi Lista; seleccionar una externa lleva a (2) un formulario pre-rellenado y editable que, al guardar, traduce y crea.
-- **Tags de recomendaciones:** nuevo campo de etiquetas (texto libre, máx. 5) en el formulario de creación, con autocompletado basado en las etiquetas existentes ordenadas por frecuencia de uso. En las fichas, las etiquetas aparecen como chips de solo lectura entre los botones de valorar y guardar: se muestran 2 (con ancho máximo y elipsis) y, si hay más, un chip «…» que abre un popup con todas. Se retira el botón de «más opciones» de la ficha.
+- **Infraestructura de email:** `src/lib/email/template.ts` (layout + primitivas) y `src/lib/email/resend.ts`; cliente service-role `src/lib/supabase/admin.ts` para leer los emails al notificar.
 
 ### Changed
-- **Panel de administración por pasos:** `/admin` pasa a ser un menú (botonera) de opciones de gestión; la gestión de categorías vive en `/admin/categories`. Navegación: ajustes → admin → categorías.
-- **Lista de categorías con scroll interno** (mismo patrón que Amigos): cabecera fija y degradado inferior sobre el dock. El alta deja de ser un formulario inline y se abre con el botón **+** de la cabecera, en su propia pantalla `/admin/categories/new`.
-- **Borrado de categoría con migración:** al eliminar una categoría se pregunta a qué otra categoría migrar sus recomendaciones; la operación es atómica (RPC `admin_delete_category`).
-- **Idioma de interfaz en cada carga:** con sesión se usa el idioma del **perfil** del usuario; sin sesión, el del **navegador** (`Accept-Language`). Antes dependía de una cookie potencialmente obsoleta (`src/i18n/request.ts`).
-- **Pantalla de creación de cuenta:** misma estética que login (logo + eslogan + inputs/botones neón).
-- **Logo a la misma altura** en login, alta e invitación.
-- **Lista de amigos con scroll interno:** la cabecera, el botón Volver y el componente de invitación quedan fijos; solo desplaza la lista.
+- **Fondo a negro puro** (`#000000`) en todo el canvas.
 - **Refactors de calidad:** estado derivado en render en lugar de `setState` dentro de efectos (`recommendation-card`, `new-recommendation-form`); detección de PWA *standalone* con `useSyncExternalStore` (`install-prompt-provider`).
-- **Sistema de estilos unificado (Dark Glassmorphism):** se elimina la disparidad visual entre pantallas. Nuevas clases reutilizables en `globals.css` siguiendo el `style-guide.md` (§3.D–§3.G):
-  - **Botones** con tres variantes únicas: `.btn-primary` (degradado rosa→verde, 50px, glow), `.btn-secondary` (outline 40px) y `.btn-danger` / `.btn-danger-outline` (rojo neón `#ff0055`).
-  - **Formularios** (`.field`, `.field-select`, `.checkbox`): inputs/selects/textarea con fondo semi-transparente, borde *muted* y focus con glow; `select` con chevron vectorial propio (sin flecha nativa); checkbox custom 20px verde neón con micro-resplandor.
-  - **Cabeceras internas** (§3.F): `BackButton` como círculo de 40px (fondo surface + borde muted) y título 24px (`.page-header`/`.page-title`).
-  - **Listas estructuradas** (§3.G): `.list-row` con fondo `#18181C`, radio 12px, indicador de estado a la izquierda y acciones destructivas a la derecha.
-  - Pantallas migradas: login, signup, forgot, update-password, new, settings, admin, quedada, friends (e invite-link / accept-invitation). Retirados los estilos `zinc-*` y `dark:` heredados.
-- **Rosa de la pestaña activa** (Home): se recupera la rosa-tallo de la propuesta inicial de diseño (`documentation/ui/preview.jpg`) — el subrayado en degradado rosa→verde es el tallo y termina en el capullo a la derecha (`public/menu-rose.png`), en lugar del emoji 🌹.
-- **Logo e icono PWA en formato JPG** (más ligero): las pantallas (login, alta, invitación) y los correos usan `/logo.jpg`; el manifest usa `/icon.jpg` (`image/jpeg`). Eliminados `logo.png`, `icon.png` e `icon.svg`.
 
 ### Removed
 - **Buscador de usuarios** y RPC `add_friend`. Añadir amigos es **solo** por enlace de invitación. La RLS de `users` deja de exponer perfiles por `is_searchable` (solo fila propia o amigos).
+
+### Security
+- **Endurecimiento tras auditoría de caja blanca** (`20260606120000_security_hardening.sql`): corrige un IDOR en `organizar_quedada` (exige que el llamante se incluya y que el resto sean amigos suyos); revoca `execute` de `is_admin(uuid)` a `anon/public`; revoca `execute` de las funciones-trigger (`handle_new_user`, `maintain_affinity`, `maintain_global_score`, `set_updated_at`) por defensa en profundidad; fija `search_path` en `set_updated_at`.
+- **Eliminado el admin-semilla por email hardcodeado** del trigger `handle_new_user` (`20260606130000`): era PII en el repo y un riesgo latente; todo alta requiere ya un token de invitación válido, sin excepciones.
 
 ### Database
 - Migración `20260607120000_friends_invite_flow.sql`:
@@ -68,11 +90,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
   - Nuevos RPCs `invite_info`, `accept_invitation` (amistad bidireccional, no consume el token), `ensure_invite`, `regenerate_invite`, `revoke_invite`.
   - `handle_new_user` ya **no** crea la amistad ni consume el token en el alta (la amistad se crea al aceptar).
   - Retirada de `add_friend`; política `users_select` sin `is_searchable`.
-- Migración `20260613120000_admin_delete_category.sql`: RPC `admin_delete_category(p_category, p_migrate_to)` (`SECURITY DEFINER`, solo admin) que migra las recomendaciones de una categoría a otra y la elimina de forma atómica.
-- Migración `20260613130000_recommendation_tags.sql`: tablas `tags` y `recommendation_tags` (catálogo compartido, RLS de solo lectura), más RPCs `suggest_tags` (autocompletado por uso) y `create_recommendation` (alta + enlazado de hasta 5 tags, `SECURITY DEFINER`).
-- Migraciones `20260613140000`–`20260613140300`: columnas i18n (`*_i18n` + `translated`) en `recommendations`/`categories`/`tags`; tablas `providers` + `category_providers` (RLS de solo lectura, seed del catálogo); RPCs v2 `create_recommendation` (i18n + tags i18n), `suggest_tags` (con locale) y `find_similar_in_category`.
 
 ### Config
+- Configuración para entorno **cloud** (Postgres 17) y exclusión del estado interno del Supabase CLI del repo (`.gitignore`).
 - `supabase/config.toml`: `[auth.email.template.recovery]` (asunto + `content_path`) para el correo de reset con estética Vibes.
 
 ## [1.1.0] — 2026-06-06
