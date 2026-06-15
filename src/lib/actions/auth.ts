@@ -155,7 +155,9 @@ export async function signup(
     { u: username },
   );
   logSupabaseError('signup.username_available', usernameError);
-  if (!usernameOk) return { step: 'request', email, next, error: 'usernameTaken' };
+  // Solo bloqueamos con un `false` explícito; si la RPC falla (null), dejamos que
+  // el trigger sea el gate final en vez de mostrar un "username en uso" engañoso.
+  if (usernameOk === false) return { step: 'request', email, next, error: 'usernameTaken' };
 
   const { error } = await supabase.auth.signInWithOtp({
     email,
