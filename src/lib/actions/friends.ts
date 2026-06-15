@@ -34,14 +34,14 @@ export async function acceptInvitation(token: string): Promise<AcceptResult> {
       const admin = createAdminClient();
       const { data: rows } = await admin
         .from('users')
-        .select('id, email, username, language')
+        .select('id, email, username, language, skin')
         .in('id', [user.id, row.host_id]);
       const me = rows?.find((u) => u.id === user.id);
       const host = rows?.find((u) => u.id === row.host_id);
       if (me && host) {
         await sendFriendshipEmails(
-          { email: me.email, username: me.username, language: me.language },
-          { email: host.email, username: host.username, language: host.language },
+          { email: me.email, username: me.username, language: me.language, skin: me.skin },
+          { email: host.email, username: host.username, language: host.language, skin: host.skin },
         );
       }
     } catch (e) {

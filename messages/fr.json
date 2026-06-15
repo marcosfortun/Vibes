@@ -23,43 +23,43 @@
   },
   "Auth": {
     "email": "E-mail",
-    "password": "Mot de passe",
     "logout": "Se déconnecter",
-    "forgotLink": "Mot de passe oublié ?",
+    "codeLabel": "Code à 6 chiffres",
     "login": {
       "title": "Se connecter",
-      "submit": "Connexion",
-      "needInvite": "Pas de compte ?"
-    },
-    "forgot": {
-      "title": "Réinitialiser le mot de passe",
-      "hint": "Saisis ton e-mail et nous t'enverrons un lien.",
-      "submit": "Envoyer le lien",
-      "sent": "Si cet e-mail existe, nous avons envoyé un lien."
-    },
-    "update": {
-      "title": "Nouveau mot de passe",
-      "submit": "Mettre à jour"
+      "hint": "Nous t'enverrons un code à usage unique par e-mail.",
+      "sendCode": "Envoyer le code",
+      "verifyHint": "Saisis le code envoyé à {email}.",
+      "verify": "Connexion",
+      "resend": "Renvoyer le code"
     },
     "signup": {
       "title": "Créer un compte",
       "username": "Nom d'utilisateur",
-      "submit": "Créer le compte",
+      "hint": "Nous t'enverrons un code à usage unique pour valider ton e-mail.",
+      "sendCode": "Envoyer le code",
+      "verifyHint": "Saisis le code envoyé à {email}.",
+      "verify": "Vérifier et continuer",
+      "resend": "Renvoyer le code",
       "needInvite": "Un lien d'invitation est requis pour s'inscrire.",
       "invalidInvite": "Ce lien d'invitation est invalide ou expiré.",
       "haveAccount": "Vous avez déjà un compte ?"
     },
     "errors": {
-      "invalidCredentials": "E-mail ou mot de passe incorrect.",
+      "emailRequired": "Saisis ton e-mail.",
+      "codeRequired": "Saisis le code que nous t'avons envoyé.",
+      "invalidCode": "Le code est incorrect ou expiré.",
       "usernameRequired": "Le nom d'utilisateur est obligatoire.",
       "inviteRequired": "Un token d'invitation est requis.",
       "usernameTaken": "Ce nom d'utilisateur est déjà pris. Veuillez en choisir un autre.",
       "signupFailed": "Impossible de finaliser l'inscription. Vérifiez votre invitation.",
-      "inviteInvalid": "Ce lien d'invitation est invalide ou expiré.",
-      "weakPassword": "Le mot de passe doit comporter au moins 8 caractères.",
-      "updateFailed": "Impossible de mettre à jour le mot de passe.",
-      "noSession": "Le lien de réinitialisation est invalide ou expiré."
+      "inviteInvalid": "Ce lien d'invitation est invalide ou expiré."
     }
+  },
+  "Welcome": {
+    "title": "Choisis ton style",
+    "subtitle": "Vibes s'adapte à toi. Tu pourras le changer à tout moment depuis ton profil.",
+    "continue": "Commencer"
   },
   "Install": {
     "install": "Installer Vibes",

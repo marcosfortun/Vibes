@@ -17,10 +17,11 @@ export function SignupForm({
   const t = useTranslations('Auth');
   const [state, formAction, pending] = useActionState<AuthState, FormData>(
     signup,
-    {},
+    { step: 'request' },
   );
 
   const canSignup = Boolean(inviteToken) && tokenValid;
+  const verifying = state.step === 'verify';
 
   return (
     <form action={formAction} className="flex w-full max-w-sm flex-col gap-4">
@@ -38,65 +39,107 @@ export function SignupForm({
         }
       />
 
-      {!inviteToken && (
-        <p role="alert" className="text-sm text-amber-400">
-          {t('signup.needInvite')}
-        </p>
+      {verifying ? (
+        <>
+          <input type="hidden" name="email" defaultValue={state.email} />
+          <p className="text-sm text-muted">
+            {t('signup.verifyHint', { email: state.email ?? '' })}
+          </p>
+          <label className="flex flex-col gap-1 text-sm text-muted">
+            {t('codeLabel')}
+            <input
+              type="text"
+              name="token"
+              required
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              pattern="[0-9]*"
+              maxLength={6}
+              className="field text-center text-lg tracking-[0.4em]"
+            />
+          </label>
+
+          {state.error && (
+            <p role="alert" className="text-sm text-neon-pink">
+              {t(`errors.${state.error}`)}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            name="step"
+            value="verify"
+            disabled={pending}
+            className="btn-primary w-full"
+          >
+            {t('signup.verify')}
+          </button>
+          <button
+            type="submit"
+            name="step"
+            value="resend"
+            formNoValidate
+            disabled={pending}
+            className="text-center text-sm text-neon-green hover:underline"
+          >
+            {t('signup.resend')}
+          </button>
+        </>
+      ) : (
+        <>
+          {!inviteToken && (
+            <p role="alert" className="text-sm text-amber-400">
+              {t('signup.needInvite')}
+            </p>
+          )}
+          {inviteToken && !tokenValid && (
+            <p role="alert" className="text-sm text-neon-pink">
+              {t('signup.invalidInvite')}
+            </p>
+          )}
+
+          <p className="text-sm text-muted">{t('signup.hint')}</p>
+
+          <label className="flex flex-col gap-1 text-sm text-muted">
+            {t('signup.username')}
+            <input
+              type="text"
+              name="username"
+              required
+              autoComplete="username"
+              className="field"
+            />
+          </label>
+
+          <label className="flex flex-col gap-1 text-sm text-muted">
+            {t('email')}
+            <input
+              type="email"
+              name="email"
+              required
+              autoComplete="email"
+              defaultValue={state.email}
+              className="field"
+            />
+          </label>
+
+          {state.error && (
+            <p role="alert" className="text-sm text-neon-pink">
+              {t(`errors.${state.error}`)}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            name="step"
+            value="request"
+            disabled={pending || !canSignup}
+            className="btn-primary w-full"
+          >
+            {t('signup.sendCode')}
+          </button>
+        </>
       )}
-
-      {inviteToken && !tokenValid && (
-        <p role="alert" className="text-sm text-neon-pink">
-          {t('signup.invalidInvite')}
-        </p>
-      )}
-
-      <label className="flex flex-col gap-1 text-sm text-muted">
-        {t('signup.username')}
-        <input
-          type="text"
-          name="username"
-          required
-          autoComplete="username"
-          className="field"
-        />
-      </label>
-
-      <label className="flex flex-col gap-1 text-sm text-muted">
-        {t('email')}
-        <input
-          type="email"
-          name="email"
-          required
-          autoComplete="email"
-          className="field"
-        />
-      </label>
-
-      <label className="flex flex-col gap-1 text-sm text-muted">
-        {t('password')}
-        <input
-          type="password"
-          name="password"
-          required
-          minLength={6}
-          autoComplete="new-password"
-          className="field"
-        />
-      </label>
-
-      {state.error && (
-        <p role="alert" className="text-sm text-neon-pink">
-          {t(`errors.${state.error}`)}
-        </p>
-      )}
-
-      <button
-        type="submit"
-        disabled={pending || !canSignup}
-        className="btn-primary w-full"
-      >
-        {t('signup.submit')}
-      </button>
 
       <p className="text-center text-sm text-muted">
         {t('signup.haveAccount')}{' '}

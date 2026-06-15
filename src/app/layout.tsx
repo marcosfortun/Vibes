@@ -35,7 +35,7 @@ export default async function RootLayout({
   const locale = await getLocale();
 
   // Skin del perfil (puede ser null = "sin fijar"). La resolución final
-  // (localStorage / BD / aleatoria) la hace SkinManager tras la hidratación.
+  // (localStorage / BD / por defecto) la hace SkinManager tras la hidratación.
   let dbSkin: SkinStyle | null = null;
   let loggedIn = false;
   try {

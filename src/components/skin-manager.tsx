@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { updateSkin } from '@/lib/actions/preferences';
-import { randomSkinStyle, type SkinStyle } from '@/lib/skins';
+import { DEFAULT_SKIN, type SkinStyle } from '@/lib/skins';
 import { applySkin, readStoredSkin, storeSkin } from '@/lib/skin-client';
 
 // Resuelve y persiste la skin tras la hidratación. El script de arranque del
@@ -12,10 +12,10 @@ import { applySkin, readStoredSkin, storeSkin } from '@/lib/skin-client';
 //   Con sesión:
 //     - BD fijada            → es la fuente de verdad; se espeja a localStorage.
 //     - BD null + localStorage → se adopta localStorage y se guarda en BD.
-//     - BD null + sin local    → se elige una al azar y se guarda en BD y local.
+//     - BD null + sin local    → se usa la skin por defecto y se guarda en BD y local.
 //   Sin sesión:
 //     - localStorage           → ya aplicada por el script.
-//     - sin local              → se elige una al azar y se guarda en local.
+//     - sin local              → se usa la skin por defecto y se guarda en local.
 export function SkinManager({
   dbSkin,
   loggedIn,
@@ -34,17 +34,15 @@ export function SkinManager({
         applySkin(stored);
         void updateSkin(stored);
       } else {
-        const random = randomSkinStyle();
-        applySkin(random);
-        storeSkin(random);
-        void updateSkin(random);
+        applySkin(DEFAULT_SKIN);
+        storeSkin(DEFAULT_SKIN);
+        void updateSkin(DEFAULT_SKIN);
       }
     } else if (stored) {
       applySkin(stored);
     } else {
-      const random = randomSkinStyle();
-      applySkin(random);
-      storeSkin(random);
+      applySkin(DEFAULT_SKIN);
+      storeSkin(DEFAULT_SKIN);
     }
   }, [dbSkin, loggedIn]);
 

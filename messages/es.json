@@ -23,43 +23,43 @@
   },
   "Auth": {
     "email": "Correo",
-    "password": "Contraseña",
     "logout": "Cerrar sesión",
-    "forgotLink": "¿Olvidaste tu contraseña?",
+    "codeLabel": "Código de 6 dígitos",
     "login": {
       "title": "Iniciar sesión",
-      "submit": "Entrar",
-      "needInvite": "¿No tienes cuenta?"
-    },
-    "forgot": {
-      "title": "Restablecer contraseña",
-      "hint": "Introduce tu correo y te enviaremos un enlace.",
-      "submit": "Enviar enlace",
-      "sent": "Si ese correo existe, te hemos enviado un enlace."
-    },
-    "update": {
-      "title": "Nueva contraseña",
-      "submit": "Actualizar contraseña"
+      "hint": "Te enviaremos un código de un solo uso a tu correo.",
+      "sendCode": "Enviar código",
+      "verifyHint": "Introduce el código que enviamos a {email}.",
+      "verify": "Entrar",
+      "resend": "Reenviar código"
     },
     "signup": {
       "title": "Crear cuenta",
       "username": "Nombre de usuario",
-      "submit": "Crear cuenta",
+      "hint": "Te enviaremos un código de un solo uso para validar tu correo.",
+      "sendCode": "Enviar código",
+      "verifyHint": "Introduce el código que enviamos a {email}.",
+      "verify": "Verificar y continuar",
+      "resend": "Reenviar código",
       "needInvite": "Necesitas un enlace de invitación para registrarte.",
       "invalidInvite": "Este enlace de invitación no es válido o ha caducado.",
       "haveAccount": "¿Ya tienes cuenta?"
     },
     "errors": {
-      "invalidCredentials": "Correo o contraseña incorrectos.",
+      "emailRequired": "Introduce tu correo.",
+      "codeRequired": "Introduce el código que te hemos enviado.",
+      "invalidCode": "El código es incorrecto o ha caducado.",
       "usernameRequired": "El nombre de usuario es obligatorio.",
       "inviteRequired": "Se requiere un token de invitación.",
       "usernameTaken": "Ese nombre de usuario ya está en uso. Elige otro.",
       "signupFailed": "No se pudo completar el registro. Comprueba tu invitación.",
-      "inviteInvalid": "Este enlace de invitación no es válido o ha caducado.",
-      "weakPassword": "La contraseña debe tener al menos 8 caracteres.",
-      "updateFailed": "No se pudo actualizar la contraseña.",
-      "noSession": "El enlace de recuperación es inválido o ha caducado."
+      "inviteInvalid": "Este enlace de invitación no es válido o ha caducado."
     }
+  },
+  "Welcome": {
+    "title": "Elige tu estilo",
+    "subtitle": "Vibes se adapta a ti. Podrás cambiarlo cuando quieras desde tu perfil.",
+    "continue": "Empezar"
   },
   "Install": {
     "install": "Instalar Vibes",

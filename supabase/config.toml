@@ -41,17 +41,32 @@ additional_redirect_urls = ["http://localhost:3000", "http://localhost:3000/**"]
 jwt_expiry = 3600
 enable_signup = true
 
+# Sesiones de larga duración: no caducan por inactividad ni por tiempo (el usuario
+# entra por OTP, copiar el código a menudo es incómodo). En prod se replica en el
+# panel: Authentication > Sessions (time-box e inactivity = nunca).
+[auth.sessions]
+timebox = "0h"
+inactivity_timeout = "0h"
+
 [auth.email]
 enable_signup = true
+# Sin contraseñas: el alta y el acceso son por Email OTP (código de 6 dígitos). El
+# propio OTP valida la propiedad del correo, así que no hace falta doble opt-in.
 enable_confirmations = false
-# NOTA despliegue: la "Enable email enumeration prevention" es un flag del panel
-# cloud de Supabase (Authentication > Auth Providers > Email), no de config.toml local.
+otp_length = 6
+otp_expiry = 3600
+# NOTA despliegue: "Enable email enumeration prevention" es un flag del panel cloud
+# (Authentication > Auth Providers > Email), no de config.toml local.
 
-# Email de restablecimiento de contraseña (B): lo envía Supabase Auth (GoTrue),
-# no nuestra app. Personalizamos asunto + HTML para que herede la estética Vibes.
-# El flujo PKCE de resetPasswordForEmail se mantiene intacto ({{ .ConfirmationURL }}).
-# NOTA despliegue: replicar este asunto/plantilla y el "Sender name = Vibes" en el
-# panel cloud de Supabase (Authentication > Emails), o enrutar el SMTP por Resend.
-[auth.email.template.recovery]
-subject = "Enlace de recuperación de acceso a Vibes ⚡"
-content_path = "./supabase/templates/recovery.html"
+# Correos de GoTrue (el código OTP de alta/acceso). Una sola plantilla corporativa
+# en la skin por defecto (Stick stack): en el alta el usuario aún no ha elegido skin
+# y GoTrue no conoce la skin de cada usuario. Muestra {{ .Token }} (código), no enlace.
+# NOTA despliegue: replicar asunto + HTML y el remitente "Vibes <no-reply@vibes.oneman.es>"
+# en el panel (Authentication > Emails > Magic Link y Confirm signup).
+[auth.email.template.magic_link]
+subject = "Tu código de acceso a Vibes ⚡"
+content_path = "./supabase/templates/otp.html"
+
+[auth.email.template.confirmation]
+subject = "Tu código de acceso a Vibes ⚡"
+content_path = "./supabase/templates/otp.html"

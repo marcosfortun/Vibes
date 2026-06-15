@@ -33,18 +33,13 @@ export async function updateSession(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
-  // Route handlers de auth (callback de recuperación): siempre pasan.
-  if (path.startsWith('/auth/')) {
-    return response;
-  }
-
   // La landing de invitación es accesible con o sin sesión: los no autenticados
   // ven "iniciar sesión o crear cuenta"; los autenticados ven "aceptar".
   if (path.startsWith('/invite/')) {
     return response;
   }
 
-  const publicRoutes = ['/login', '/signup', '/forgot'];
+  const publicRoutes = ['/login', '/signup'];
   const isPublic = publicRoutes.includes(path);
 
   // No autenticado fuera de las rutas públicas -> a login.

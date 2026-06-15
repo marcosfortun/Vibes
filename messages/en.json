@@ -23,43 +23,43 @@
   },
   "Auth": {
     "email": "Email",
-    "password": "Password",
     "logout": "Log out",
-    "forgotLink": "Forgot password?",
+    "codeLabel": "6-digit code",
     "login": {
       "title": "Log in",
-      "submit": "Log in",
-      "needInvite": "No account?"
-    },
-    "forgot": {
-      "title": "Reset password",
-      "hint": "Enter your email and we'll send you a reset link.",
-      "submit": "Send reset link",
-      "sent": "If that email exists, we've sent a reset link."
-    },
-    "update": {
-      "title": "New password",
-      "submit": "Update password"
+      "hint": "We'll send a one-time code to your email.",
+      "sendCode": "Send code",
+      "verifyHint": "Enter the code we sent to {email}.",
+      "verify": "Log in",
+      "resend": "Resend code"
     },
     "signup": {
       "title": "Sign up",
       "username": "Username",
-      "submit": "Create account",
+      "hint": "We'll send a one-time code to verify your email.",
+      "sendCode": "Send code",
+      "verifyHint": "Enter the code we sent to {email}.",
+      "verify": "Verify and continue",
+      "resend": "Resend code",
       "needInvite": "You need an invitation link to sign up.",
       "invalidInvite": "This invitation link is invalid or has expired.",
       "haveAccount": "Already have an account?"
     },
     "errors": {
-      "invalidCredentials": "Incorrect email or password.",
+      "emailRequired": "Enter your email.",
+      "codeRequired": "Enter the code we sent you.",
+      "invalidCode": "The code is incorrect or has expired.",
       "usernameRequired": "Username is required.",
       "inviteRequired": "An invitation token is required.",
       "usernameTaken": "That username is already taken. Please choose another.",
       "signupFailed": "Could not complete sign up. Check your invitation.",
-      "inviteInvalid": "This invitation link is invalid or has expired.",
-      "weakPassword": "Password must be at least 8 characters.",
-      "updateFailed": "Could not update the password.",
-      "noSession": "The reset link is invalid or has expired."
+      "inviteInvalid": "This invitation link is invalid or has expired."
     }
+  },
+  "Welcome": {
+    "title": "Choose your style",
+    "subtitle": "Vibes adapts to you. You can change it anytime from your profile.",
+    "continue": "Get started"
   },
   "Install": {
     "install": "Install Vibes",

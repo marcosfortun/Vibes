@@ -2,6 +2,27 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [SemVer](https://semver.org/).
 
+## [1.4.0] — 2026-06-15
+
+### Changed
+- **Acceso sin contraseñas (Email OTP).** Login y signup pasan a un flujo de dos pasos con **código de un solo uso de 6 dígitos** enviado al correo (caduca en 1h), que además **valida la propiedad del email**. El alta sigue siendo invite-only. Nueva pantalla `/welcome` para elegir skin tras verificar el correo.
+- **Sesiones de larga duración:** dejan de caducar (sin time-box ni inactivity timeout) para no obligar a copiar el código con frecuencia.
+- **Skin por defecto = Stick stack** (`neobrutalism`) en vez de aleatoria, cuando no hay preferencia en BD ni en localStorage.
+- **Correos corporativos por skin:** la plantilla de email se parametriza por skin (`src/lib/email/palettes.ts`); bienvenida y nueva amistad se renderizan con la skin activa del destinatario. El OTP de GoTrue usa una plantilla corporativa en la skin por defecto. Remitente en producción: `Vibes <no-reply@vibes.oneman.es>` (Mailpit en desarrollo).
+- **Brand-book reescrito** al concepto **camaleón** (app multi-estilo); "La vie en rose" pasa a ser una skin más.
+
+### Removed
+- **Contraseñas y todo lo asociado:** pantallas `/forgot` y `/update-password`, callback PKCE `/auth/callback`, plantilla `recovery` y las acciones `requestPasswordReset`/`updatePassword`/login por contraseña.
+
+### Added
+- Helper `logSupabaseError` (visibilidad de errores de Supabase en logs de Vercel) aplicado a las llamadas `.rpc()`/mutaciones.
+
+### Database
+- Migración `20260614120000_signup_diagnostics.sql`: RPC `username_available` (error de username claro antes del trigger).
+
+### Config
+- `config.toml`: `[auth.sessions]` sin caducidad; `[auth.email]` con `otp_length=6`, `otp_expiry=3600`; plantillas `magic_link`/`confirmation` → `supabase/templates/otp.html` (muestra `{{ .Token }}`).
+
 ## [Unreleased] — versión 1.2.0 (en preparación)
 
 ### Added
