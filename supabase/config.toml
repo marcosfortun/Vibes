@@ -81,3 +81,28 @@ content_path = "./supabase/templates/otp.html"
 [auth.email.template.confirmation]
 subject = "Tu código de acceso a Vibes ⚡"
 content_path = "./supabase/templates/otp.html"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Send Email Hook (OTP per-skin / per-idioma). DESHABILITADO por defecto: al
+# activarlo, TODO el envío de correos de GoTrue pasa por la Edge Function
+# supabase/functions/send-email; si falla, el OTP deja de enviarse. Verificar en
+# local antes de habilitar, y en prod configurar el hook + secreto en el panel.
+#
+# Para activar en LOCAL:
+#   1) enabled = true (abajo)
+#   2) genera un secreto: openssl rand -base64 32  →  secrets = "v1,whsec_<eso>"
+#   3) npx supabase functions serve send-email   (o reinicia: stop && start)
+#   4) prueba un login: el OTP debe llegar a Mailpit con la skin/idioma del user.
+# Si el OTP deja de llegar, vuelve a enabled = false y reinicia.
+#
+# En PROD: Authentication > Hooks > Send Email → habilitar, apuntar a la función
+# desplegada y poner el MISMO secreto (como env SEND_EMAIL_HOOK_SECRET de la
+# función). Desplegar la función: npx supabase functions deploy send-email.
+[auth.hook.send_email]
+enabled = false
+uri = "http://host.docker.internal:54321/functions/v1/send-email"
+# secrets = "v1,whsec_REEMPLAZAR"
+
+# La función del hook no recibe JWT de usuario: desactiva su verificación.
+[functions.send-email]
+verify_jwt = false
