@@ -13,6 +13,7 @@ export type EmailPalette = {
   btnBg: string; // color sólido del botón principal
   btnGradient: string | null; // degradado opcional (clientes que lo soporten)
   btnFg: string; // texto del botón principal
+  btnRadius: number; // radio del botón, coherente con la skin (0 recto … 9999 píldora)
   font: string; // familia tipográfica
   radius: number; // radio de la tarjeta (px)
   border: string; // color del borde de la tarjeta
@@ -21,7 +22,9 @@ export type EmailPalette = {
 };
 
 const SANS = 'Inter, Helvetica, Arial, sans-serif';
-const MONO = '"Courier New", Consolas, Menlo, monospace';
+// Comillas SIMPLES a propósito: el valor se interpola en style="…" (comillas
+// dobles); usar dobles aquí rompería el atributo y anularía las reglas siguientes.
+const MONO = "'Courier New', Consolas, Menlo, monospace";
 
 export const EMAIL_PALETTES: Record<SkinStyle, EmailPalette> = {
   cyberbotanical: {
@@ -34,6 +37,7 @@ export const EMAIL_PALETTES: Record<SkinStyle, EmailPalette> = {
     btnBg: '#ff2a75',
     btnGradient: 'linear-gradient(90deg,#ff2a75,#39ff85)',
     btnFg: '#000000',
+    btnRadius: 9999,
     font: SANS,
     radius: 16,
     border: '#18181C',
@@ -50,6 +54,7 @@ export const EMAIL_PALETTES: Record<SkinStyle, EmailPalette> = {
     btnBg: '#1b1b1f',
     btnGradient: null,
     btnFg: '#ffffff',
+    btnRadius: 9999,
     font: SANS,
     radius: 16,
     border: 'rgba(0,0,0,0.12)',
@@ -66,6 +71,7 @@ export const EMAIL_PALETTES: Record<SkinStyle, EmailPalette> = {
     btnBg: '#fe675c',
     btnGradient: null,
     btnFg: '#ffffff',
+    btnRadius: 9999,
     font: SANS,
     radius: 14,
     border: 'rgba(23,37,125,0.18)',
@@ -82,6 +88,7 @@ export const EMAIL_PALETTES: Record<SkinStyle, EmailPalette> = {
     btnBg: '#b3fe05',
     btnGradient: null,
     btnFg: '#111111',
+    btnRadius: 4,
     font: SANS,
     radius: 4,
     border: '#111111',
@@ -98,6 +105,7 @@ export const EMAIL_PALETTES: Record<SkinStyle, EmailPalette> = {
     btnBg: '#ffd700',
     btnGradient: null,
     btnFg: '#1b2e2e',
+    btnRadius: 0,
     font: MONO,
     radius: 0,
     border: '#ffd700',
