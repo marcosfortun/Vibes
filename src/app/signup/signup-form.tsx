@@ -54,7 +54,7 @@ export function SignupForm({
               inputMode="numeric"
               autoComplete="one-time-code"
               pattern="[0-9]*"
-              maxLength={6}
+              maxLength={8}
               className="field text-center text-lg tracking-[0.4em]"
             />
           </label>

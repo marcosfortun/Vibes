@@ -24,7 +24,7 @@
   "Auth": {
     "email": "Email",
     "logout": "Log out",
-    "codeLabel": "6-digit code",
+    "codeLabel": "8-digit code",
     "login": {
       "title": "Log in",
       "hint": "We'll send a one-time code to your email.",
