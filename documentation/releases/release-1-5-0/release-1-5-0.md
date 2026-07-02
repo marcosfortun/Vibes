@@ -4,19 +4,8 @@
 
 **En proceso**:
 
-Correos de amistad: prueba una invitación. Si no llegan, ve a Vercel → Settings → Environment Variables y comprueba que SUPABASE_SERVICE_ROLE_KEY coincide con la de Supabase → Settings → API (no pude compararlas por restricciones de permisos sobre secretos).
-
-Panel Supabase → Authentication → Rate Limits: confirma 10 emails/h y 30 verificaciones (la CLI no mostró diff de esa sección y no estoy seguro de que la empujara).
-
-Opcional — activar el hook per-skin/idioma: Authentication → Hooks → Send Email → tipo HTTPS → función send-email, copia el secreto generado y ejecuta npx supabase secrets set SEND_EMAIL_HOOK_SECRET="v1,whsec_...". Luego pide un OTP y comprueba que llega con tu skin.
-
-
-* Funciona el autocompletado con steam y haiku, pero no con TMDB. ¿Por qué puede ser? Puede ser porque falta configurar las API Keys o porque falta indicar en BD la relación proveedor-categoría.
-* Cuando selecciono un resultado generado con haiku, se inventa el enlace de IMDB de forma incorrecta. Mejor que la IA no invente enlaces, solo título, descripción y etiquetas.
-* En los resultados del autocompletado, a la derecha hay un texto que indica cómo se ha conseguido el resultado. Me gusta, pero en español pone "AI" cuando debería ser "IA".
-* En la pantalla de crear nueva recomendación, no muestra la lista completa de categorías en el desplegable cuando no hay texto de búsqueda. Cuando añades texto si busca correctamente y muestra los resultados.
-
-- No me han llegado los emails de nueva amistad establecida.
+* Funciona el autocompletado con steam y haiku, pero no con TMDB.
+* No me han llegado los emails de nueva amistad establecida.
 
 **Pendiente**:
 
