@@ -32,12 +32,19 @@ export async function acceptInvitation(token: string): Promise<AcceptResult> {
   if (row.created) {
     try {
       const admin = createAdminClient();
-      const { data: rows } = await admin
+      const { data: rows, error: adminError } = await admin
         .from('users')
         .select('id, email, username, language, skin')
         .in('id', [user.id, row.host_id]);
+      logSupabaseError('acceptInvitation.users.adminSelect', adminError);
       const me = rows?.find((u) => u.id === user.id);
       const host = rows?.find((u) => u.id === row.host_id);
+      if (!me || !host) {
+        console.error(
+          '[acceptInvitation] sin datos para notificar (¿SUPABASE_SERVICE_ROLE_KEY inválida?)',
+          { rows: rows?.length ?? 0 },
+        );
+      }
       if (me && host) {
         await sendFriendshipEmails(
           { email: me.email, username: me.username, language: me.language, skin: me.skin },

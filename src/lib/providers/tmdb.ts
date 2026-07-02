@@ -15,7 +15,12 @@ export const tmdbAdapter: ProviderAdapter = {
         'https://api.themoviedb.org/3/search/multi?' +
         `query=${encodeURIComponent(query)}&include_adult=false&language=en-US&api_key=${key}`;
       const res = await fetch(url, { signal: ctrl.signal });
-      if (!res.ok) return [];
+      if (!res.ok) {
+        // Visible en los logs de Vercel: sin esto un fallo de TMDB (key inválida,
+        // bloqueo de red…) se confunde con "sin resultados" y cae a la IA.
+        console.error(`[tmdb] search failed: HTTP ${res.status}`);
+        return [];
+      }
       const data = (await res.json()) as {
         results?: Array<{
           id?: number;

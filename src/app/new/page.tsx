@@ -8,14 +8,14 @@ export default async function NewPage() {
   const supabase = await createClient();
   const { data: categories } = await supabase
     .from('categories')
-    .select('id,name,name_i18n')
+    .select('id,name,name_i18n,icon')
     .order('name');
 
   // Localiza el nombre de cada categoría para el buscador del paso 1.
   const localized = (categories ?? []).map((c) => {
     const i18n = c.name_i18n as Record<string, string> | null;
     const name = i18n?.[locale]?.trim() ? i18n[locale] : c.name;
-    return { id: c.id, name };
+    return { id: c.id, name, icon: c.icon };
   });
 
   return (

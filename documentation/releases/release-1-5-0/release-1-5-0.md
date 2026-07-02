@@ -4,21 +4,14 @@
 
 **En proceso**:
 
-- No funciona autocompletado Steam, TMDB y Haiku. Puede ser porque falta configurar las API Keys o porque falta indicar en BD la relación proveedor-categoría.
-
-- Ampliar logitud del OTP a 8.
-- Hay que poner un límite al número de solicitudes de OTP con un mismo usuario, para evitar spam a su email.
-- Hay que poner un límite al número de intentos fallidos de validación del OTP con un mismo usuario, para evitar ataques de fuerza bruta.
-
-- El logo del email del OTP no carga (skin: stick stack).
-- Los emails de OTP no llegan con la skin apropiada, se debe leer del local storage.
-- Los emails de OTP no llegan con el idioma apropiado, se debe leer de la configuración del navegador.
-- El email de confirmación de alta no tiene márgenes y el botón CTA no sigue el estilo (skin: PICO-8 pop).
-
-- No me han llegado los emails de nueva amistad establecida.
+* Funciona el autocompletado con steam y haiku, pero no con TMDB.
+* No me han llegado los emails de nueva amistad establecida.
 
 **Pendiente**:
 
+- Vista comprimida de la lista de tareas. Botón "más info" que despliega la tarjeta a pantalla completa.
+- Posibilidad de añadir una imagen a las recomendaciones.
+- Filtros de búsqueda en las listas (mi lista, amigos y tendencias). Tipo, tags, rango de valoración.
 - Después del signup, aterrizar en una página/carrusel de onboarding.
 - La sección "suerte" no carga.
 - Revisar sección "quedada".

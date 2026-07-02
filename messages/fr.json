@@ -106,6 +106,11 @@
     "searching": "Recherche…",
     "selectPrompt": "Sélectionne un résultat pour continuer",
     "existingBadge": "Au catalogue",
+    "providerBadge": {
+      "tmdb": "TMDB",
+      "steam": "Steam",
+      "ai": "IA"
+    },
     "fromScratch": "Créer « {title} » de zéro",
     "createTag": "Créer « {tag} »",
     "errors": {

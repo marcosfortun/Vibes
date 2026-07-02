@@ -2,6 +2,22 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- **El proveedor IA ya no inventa enlaces**: el autocompletado con Haiku genera solo título, descripción y etiquetas (2-5); la URL queda vacía para que la rellene el usuario. De paso se corrige un 400 silencioso de structured outputs (`maxItems` no soportado) que dejaba a la IA sin resultados.
+- **Badge del proveedor localizado**: los resultados del autocompletado mostraban el kind interno (`AI`); ahora se traduce por idioma («IA» en es/fr/pt, `New.providerBadge`).
+- **Desplegable de categorías**: sin texto de búsqueda ahora muestra el catálogo completo (desplazable) en vez de solo 8.
+
+- **Icono de categoría en el paso 2 del alta**: la cabecera del formulario prefill mostraba siempre unas estrellitas (`Sparkles`); ahora muestra el icono real de la categoría seleccionada (`CategoryIcon`).
+- **Diagnóstico de los correos de amistad**: si la lectura con el cliente service-role falla (p. ej. `SUPABASE_SERVICE_ROLE_KEY` inválida en Vercel), ahora queda registrado en los logs; antes se omitía el envío en silencio.
+
+### Added
+- **Log de fallos de TMDB** (`[tmdb] search failed: HTTP <status>`) visible en los logs de Vercel: antes un fallo del proveedor se confundía con "sin resultados" y caía a la IA sin dejar rastro.
+
+### Database
+- Migración `20260703120000_align_categories_catalog.sql`: alinea el catálogo de categorías de todos los entornos con el documento de diseño (release-1-3-0, 21 categorías). En prod: renombra `Cine` → `Película` (conservando sus recomendaciones), crea `Show` y `Zona de acampada`, vincula TMDB a cine/series/documental (causa raíz de que el autocompletado TMDB no funcionara: el seed asignaba por nombre exacto y `Película` no existía) y reordena proveedores (específicos primero, IA como fallback). No elimina categorías extra (`Canción` queda pendiente de decisión de producto).
+
 ## [1.4.2] — 2026-07-02
 
 Hotfix de las pruebas en producción de la 1.4.0 (rama `hotfix/1.4.2`).

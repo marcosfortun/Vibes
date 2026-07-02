@@ -12,6 +12,7 @@ export const aiAdapter: ProviderAdapter = {
     const limit = opts?.limit ?? 8;
     const category = opts?.category ?? '';
 
+    // Sin `url`: los enlaces inventados por el modelo suelen ser incorrectos.
     const schema = {
       type: 'object',
       additionalProperties: false,
@@ -26,7 +27,8 @@ export const aiAdapter: ProviderAdapter = {
             properties: {
               title: { type: 'string' },
               description: { type: 'string' },
-              url: { type: 'string' },
+              // Sin maxItems: structured outputs no lo soporta; se recorta en código.
+              tags: { type: 'array', items: { type: 'string' } },
             },
           },
         },
@@ -40,22 +42,23 @@ export const aiAdapter: ProviderAdapter = {
         system:
           `Sugiere hasta ${limit} contenidos REALES y conocidos de la categoría ` +
           `"${category}" cuyo título coincida o se parezca a lo que busca el usuario. ` +
-          `Para cada uno: title (nombre real), description (1-2 frases) y url (oficial ` +
-          `o de referencia fiable si la conoces; si no, omítela). No inventes títulos. ` +
-          `Devuelve solo el JSON pedido.`,
+          `Para cada uno: title (nombre real), description (1-2 frases) y tags (2-5 ` +
+          `etiquetas cortas en el idioma de la búsqueda). NUNCA incluyas enlaces ni ` +
+          `URLs. No inventes títulos. Devuelve solo el JSON pedido.`,
         messages: [{ role: 'user', content: query }],
         output_config: { format: { type: 'json_schema', schema } },
       });
       const text = res.content.find((b) => b.type === 'text')?.text ?? '';
       const parsed = JSON.parse(text) as {
-        candidates?: Array<{ title?: string; description?: string; url?: string }>;
+        candidates?: Array<{ title?: string; description?: string; tags?: string[] }>;
       };
       return (parsed.candidates ?? [])
         .slice(0, limit)
         .map((c) => ({
           title: String(c.title ?? ''),
           description: c.description ?? null,
-          url: c.url ?? null,
+          url: null,
+          tags: Array.isArray(c.tags) ? c.tags.filter((t) => typeof t === 'string').slice(0, 5) : [],
           provider: 'ai',
         }))
         .filter((c) => c.title);
