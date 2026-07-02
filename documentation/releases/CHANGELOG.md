@@ -17,7 +17,7 @@ Hotfix de las pruebas en producción de la 1.4.0 (rama `hotfix/1.4.2`).
 - **Rate limits** de OTP: `max_frequency=60s`, `email_sent=10/h`, `token_verifications=30` (anti-spam y anti-fuerza bruta).
 
 ### Added
-- **Send Email Hook** (`supabase/functions/send-email`): OTP renderizado en la skin e idioma del usuario, enviado por Resend. **Deshabilitado** por defecto; pendiente de verificación y de habilitar en el panel de prod.
+- **Send Email Hook** (`supabase/functions/send-email`): OTP renderizado en la skin e idioma del usuario, enviado por Resend. **Deshabilitado** por defecto; verificado en local (skin, idioma, logo y validación del código OK); pendiente de desplegar la función y habilitar el hook + secreto en el panel de prod.
 
 ## [1.4.0] — 2026-06-15
 
