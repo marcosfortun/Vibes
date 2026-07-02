@@ -34,6 +34,11 @@ enabled = false
 enabled = true
 port = 54324
 
+# ⚠️ `supabase config push` empuja este [auth] al proyecto LINKADO (prod). Este
+# fichero tiene valores LOCALES: antes de pushear hay que sobreescribir
+# temporalmente site_url/additional_redirect_urls con las URLs de prod y añadir
+# [auth.email.smtp] con la clave de Resend (sin SMTP custom, el free tier
+# resetea las plantillas y GoTrue queda sin remitente). Revertir después.
 [auth]
 enabled = true
 site_url = "http://localhost:3000"
