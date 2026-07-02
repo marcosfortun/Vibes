@@ -2,7 +2,8 @@
 
 import { useActionState, useEffect, useRef, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
-import { ChevronRight, Plus, Sparkles } from 'lucide-react';
+import { ChevronRight, Plus } from 'lucide-react';
+import { CategoryIcon } from '@/components/category-icon';
 import {
   searchCandidates,
   addExistingToList,
@@ -13,7 +14,7 @@ import {
 import { TagsInput } from '@/components/tags-input';
 import { LIMITS } from '@/lib/limits';
 
-type Category = { id: string; name: string };
+type Category = { id: string; name: string; icon?: string | null };
 type Prefill = {
   title: string;
   description: string;
@@ -282,7 +283,7 @@ function DetailsStep({
       <input type="hidden" name="category_id" value={category.id} />
 
       <div className="flex items-center gap-2 text-sm text-muted">
-        <Sparkles size={14} className="text-neon-pink" />
+        <CategoryIcon name={category.icon} size={14} className="text-neon-pink" />
         {category.name}
         <button type="button" onClick={onBack} className="ml-auto text-neon-pink">
           {t('back')}
