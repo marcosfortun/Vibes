@@ -4,21 +4,25 @@
 
 **En proceso**:
 
-- No funciona autocompletado Steam, TMDB y Haiku. Puede ser porque falta configurar las API Keys o porque falta indicar en BD la relación proveedor-categoría.
+Correos de amistad: prueba una invitación. Si no llegan, ve a Vercel → Settings → Environment Variables y comprueba que SUPABASE_SERVICE_ROLE_KEY coincide con la de Supabase → Settings → API (no pude compararlas por restricciones de permisos sobre secretos).
 
-- Ampliar logitud del OTP a 8.
-- Hay que poner un límite al número de solicitudes de OTP con un mismo usuario, para evitar spam a su email.
-- Hay que poner un límite al número de intentos fallidos de validación del OTP con un mismo usuario, para evitar ataques de fuerza bruta.
+Panel Supabase → Authentication → Rate Limits: confirma 10 emails/h y 30 verificaciones (la CLI no mostró diff de esa sección y no estoy seguro de que la empujara).
 
-- El logo del email del OTP no carga (skin: stick stack).
-- Los emails de OTP no llegan con la skin apropiada, se debe leer del local storage.
-- Los emails de OTP no llegan con el idioma apropiado, se debe leer de la configuración del navegador.
-- El email de confirmación de alta no tiene márgenes y el botón CTA no sigue el estilo (skin: PICO-8 pop).
+Opcional — activar el hook per-skin/idioma: Authentication → Hooks → Send Email → tipo HTTPS → función send-email, copia el secreto generado y ejecuta npx supabase secrets set SEND_EMAIL_HOOK_SECRET="v1,whsec_...". Luego pide un OTP y comprueba que llega con tu skin.
+
+
+* Funciona el autocompletado con steam y haiku, pero no con TMDB. ¿Por qué puede ser? Puede ser porque falta configurar las API Keys o porque falta indicar en BD la relación proveedor-categoría.
+* Cuando selecciono un resultado generado con haiku, se inventa el enlace de IMDB de forma incorrecta. Mejor que la IA no invente enlaces, solo título, descripción y etiquetas.
+* En los resultados del autocompletado, a la derecha hay un texto que indica cómo se ha conseguido el resultado. Me gusta, pero en español pone "AI" cuando debería ser "IA".
+* En la pantalla de crear nueva recomendación, no muestra la lista completa de categorías en el desplegable cuando no hay texto de búsqueda. Cuando añades texto si busca correctamente y muestra los resultados.
 
 - No me han llegado los emails de nueva amistad establecida.
 
 **Pendiente**:
 
+- Vista comprimida de la lista de tareas. Botón "más info" que despliega la tarjeta a pantalla completa.
+- Posibilidad de añadir una imagen a las recomendaciones.
+- Filtros de búsqueda en las listas (mi lista, amigos y tendencias). Tipo, tags, rango de valoración.
 - Después del signup, aterrizar en una página/carrusel de onboarding.
 - La sección "suerte" no carga.
 - Revisar sección "quedada".
