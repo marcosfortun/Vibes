@@ -2,7 +2,9 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [SemVer](https://semver.org/).
 
-## [Unreleased]
+## [1.4.3] — 2026-07-03
+
+Hotfix del autocompletado y las notificaciones tras el despliegue de la 1.4.2 (rama `hotfix/1.4.3`).
 
 ### Fixed
 - **El proveedor IA ya no inventa enlaces**: el autocompletado con Haiku genera solo título, descripción y etiquetas (2-5); la URL queda vacía para que la rellene el usuario. De paso se corrige un 400 silencioso de structured outputs (`maxItems` no soportado) que dejaba a la IA sin resultados.
@@ -16,7 +18,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
 - **Log de fallos de TMDB** (`[tmdb] search failed: HTTP <status>`) visible en los logs de Vercel: antes un fallo del proveedor se confundía con "sin resultados" y caía a la IA sin dejar rastro.
 
 ### Database
-- Migración `20260703120000_align_categories_catalog.sql`: alinea el catálogo de categorías de todos los entornos con el documento de diseño (release-1-3-0, 21 categorías). En prod: renombra `Cine` → `Película` (conservando sus recomendaciones), crea `Show` y `Zona de acampada`, vincula TMDB a cine/series/documental (causa raíz de que el autocompletado TMDB no funcionara: el seed asignaba por nombre exacto y `Película` no existía) y reordena proveedores (específicos primero, IA como fallback). No elimina categorías extra (`Canción` queda pendiente de decisión de producto).
+- Migración `20260703120000_align_categories_catalog.sql`: alinea el catálogo de categorías de todos los entornos con el documento de diseño (release-1-3-0, 21 categorías). En prod: renombra `Cine` → `Película` (conservando sus recomendaciones), crea `Show` y `Zona de acampada`, vincula TMDB a cine/series/documental (causa raíz de que el autocompletado TMDB no funcionara: el seed asignaba por nombre exacto y `Película` no existía) y reordena proveedores (específicos primero, IA como fallback). No elimina categorías extra (`Canción` la eliminó el admin a mano en prod antes de migrar).
+
+### Config
+- **Send Email Hook habilitado en prod** (panel + `SEND_EMAIL_HOOK_SECRET`): el OTP llega con la skin e idioma del usuario. `SUPABASE_SERVICE_ROLE_KEY` renovada en Vercel (sospechosa de los correos de amistad ausentes).
+- **Tooling**: CLI de Supabase fijada como devDependency (`supabase@2.109.0`) y actualización semver-compatible de dependencias (`@supabase/supabase-js` 2.110, `next-intl` 4.13, `lucide-react` 1.23, `tailwindcss` 4.3.2, `@anthropic-ai/sdk` 0.104.2, types).
 
 ## [1.4.2] — 2026-07-02
 
