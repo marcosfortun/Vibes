@@ -2,7 +2,7 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [SemVer](https://semver.org/).
 
-## [1.4.2] — 2026-06-16
+## [1.4.2] — 2026-07-02
 
 Hotfix de las pruebas en producción de la 1.4.0 (rama `hotfix/1.4.2`).
 
