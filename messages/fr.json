@@ -24,7 +24,7 @@
   "Auth": {
     "email": "E-mail",
     "logout": "Se déconnecter",
-    "codeLabel": "Code à 6 chiffres",
+    "codeLabel": "Code à 8 chiffres",
     "login": {
       "title": "Se connecter",
       "hint": "Nous t'enverrons un code à usage unique par e-mail.",

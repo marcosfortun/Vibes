@@ -24,7 +24,7 @@
   "Auth": {
     "email": "E-mail",
     "logout": "Sair",
-    "codeLabel": "Código de 6 dígitos",
+    "codeLabel": "Código de 8 dígitos",
     "login": {
       "title": "Entrar",
       "hint": "Enviaremos um código de uso único para o seu e-mail.",

@@ -4,16 +4,17 @@
 
 **Vibes** es una *web-app* (PWA instalable) para que un grupo cerrado de amigos centralice y se recomiende ocio: pelis, series, juegos, rutas, conciertos, sitios… El sistema deduplica el catálogo, protege la privacidad del grupo y **personaliza los feeds con un algoritmo de afinidad asimétrica** entre amigos.
 
-Es un proyecto personal *indie* con coste de infraestructura cero (tiers gratuitos de Supabase + Vercel) y una identidad visual propia: estilo **Cyber-Botanical** (synthwave neón + toques orgánicos). Ver [`documentation/pd-brand-book.md`](documentation/pd-brand-book.md).
+Es un proyecto personal *indie* con coste de infraestructura cero (tiers gratuitos de Supabase + Vercel) y una identidad visual **camaleón**: la app se adapta al gusto del usuario con varias *skins* intercambiables (Stick stack, La vie en rose, Simple man, Speciality popcorn, PICO-8 pop), también en los correos. Ver [`documentation/pd-brand-book.md`](documentation/pd-brand-book.md).
 
 ## Características
 
-- **Registro invite-only**: solo se entra con un token de invitación.
+- **Acceso sin contraseñas (Email OTP)**: login y alta con un código de un solo uso de 8 dígitos al correo, que además valida el email. El alta sigue siendo invite-only.
+- **Apariencia camaleón**: 5 skins seleccionables (la elige el usuario en el alta y desde Ajustes); por defecto *Stick stack*.
 - **Home con varias listas**: Mi Lista → De Amigos → Tendencias.
 - **Scoring por afinidad**: la afinidad A→B se ajusta cuando coinciden calificaciones.
 - **Organizar quedada**: cruza las listas de los asistentes y devuelve un top 3.
-- **Categorías**: especialización y filtrado de las recomendaciones según su categoría.
-- **Multi-idoma**: soporte para varios idiomas (es, en, pt, fr).
+- **Alta de recomendación con búsqueda externa**: autocompletado por categoría con proveedores (TMDB, Steam, IA) y traducción automática multi-idioma.
+- **Multi-idioma**: soporte para varios idiomas (es, en, pt, fr).
 - **PWA** instalable en escritorio/móvil.
 
 > Diseño funcional completo en [`documentation/pd-product-design.md`](documentation/pd-product-design.md)
@@ -81,6 +82,8 @@ cp .env.example .env.local
 | `EMAIL_FROM` | Servidor | `"Vibes <onboarding@resend.dev>"` | Remitente verificado en Resend |
 | `NEXT_PUBLIC_SITE_URL` | Pública | `http://localhost:3000` | URL pública de Vercel |
 | `MAILPIT_API_URL` | Servidor (opcional) | `http://localhost:54324` (por defecto) | — |
+| `TMDB_API_KEY` | **Secreto** (solo servidor) | API key v3 de TMDB → habilita el proveedor TMDB | igual (en Vercel) |
+| `ANTHROPIC_API_KEY` | **Secreto** (solo servidor) | Clave de Anthropic → traducción i18n + proveedor IA | igual (en Vercel) |
 
 > **Convención Next.js:** las `NEXT_PUBLIC_*` se incrustan en el bundle del navegador (son
 > públicas); el resto son **solo de servidor** y no deben prefijarse con `NEXT_PUBLIC_`.

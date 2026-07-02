@@ -2,6 +2,23 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [SemVer](https://semver.org/).
 
+## [1.4.2] — 2026-06-16
+
+Hotfix de las pruebas en producción de la 1.4.0 (rama `hotfix/1.4.2`).
+
+### Fixed
+- **Autocompletado externo (TMDB/Steam/IA)** no devolvía resultados: faltaba sembrar `category_providers` (migración `20260616120000_seed_category_providers.sql`, idempotente) y la `TMDB_API_KEY`.
+- **Correo de bienvenida en skin PICO-8 pop**: la fuente monospace se definía con comillas dobles y rompía el atributo `style="…"` (anulando `text-decoration`, color y fuente); el botón CTA no seguía la skin. Corregido (comillas simples + `btnRadius` por skin).
+- **Logo del correo OTP** (Stick stack) no cargaba: URL absoluta en vez de `{{ .SiteURL }}`.
+- **Correos de nueva amistad** no llegaban en prod: requieren `SUPABASE_SERVICE_ROLE_KEY` (debe configurarse en Vercel). El código falla de forma segura.
+
+### Changed
+- **OTP a 8 dígitos** (`otp_length`, `maxLength` en formularios, i18n).
+- **Rate limits** de OTP: `max_frequency=60s`, `email_sent=10/h`, `token_verifications=30` (anti-spam y anti-fuerza bruta).
+
+### Added
+- **Send Email Hook** (`supabase/functions/send-email`): OTP renderizado en la skin e idioma del usuario, enviado por Resend. **Deshabilitado** por defecto; verificado en local (skin, idioma, logo y validación del código OK); pendiente de desplegar la función y habilitar el hook + secreto en el panel de prod.
+
 ## [1.4.0] — 2026-06-15
 
 ### Changed

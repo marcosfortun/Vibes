@@ -43,9 +43,9 @@ export function codeBlock(p: EmailPalette, code: string): string {
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;"><tr><td align="center" style="border:${p.borderWidth || 1}px solid ${p.border};border-radius:${p.radius}px;background-color:${p.canvas};padding:16px 28px;"><span style="font-family:'Courier New',Consolas,monospace;font-size:34px;font-weight:700;letter-spacing:10px;color:${p.text};">${code}</span></td></tr></table>`;
 }
 
-// Botón principal: píldora (o rectángulo según el radio de la skin).
+// Botón principal: forma coherente con la skin (recto en pixel art, píldora en neón).
 export function primaryButton(p: EmailPalette, label: string, url: string): string {
-  const radius = Math.max(p.radius, 6);
+  const radius = p.btnRadius;
   const bg = p.btnGradient
     ? `background-color:${p.btnBg};background-image:${p.btnGradient};`
     : `background-color:${p.btnBg};`;
@@ -54,7 +54,7 @@ export function primaryButton(p: EmailPalette, label: string, url: string): stri
 
 // Botón secundario: borde + texto principal.
 export function outlineButton(p: EmailPalette, label: string, url: string): string {
-  const radius = Math.max(p.radius, 6);
+  const radius = p.btnRadius;
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0;"><tr><td align="center" style="border:1px solid ${p.text};border-radius:${radius}px;"><a href="${url}" target="_blank" style="display:inline-block;padding:12px 30px;font-family:${p.font};font-size:15px;font-weight:600;line-height:1;color:${p.text};text-decoration:none;">${label}</a></td></tr></table>`;
 }
 

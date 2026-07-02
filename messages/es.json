@@ -24,7 +24,7 @@
   "Auth": {
     "email": "Correo",
     "logout": "Cerrar sesión",
-    "codeLabel": "Código de 6 dígitos",
+    "codeLabel": "Código de 8 dígitos",
     "login": {
       "title": "Iniciar sesión",
       "hint": "Te enviaremos un código de un solo uso a tu correo.",
