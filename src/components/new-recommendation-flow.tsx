@@ -146,7 +146,11 @@ function SearchStep({
                     )}
                   </span>
                   <span className="ml-2 shrink-0 text-[10px] uppercase tracking-wide text-muted">
-                    {c.kind === 'existing' ? t('existingBadge') : c.provider}
+                    {c.kind === 'existing'
+                      ? t('existingBadge')
+                      : ['tmdb', 'steam', 'ai'].includes(c.provider)
+                        ? t(`providerBadge.${c.provider}`)
+                        : c.provider}
                   </span>
                 </button>
               </li>
@@ -192,9 +196,10 @@ function CategoryPicker({
   const ref = useRef<HTMLDivElement>(null);
 
   const q = input.trim().toLowerCase();
+  // Sin texto: catálogo completo (la lista es desplazable); con texto, top 8.
   const matches = q
     ? categories.filter((c) => c.name.toLowerCase().includes(q)).slice(0, 8)
-    : categories.slice(0, 8);
+    : categories;
 
   if (value) {
     return (
