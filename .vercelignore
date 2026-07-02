@@ -1,0 +1,6 @@
+# Builds locales y dependencias: Vercel construye en su CI, no hay que subirlos.
+.next
+.next-preview
+node_modules
+# Docs y assets de diseño: no forman parte del build.
+documentation
