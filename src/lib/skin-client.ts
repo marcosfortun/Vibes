@@ -24,4 +24,12 @@ export function storeSkin(style: SkinStyle): void {
 
 export function applySkin(style: SkinStyle): void {
   document.documentElement.dataset.skin = style;
+  // Mantén el manifest PWA apuntando a la skin activa: una instalación posterior
+  // usará su icono/colores (lo ya instalado no cambia; lo cachea el SO).
+  try {
+    const link = document.querySelector('link[rel="manifest"]');
+    if (link) link.setAttribute('href', `/manifest.webmanifest?skin=${encodeURIComponent(style)}`);
+  } catch {
+    // Sin <link> o sin DOM: nada que sincronizar.
+  }
 }
