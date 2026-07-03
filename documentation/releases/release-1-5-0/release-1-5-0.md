@@ -8,12 +8,12 @@
 
 **Pendiente**:
 
-- Corregir el icono y el nombre de instalación en el escritorio.
+- Corregir el icono y el nombre de instalación en el escritorio. Deberían ser los de la skin que tengas seleccionada.
 - 
 - Vista comprimida de la lista de tareas. Botón "más info" que despliega la tarjeta a pantalla completa.
 - Posibilidad de añadir una imagen a las recomendaciones.
 - Filtros de búsqueda en las listas (mi lista, amigos y tendencias). Tipo, tags, rango de valoración.
-- Después del signup, aterrizar en una página/carrusel de onboarding.
+- Después del signup, aterrizar en una página/carrusel de onboarding. Página para sugerir la instalación.
 - La sección "suerte" no carga.
 - Revisar sección "quedada".
 - Posibilidad de cargar recomendaciones en masa copiando cada título en una línea. Aplicar autocompletado en background.
