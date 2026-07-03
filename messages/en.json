@@ -88,6 +88,7 @@
   },
   "New": {
     "title": "New recommendation",
+    "bulk": "Bulk add",
     "submit": "Create",
     "back": "Back",
     "similarHint": "Similar items already exist:",
@@ -241,6 +242,28 @@
       "cta": "View the feed",
       "signoff": "— Sync optimized,",
       "team": "The Vibes team"
+    }
+  },
+  "Bulk": {
+    "title": "Bulk add",
+    "single": "Single add",
+    "intro": "Pick a category and paste several titles, one per line. We’ll show the autocomplete results so you can choose the best for each.",
+    "titlesLabel": "Titles (one per line)",
+    "titlesPlaceholder": "The Godfather\nThe Matrix\nInterstellar",
+    "start": "Start",
+    "searching": "Searching…",
+    "progress": "{current} of {total}",
+    "createScratch": "Create with title only",
+    "skip": "Skip this title",
+    "inCatalog": "In catalog",
+    "scratch": "Title only",
+    "summaryTitle": "Summary",
+    "summaryCounts": "{created} created · {skipped} skipped · {failed} failed",
+    "goHome": "Go to My list",
+    "status": {
+      "created": "Created",
+      "skipped": "Skipped",
+      "failed": "Failed"
     }
   }
 }
