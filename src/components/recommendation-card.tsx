@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl';
 import {
   Check,
   Heart,
-  Info,
   Minus,
   Plus,
   ThumbsDown,
@@ -155,9 +154,9 @@ function SaveButton({ item, size = 'sm' }: { item: CardItem; size?: 'sm' | 'md' 
   );
 }
 
-// Fila compacta: icono de categoría, título y acciones (calificar, guardar,
-// más info). La descripción, el scoring y las etiquetas viven en la vista
-// ampliada (botón "más info").
+// Fila compacta: icono de categoría, título (clic → vista ampliada) y acciones
+// (calificar, guardar). La descripción, el scoring y las etiquetas viven en la
+// vista ampliada.
 export function RecommendationCard({
   item,
   showScore = false,
@@ -165,7 +164,6 @@ export function RecommendationCard({
   item: CardItem;
   showScore?: boolean;
 }) {
-  const t = useTranslations('Card');
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   return (
@@ -187,15 +185,6 @@ export function RecommendationCard({
       <RatingCapsule item={item} size="sm" />
       <SaveButton item={item} size="sm" />
 
-      <button
-        type="button"
-        aria-label={t('moreInfo')}
-        onClick={() => setDetailsOpen(true)}
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:text-foreground"
-      >
-        <Info size={18} />
-      </button>
-
       {detailsOpen && (
         <CardDetails
           item={item}
@@ -207,8 +196,9 @@ export function RecommendationCard({
   );
 }
 
-// Vista ampliada a pantalla completa: toda la información de la recomendación
-// (descripción, scoring, etiquetas) junto a las mismas acciones de la fila.
+// Vista ampliada a pantalla completa. Cabecera (categoría, cerrar, título) y
+// pie (etiquetas, scoring y acciones) fijos; solo la imagen y la descripción
+// hacen scroll. El título enlaza a la URL en una pestaña nueva.
 function CardDetails({
   item,
   showScore,
@@ -237,9 +227,9 @@ function CardDetails({
       aria-label={item.title}
       className="fixed inset-0 z-[60] flex flex-col bg-[var(--background)]"
     >
-      <div className="mx-auto flex h-full w-full max-w-2xl flex-col gap-4 overflow-y-auto p-6">
-        {/* Cabecera: icono + categoría + cerrar */}
-        <div className="flex items-center gap-2.5">
+      <div className="mx-auto flex h-full w-full max-w-2xl flex-col p-6">
+        {/* Cabecera fija: icono + categoría + cerrar, y título */}
+        <div className="flex shrink-0 items-center gap-2.5">
           <CategoryIcon
             name={item.category?.icon}
             className="shrink-0 text-neon-pink"
@@ -250,18 +240,18 @@ function CardDetails({
               {item.category.name}
             </span>
           )}
+          {/* Cierre con la estética del botón de volver (style-guide §3.F) */}
           <button
             type="button"
             onClick={onClose}
             aria-label={t('close')}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:text-foreground"
+            className="back-button"
           >
-            <X size={20} />
+            <X size={18} strokeWidth={2} />
           </button>
         </div>
 
-        {/* Título (enlace si hay URL) + scoring */}
-        <div className="flex items-start justify-between gap-3">
+        <div className="shrink-0 pt-4">
           {item.url ? (
             <a
               href={item.url}
@@ -274,46 +264,58 @@ function CardDetails({
           ) : (
             <h2 className="text-2xl font-bold text-foreground">{item.title}</h2>
           )}
-          {showScore && (
-            <span className="mt-1 shrink-0 text-sm tabular-nums text-muted">
-              {item.score ?? item.global_score}
-            </span>
+        </div>
+
+        {/* Zona con scroll: solo imagen + descripción */}
+        <div className="mt-4 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto">
+          {item.image_url && (
+            // Imagen remota de origen arbitrario (TMDB/Steam/URL del usuario):
+            // <img> normal a propósito, sin pasar por el optimizador de next/image.
+            // Contenida sin recortes (feedback 1.5.0): centrada y a su aspecto.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={item.image_url}
+              alt=""
+              className="mx-auto max-h-60 max-w-fit rounded-xl object-contain"
+              loading="lazy"
+            />
+          )}
+
+          {item.description && (
+            <p className="text-base leading-relaxed text-muted">{item.description}</p>
           )}
         </div>
 
-        {item.image_url && (
-          // Imagen remota de origen arbitrario (TMDB/Steam/URL del usuario):
-          // <img> normal a propósito, sin pasar por el optimizador de next/image.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={item.image_url}
-            alt=""
-            className="max-h-72 w-full rounded-xl border border-border-muted object-cover"
-            loading="lazy"
-          />
-        )}
-
-        {item.description && (
-          <p className="text-base leading-relaxed text-muted">{item.description}</p>
-        )}
-
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full border border-border-muted bg-[var(--field-bg)] px-2.5 py-1 text-sm text-foreground"
-              >
-                {tag}
+        {/* Pie fijo: etiquetas + scoring (izda.) y acciones (dcha.) */}
+        <div className="flex shrink-0 flex-col gap-3 pt-4">
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-border-muted bg-[var(--field-bg)] px-2.5 py-1 text-sm text-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          <div className="flex items-center justify-between gap-3 pb-2">
+            {showScore ? (
+              <span className="text-sm text-muted">
+                {t('score')}:{' '}
+                <span className="tabular-nums text-foreground">
+                  {item.score ?? item.global_score}
+                </span>
               </span>
-            ))}
+            ) : (
+              <span />
+            )}
+            <div className="flex items-center gap-3">
+              <RatingCapsule item={item} size="md" />
+              <SaveButton item={item} size="md" />
+            </div>
           </div>
-        )}
-
-        {/* Acciones */}
-        <div className="mt-auto flex items-center justify-end gap-3 pb-2 pt-4">
-          <RatingCapsule item={item} size="md" />
-          <SaveButton item={item} size="md" />
         </div>
       </div>
     </div>

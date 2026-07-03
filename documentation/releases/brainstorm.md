@@ -28,8 +28,6 @@ Nadie más debe leerlo ni tomarlo como guía para desarrollar el proyecto, y por
 
 - En la lista de tendencias el tiempo también debería influir en el orden.
 
-- Caché: categorías, idioma...
-
 - Especialización de las categorías:
   - rango de precio
   - localización
