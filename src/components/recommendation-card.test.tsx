@@ -59,13 +59,27 @@ describe('RecommendationCard (F2: compacta ↔ ampliada)', () => {
     expect(img?.className).toContain('object-contain');
   });
 
-  it('el título de la vista ampliada enlaza a la URL en pestaña nueva', async () => {
+  it('el título y la imagen de la vista ampliada enlazan a la URL en pestaña nueva', async () => {
     const user = userEvent.setup();
     render(<RecommendationCard item={item} showScore />);
     const dialog = await openDetails(user);
-    const link = within(dialog).getByRole('link', { name: 'Blade Runner' });
-    expect(link).toHaveAttribute('href', 'https://example.com/bladerunner');
-    expect(link).toHaveAttribute('target', '_blank');
+    // Título e imagen comparten aria-label (el título): ambos enlaces.
+    const links = within(dialog).getAllByRole('link', { name: 'Blade Runner' });
+    expect(links).toHaveLength(2);
+    for (const link of links) {
+      expect(link).toHaveAttribute('href', 'https://example.com/bladerunner');
+      expect(link).toHaveAttribute('target', '_blank');
+    }
+    // Uno de los dos es el que envuelve la imagen.
+    expect(links.some((l) => l.querySelector('img'))).toBe(true);
+  });
+
+  it('sin URL, la imagen no está enlazada', async () => {
+    const user = userEvent.setup();
+    render(<RecommendationCard item={{ ...item, url: null }} showScore />);
+    const dialog = await openDetails(user);
+    expect(within(dialog).queryByRole('link')).not.toBeInTheDocument();
+    expect(dialog.querySelector('img')).not.toBeNull();
   });
 
   it('la vista ampliada se cierra con el botón cerrar (estética back-button)', async () => {
