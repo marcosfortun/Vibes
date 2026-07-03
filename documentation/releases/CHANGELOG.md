@@ -15,6 +15,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
 ### Database
 - Migración `20260703140000_recommendation_image.sql`: columna `image_url` + grants por columna y `create_recommendation` v3 (`p_image_url`).
 
+### Tests
+- **Stack de tests** (Vitest + Testing Library, `npm test`): primer arnés automatizado del proyecto. 26 tests de regresión/smoke que blindan las 4 features de la 1.5.0: manifest PWA por skin, helpers de skins, adaptadores TMDB/Steam (póster/carátula, con `fetch` mockeado), vista compacta ↔ ampliada de la tarjeta y wizard de carga masiva (parseo de títulos + flujo de elección/creación/omisión). Extraído `parseTitles` a `src/lib/bulk.ts` para poder testearlo aislado.
+
 ## [1.4.4] — 2026-07-03
 
 Hotfix solo de BD (rama `hotfix/1.4.4`), sin redeploy de la app.
