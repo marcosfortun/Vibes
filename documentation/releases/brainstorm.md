@@ -7,6 +7,8 @@ Nadie más debe leerlo ni tomarlo como guía para desarrollar el proyecto, y por
 
 ## Ideas
 
+- Añadir test automáticos (regresión y smoke).
+
 - Después del signup, aterrizar en una página/carrusel de onboarding.
   - La primera página que diga "vamos a configurar tu experiencia".
   - Luego la página de selección de skin (que ya existe).

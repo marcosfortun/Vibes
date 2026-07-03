@@ -9,9 +9,10 @@ Los demás interesados pueden leerlo y tomarlo como guía para desarrollar el pr
 
 **En proceso**:
 
-**Pendiente**:
-
 - Corregir el icono y el nombre de instalación en el escritorio. Deberían ser los de la skin que tengas seleccionada.
 - Posibilidad de cargar recomendaciones en masa copiando cada título en una línea. Aplicar autocompletado en background.
 - Vista comprimida de la lista de recmendaciones. Botón "más info" que despliega la tarjeta a pantalla completa.
 - Posibilidad de añadir una imagen a las recomendaciones.
+  - Los resultados por IA deberían incorporar la imagen.
+
+**Pendiente**:
