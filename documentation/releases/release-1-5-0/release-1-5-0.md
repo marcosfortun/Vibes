@@ -4,11 +4,12 @@
 
 **En proceso**:
 
-* Funciona el autocompletado con steam y haiku, pero no con TMDB.
-* No me han llegado los emails de nueva amistad establecida.
+
 
 **Pendiente**:
 
+- Corregir el icono y el nombre de instalación en el escritorio.
+- 
 - Vista comprimida de la lista de tareas. Botón "más info" que despliega la tarjeta a pantalla completa.
 - Posibilidad de añadir una imagen a las recomendaciones.
 - Filtros de búsqueda en las listas (mi lista, amigos y tendencias). Tipo, tags, rango de valoración.
