@@ -19,6 +19,7 @@ type Prefill = {
   title: string;
   description: string;
   url: string;
+  imageUrl: string;
   tags: string[];
 };
 
@@ -132,6 +133,7 @@ function SearchStep({
                         title: c.title,
                         description: c.description ?? '',
                         url: c.url ?? '',
+                        imageUrl: c.image ?? '',
                         tags: c.tags ?? [],
                       });
                     }
@@ -163,7 +165,7 @@ function SearchStep({
                 type="button"
                 disabled={pending}
                 onClick={() =>
-                  onPrefill({ title: q, description: '', url: '', tags: [] })
+                  onPrefill({ title: q, description: '', url: '', imageUrl: '', tags: [] })
                 }
                 className="list-row w-full text-left text-neon-pink transition-colors hover:bg-[var(--glass-bg)]"
               >
@@ -322,6 +324,19 @@ function DetailsStep({
           maxLength={LIMITS.url}
           placeholder="https://"
           defaultValue={prefill.url}
+          className="field"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1 text-sm text-muted">
+        {t('fields.imageUrl')}
+        <input
+          type="url"
+          name="image_url"
+          inputMode="url"
+          maxLength={LIMITS.imageUrl}
+          placeholder="https://"
+          defaultValue={prefill.imageUrl}
           className="field"
         />
       </label>

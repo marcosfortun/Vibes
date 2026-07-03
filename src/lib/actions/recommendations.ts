@@ -26,6 +26,7 @@ export type Candidate =
       title: string;
       description: string | null;
       url: string | null;
+      image: string | null;
       tags: string[];
       similarity: number;
     };
@@ -137,6 +138,7 @@ export async function searchCandidates(
     title: c.title,
     description: c.description ?? null,
     url: c.url ?? null,
+    image: c.image ?? null,
     tags: c.tags ?? [],
     similarity: similarity(c.title, q),
   }));
@@ -188,6 +190,7 @@ export async function createRecommendation(
   const description = String(formData.get('description') ?? '').trim();
   const categoryId = String(formData.get('category_id') ?? '');
   const urlRaw = String(formData.get('url') ?? '').trim();
+  const imageUrlRaw = String(formData.get('image_url') ?? '').trim();
   const tags = formData
     .getAll('tags')
     .map((t) => norm(String(t)).slice(0, LIMITS.tag))
@@ -197,10 +200,12 @@ export async function createRecommendation(
   if (!title) return { error: 'titleRequired' };
   if (!categoryId) return { error: 'categoryRequired' };
   if (urlRaw && !/^https?:\/\//.test(urlRaw)) return { error: 'invalidUrl' };
+  if (imageUrlRaw && !/^https?:\/\//.test(imageUrlRaw)) return { error: 'invalidUrl' };
   if (
     title.length > LIMITS.title ||
     description.length > LIMITS.description ||
-    urlRaw.length > LIMITS.url
+    urlRaw.length > LIMITS.url ||
+    imageUrlRaw.length > LIMITS.imageUrl
   ) {
     return { error: 'tooLong' };
   }
@@ -249,6 +254,7 @@ export async function createRecommendation(
     p_category: categoryId,
     p_translated: ok,
     p_tags: pTags,
+    p_image_url: imageUrlRaw || null,
   });
   if (error || !recId) {
     logSupabaseError('createRecommendation.create_recommendation', error);

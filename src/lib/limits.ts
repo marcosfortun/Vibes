@@ -4,5 +4,6 @@ export const LIMITS = {
   title: 120,
   description: 600,
   url: 500,
+  imageUrl: 500,
   tag: 30,
 } as const;
