@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Check, ChevronRight, Loader2, Plus, SkipForward } from 'lucide-react';
 import { CategoryPicker } from '@/components/new-recommendation-flow';
@@ -29,6 +30,7 @@ const MAX_TITLES = 50;
 // piden en segundo plano mientras el usuario decide. Al final, un resumen.
 export function BulkAddFlow({ categories }: { categories: Category[] }) {
   const t = useTranslations('Bulk');
+  const router = useRouter();
   const [category, setCategory] = useState<Category | null>(null);
   const [raw, setRaw] = useState('');
   const [titles, setTitles] = useState<string[] | null>(null);
@@ -57,16 +59,17 @@ export function BulkAddFlow({ categories }: { categories: Category[] }) {
   useEffect(() => {
     if (!titles || index >= titles.length) return;
     let alive = true;
-    setLoadingCandidates(true);
-    setCandidates(null);
-    fetchFor(titles[index]).then((res) => {
+    void (async () => {
+      setLoadingCandidates(true);
+      setCandidates(null);
+      const res = await fetchFor(titles[index]);
       if (!alive) return;
       setCandidates(res);
       setLoadingCandidates(false);
       // Prefetch del siguiente en segundo plano (sin bloquear la UI).
       const next = titles[index + 1];
       if (next) void fetchFor(next);
-    });
+    })();
     return () => {
       alive = false;
     };
@@ -104,8 +107,11 @@ export function BulkAddFlow({ categories }: { categories: Category[] }) {
     record({ title, status: 'skipped' });
   }
 
-  async function finish() {
-    await bulkAddDone();
+  function finish() {
+    startTransition(async () => {
+      await bulkAddDone();
+      router.push('/');
+    });
   }
 
   // ── Paso 0: categoría + textarea ──
@@ -178,9 +184,14 @@ export function BulkAddFlow({ categories }: { categories: Category[] }) {
             </li>
           ))}
         </ul>
-        <a href="/" onClick={finish} className="btn-primary w-full text-center">
+        <button
+          type="button"
+          onClick={finish}
+          disabled={pending}
+          className="btn-primary w-full text-center disabled:opacity-50"
+        >
           {t('goHome')}
-        </a>
+        </button>
       </div>
     );
   }
