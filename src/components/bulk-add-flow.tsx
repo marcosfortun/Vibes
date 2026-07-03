@@ -12,7 +12,7 @@ import {
   type BulkPick,
   type Candidate,
 } from '@/lib/actions/recommendations';
-import { LIMITS } from '@/lib/limits';
+import { parseTitles } from '@/lib/bulk';
 
 type Category = { id: string; name: string; icon?: string | null };
 
@@ -21,8 +21,6 @@ type ItemResult = {
   status: 'created' | 'skipped' | 'failed';
   via?: string; // provider o 'existing' / 'scratch'
 };
-
-const MAX_TITLES = 50;
 
 // Carga masiva: se elige una categoría, se pegan títulos (uno por línea) y por
 // cada uno se muestran los candidatos del autocompletado para elegir el mejor
@@ -76,15 +74,7 @@ export function BulkAddFlow({ categories }: { categories: Category[] }) {
   }, [titles, index, fetchFor]);
 
   function start() {
-    const parsed = Array.from(
-      new Set(
-        raw
-          .split('\n')
-          .map((l) => l.trim())
-          .filter(Boolean)
-          .map((l) => l.slice(0, LIMITS.title)),
-      ),
-    ).slice(0, MAX_TITLES);
+    const parsed = parseTitles(raw);
     if (!parsed.length) return;
     setTitles(parsed);
     setIndex(0);
