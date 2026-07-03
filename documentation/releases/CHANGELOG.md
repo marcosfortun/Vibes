@@ -2,6 +2,19 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [SemVer](https://semver.org/).
 
+## [Unreleased] — release 1.5.0 (en `release/1.5.0`, sin desplegar)
+
+### Added
+- **Carga masiva de recomendaciones** (`/new/bulk`, enlace desde el alta): se elige una categoría, se pegan varios títulos (uno por línea, hasta 50) y por cada uno se muestran los candidatos del autocompletado para elegir el mejor, crear solo con el título u omitir. Los candidatos del siguiente título se piden en segundo plano mientras se decide. Resumen final con qué se creó y cómo.
+- **Imagen en las recomendaciones**: nueva columna `image_url` (RPC `create_recommendation` v3). Se autorellena con el póster de **TMDB** (`poster_path`) y la carátula de **Steam** (`header_image`) cuando el resultado viene del autocompletado, y hay un campo "URL de la imagen" editable en el alta. Se muestra en la vista ampliada de la tarjeta.
+
+### Changed
+- **Vista compacta de las listas** (Mi Lista / De Amigos / Tendencias): cada recomendación pasa a una fila de una línea (icono de categoría, título, calificar, guardar, más info). La descripción, el scoring y las etiquetas se muestran en la **vista ampliada** a pantalla completa (botón "más info").
+- **Instalación PWA por skin**: el manifest es dinámico (`/manifest.webmanifest?skin=<style>`); la app se instala con el **icono y los colores de la skin activa** manteniendo el nombre "Vibes". El `<link rel="manifest">` se sincroniza con la skin en el arranque y al cambiarla. *(Limitación: lo ya instalado no se actualiza al cambiar de skin; lo cachea el SO.)*
+
+### Database
+- Migración `20260703140000_recommendation_image.sql`: columna `image_url` + grants por columna y `create_recommendation` v3 (`p_image_url`).
+
 ## [1.4.4] — 2026-07-03
 
 Hotfix solo de BD (rama `hotfix/1.4.4`), sin redeploy de la app.
