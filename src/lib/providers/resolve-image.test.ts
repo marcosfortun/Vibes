@@ -22,7 +22,14 @@ function mockFetch(routes: Route[]) {
 }
 
 const WIKI_HIT = {
-  query: { pages: { '1': { thumbnail: { source: 'https://wiki.img/serial.jpg' } } } },
+  query: {
+    pages: {
+      '1': {
+        title: 'Museo del Prado',
+        thumbnail: { source: 'https://wiki.img/serial.jpg' },
+      },
+    },
+  },
 };
 const WIKI_MISS = { query: {} };
 
@@ -37,7 +44,10 @@ describe('resolveImage (F5: imagen para resultados de IA)', () => {
       locale: 'es',
       wikiTitle: 'Museo Nacional del Prado',
     });
-    expect(img).toBe('https://wiki.img/serial.jpg');
+    expect(img).toEqual({
+      image: 'https://wiki.img/serial.jpg',
+      sourceUrl: 'https://es.wikipedia.org/wiki/Museo_del_Prado',
+    });
     expect(calls[0]).toContain('gsrsearch=Museo%20Nacional%20del%20Prado');
   });
 
@@ -51,7 +61,10 @@ describe('resolveImage (F5: imagen para resultados de IA)', () => {
       categoryName: 'Expo',
       locale: 'es',
     });
-    expect(img).toBe('https://wiki.img/serial.jpg');
+    expect(img).toEqual({
+      image: 'https://wiki.img/serial.jpg',
+      sourceUrl: 'https://en.wikipedia.org/wiki/Museo_del_Prado',
+    });
   });
 
   it('podcast: iTunes tiene prioridad sobre Wikipedia (carátula > foto tangencial)', async () => {
@@ -59,7 +72,14 @@ describe('resolveImage (F5: imagen para resultados de IA)', () => {
       { match: /wikipedia\.org/, body: WIKI_HIT },
       {
         match: /itunes\.apple\.com\/search.*media=podcast/,
-        body: { results: [{ artworkUrl100: 'https://cdn.itunes/art/100x100bb.jpg' }] },
+        body: {
+          results: [
+            {
+              artworkUrl100: 'https://cdn.itunes/art/100x100bb.jpg',
+              collectionViewUrl: 'https://podcasts.apple.com/podcast/radiolab/id1',
+            },
+          ],
+        },
       },
     ]);
     const img = await resolveImage({
@@ -67,8 +87,11 @@ describe('resolveImage (F5: imagen para resultados de IA)', () => {
       categoryName: 'Podcast',
       locale: 'en',
     });
-    // Artwork de iTunes ampliado a 600px, y sin tocar Wikipedia.
-    expect(img).toBe('https://cdn.itunes/art/600x600bb.jpg');
+    // Artwork de iTunes ampliado a 600px + ficha como fuente, sin tocar Wikipedia.
+    expect(img).toEqual({
+      image: 'https://cdn.itunes/art/600x600bb.jpg',
+      sourceUrl: 'https://podcasts.apple.com/podcast/radiolab/id1',
+    });
     expect(calls.some((u) => u.includes('wikipedia.org'))).toBe(false);
   });
 
@@ -82,7 +105,7 @@ describe('resolveImage (F5: imagen para resultados de IA)', () => {
       categoryName: 'Podcast',
       locale: 'en',
     });
-    expect(img).toBe('https://wiki.img/serial.jpg');
+    expect(img?.image).toBe('https://wiki.img/serial.jpg');
   });
 
   it('juego de mesa: BoardGameGeek (búsqueda + ficha XML)', async () => {
@@ -101,7 +124,10 @@ describe('resolveImage (F5: imagen para resultados de IA)', () => {
       categoryName: 'Juego de mesa',
       locale: 'es',
     });
-    expect(img).toBe('https://cf.geekdo/catan.jpg');
+    expect(img).toEqual({
+      image: 'https://cf.geekdo/catan.jpg',
+      sourceUrl: 'https://boardgamegeek.com/boardgame/13',
+    });
   });
 
   it('cine: TMDB reutilizando el adaptador', async () => {
@@ -121,7 +147,10 @@ describe('resolveImage (F5: imagen para resultados de IA)', () => {
       categoryName: 'Película',
       locale: 'es',
     });
-    expect(img).toBe('https://image.tmdb.org/t/p/w500/enemy.jpg');
+    expect(img).toEqual({
+      image: 'https://image.tmdb.org/t/p/w500/enemy.jpg',
+      sourceUrl: 'https://www.themoviedb.org/movie/1',
+    });
     vi.unstubAllEnvs();
   });
 

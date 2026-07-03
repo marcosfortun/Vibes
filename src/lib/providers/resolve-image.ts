@@ -4,6 +4,10 @@ import { tmdbAdapter } from './tmdb';
 
 // Resolución de imagen al CREAR una recomendación (alta simple y carga masiva)
 // cuando el candidato no trae imagen propia (los de TMDB/Steam ya la traen).
+// Devuelve también la URL de la fuente (artículo/ficha de donde sale la
+// imagen): si la recomendación no tiene URL propia, se usa como enlace de la
+// tarjeta (título e imagen clicables).
+//
 // Cascada best-effort, cada fuente con timeout corto y sin lanzar nunca:
 //   1. Fuente especializada según la categoría (por su nombre canónico):
 //      TMDB (cine/series/documental), Steam (videojuegos/VR), iTunes Search
@@ -17,6 +21,13 @@ import { tmdbAdapter } from './tmdb';
 //   3. Nada → null: la tarjeta simplemente no muestra imagen.
 // Se ejecuta en el momento del alta (1 sola resolución), nunca en el
 // autocompletado (serían 8 por tecleo).
+
+export type ResolvedImage = {
+  image: string;
+  // Página de la que procede la imagen (artículo de Wikipedia, ficha de
+  // TMDB/Steam/iTunes/BGG). Puede faltar si la fuente no la expone.
+  sourceUrl: string | null;
+};
 
 const TIMEOUT_MS = 4000;
 
@@ -56,8 +67,11 @@ async function fetchText(url: string): Promise<string | null> {
 const isHttpUrl = (v: unknown): v is string =>
   typeof v === 'string' && /^https?:\/\//.test(v);
 
-// ── 1. Wikipedia: generator=search + pageimages en una sola llamada ──
-async function wikipediaImage(title: string, locale: string): Promise<string | null> {
+// ── 2. Wikipedia: generator=search + pageimages en una sola llamada ──
+async function wikipediaImage(
+  title: string,
+  locale: string,
+): Promise<ResolvedImage | null> {
   const langs = [...new Set([/^(es|fr|pt)$/.test(locale) ? locale : 'en', 'en'])];
   for (const lang of langs) {
     const url =
@@ -65,33 +79,51 @@ async function wikipediaImage(title: string, locale: string): Promise<string | n
       `&gsrsearch=${encodeURIComponent(title)}&gsrlimit=1` +
       `&prop=pageimages&piprop=thumbnail&pithumbsize=640&redirects=1&format=json`;
     const data = (await fetchJson(url)) as {
-      query?: { pages?: Record<string, { thumbnail?: { source?: string } }> };
+      query?: {
+        pages?: Record<string, { title?: string; thumbnail?: { source?: string } }>;
+      };
     } | null;
     const pages = data?.query?.pages;
     if (pages) {
       const first = Object.values(pages)[0];
-      if (isHttpUrl(first?.thumbnail?.source)) return first.thumbnail.source;
+      if (isHttpUrl(first?.thumbnail?.source)) {
+        // URL canónica del artículo del que sale la imagen.
+        const sourceUrl = first.title
+          ? `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(
+              first.title.replace(/ /g, '_'),
+            )}`
+          : null;
+        return { image: first.thumbnail.source, sourceUrl };
+      }
     }
   }
   return null;
 }
 
-// ── 2. iTunes Search (sin key): artwork de podcasts y música ──
+// ── 1. iTunes Search (sin key): artwork de podcasts y música ──
 async function itunesImage(
   term: string,
   kind: 'podcast' | 'music',
-): Promise<string | null> {
+): Promise<ResolvedImage | null> {
   const filter = kind === 'podcast' ? 'media=podcast' : 'media=music&entity=album';
   const data = (await fetchJson(
     `https://itunes.apple.com/search?term=${encodeURIComponent(term)}&${filter}&limit=1`,
-  )) as { results?: Array<{ artworkUrl100?: string }> } | null;
-  const art = data?.results?.[0]?.artworkUrl100;
-  // El artwork llega a 100px pero el CDN sirve cualquier tamaño solicitado.
-  return isHttpUrl(art) ? art.replace('100x100', '600x600') : null;
+  )) as {
+    results?: Array<{ artworkUrl100?: string; collectionViewUrl?: string; trackViewUrl?: string }>;
+  } | null;
+  const hit = data?.results?.[0];
+  const art = hit?.artworkUrl100;
+  if (!isHttpUrl(art)) return null;
+  const page = hit?.collectionViewUrl ?? hit?.trackViewUrl;
+  return {
+    // El artwork llega a 100px pero el CDN sirve cualquier tamaño solicitado.
+    image: art.replace('100x100', '600x600'),
+    sourceUrl: isHttpUrl(page) ? page : null,
+  };
 }
 
-// ── 2. BoardGameGeek XML API2 (sin key): imagen de juegos de mesa ──
-async function bggImage(title: string): Promise<string | null> {
+// ── 1. BoardGameGeek XML API2 (sin key): imagen de juegos de mesa ──
+async function bggImage(title: string): Promise<ResolvedImage | null> {
   const search = await fetchText(
     `https://boardgamegeek.com/xmlapi2/search?query=${encodeURIComponent(title)}&type=boardgame`,
   );
@@ -99,7 +131,8 @@ async function bggImage(title: string): Promise<string | null> {
   if (!id) return null;
   const thing = await fetchText(`https://boardgamegeek.com/xmlapi2/thing?id=${id}`);
   const img = thing?.match(/<image>\s*([^<\s][^<]*?)\s*<\/image>/)?.[1];
-  return isHttpUrl(img) ? img : null;
+  if (!isHttpUrl(img)) return null;
+  return { image: img, sourceUrl: `https://boardgamegeek.com/boardgame/${id}` };
 }
 
 // Nombre canónico de categoría (columna categories.name, estable) → fuente.
@@ -109,15 +142,15 @@ const STEAM_CATEGORIES = ['Videojuego', 'Juego VR'];
 async function specializedImage(
   title: string,
   categoryName: string,
-): Promise<string | null> {
+): Promise<ResolvedImage | null> {
   try {
     if (TMDB_CATEGORIES.includes(categoryName)) {
       const [hit] = await tmdbAdapter.search(title, { limit: 1 });
-      return hit?.image ?? null;
+      return hit?.image ? { image: hit.image, sourceUrl: hit.url ?? null } : null;
     }
     if (STEAM_CATEGORIES.includes(categoryName)) {
       const [hit] = await steamAdapter.search(title, { limit: 1 });
-      return hit?.image ?? null;
+      return hit?.image ? { image: hit.image, sourceUrl: hit.url ?? null } : null;
     }
     if (categoryName === 'Podcast') return await itunesImage(title, 'podcast');
     if (categoryName === 'Grupo de música') return await itunesImage(title, 'music');
@@ -133,7 +166,7 @@ export async function resolveImage(args: {
   categoryName: string;
   locale: string;
   wikiTitle?: string | null;
-}): Promise<string | null> {
+}): Promise<ResolvedImage | null> {
   const { title, categoryName, locale, wikiTitle } = args;
   if (!title.trim()) return null;
 
