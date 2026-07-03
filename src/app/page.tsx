@@ -4,7 +4,7 @@ import { HomeTabs, type TabKey } from '@/components/home-tabs';
 import type { CardItem } from '@/components/recommendation-card';
 
 const REC_SELECT =
-  'id,title,title_i18n,description,description_i18n,url,global_score,' +
+  'id,title,title_i18n,description,description_i18n,url,image_url,global_score,' +
   'category:categories(name,name_i18n,color,icon),' +
   'tags:recommendation_tags(tag:tags(name,name_i18n))';
 

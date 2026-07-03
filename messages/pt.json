@@ -78,6 +78,7 @@
     "saved": "Na sua lista",
     "allTags": "Todas as etiquetas",
     "close": "Fechar",
+    "moreInfo": "Mais info",
     "rate": {
       "add": "Avaliar",
       "dislike": "Não gostei",
@@ -96,6 +97,7 @@
       "category": "Categoria",
       "choose": "Escolha uma categoria",
       "url": "URL (opcional)",
+      "imageUrl": "URL da imagem",
       "tags": "Etiquetas",
       "tagsPlaceholder": "Adicione uma etiqueta e pressione Enter",
       "removeTag": "Remover etiqueta"

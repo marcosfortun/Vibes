@@ -78,6 +78,7 @@
     "saved": "In your list",
     "allTags": "All tags",
     "close": "Close",
+    "moreInfo": "More info",
     "rate": {
       "add": "Rate",
       "dislike": "Didn't like",
@@ -96,6 +97,7 @@
       "category": "Category",
       "choose": "Choose a category",
       "url": "URL (optional)",
+      "imageUrl": "Image URL",
       "tags": "Tags",
       "tagsPlaceholder": "Add a tag and press Enter",
       "removeTag": "Remove tag"

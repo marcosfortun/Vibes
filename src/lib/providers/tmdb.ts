@@ -28,6 +28,7 @@ export const tmdbAdapter: ProviderAdapter = {
           title?: string;
           name?: string;
           overview?: string;
+          poster_path?: string | null;
         }>;
       };
       const results = Array.isArray(data.results) ? data.results : [];
@@ -38,6 +39,7 @@ export const tmdbAdapter: ProviderAdapter = {
           title: String(r.title ?? r.name ?? ''),
           description: r.overview ? String(r.overview) : null,
           url: `https://www.themoviedb.org/${r.media_type}/${r.id}`,
+          image: r.poster_path ? `https://image.tmdb.org/t/p/w500${r.poster_path}` : null,
           provider: 'tmdb',
         }))
         .filter((c) => c.title);

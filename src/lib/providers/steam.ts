@@ -19,15 +19,20 @@ export const steamAdapter: ProviderAdapter = {
         .filter((it) => it.id && it.name)
         .slice(0, limit);
 
-      // storesearch no trae descripción → la pedimos a appdetails (short_description),
-      // en paralelo y best-effort: si una falla, ese candidato queda sin descripción.
+      // storesearch no trae descripción → la pedimos a appdetails junto con la
+      // carátula (header_image), en paralelo y best-effort: si una falla, ese
+      // candidato queda sin descripción/imagen.
       return Promise.all(
-        items.map(async (it) => ({
-          title: String(it.name),
-          description: await steamShortDescription(it.id as number),
-          url: `https://store.steampowered.com/app/${it.id}`,
-          provider: 'steam',
-        })),
+        items.map(async (it) => {
+          const details = await steamDetails(it.id as number);
+          return {
+            title: String(it.name),
+            description: details.description,
+            url: `https://store.steampowered.com/app/${it.id}`,
+            image: details.image,
+            provider: 'steam',
+          };
+        }),
       );
     } finally {
       clearTimeout(timer);
@@ -35,7 +40,9 @@ export const steamAdapter: ProviderAdapter = {
   },
 };
 
-async function steamShortDescription(appId: number): Promise<string | null> {
+async function steamDetails(
+  appId: number,
+): Promise<{ description: string | null; image: string | null }> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 5000);
   try {
@@ -43,15 +50,20 @@ async function steamShortDescription(appId: number): Promise<string | null> {
       'https://store.steampowered.com/api/appdetails?' +
       `appids=${appId}&l=english&filters=basic`;
     const res = await fetch(url, { signal: ctrl.signal });
-    if (!res.ok) return null;
+    if (!res.ok) return { description: null, image: null };
     const json = (await res.json()) as Record<
       string,
-      { success?: boolean; data?: { short_description?: string } }
+      { success?: boolean; data?: { short_description?: string; header_image?: string } }
     >;
-    const desc = json?.[String(appId)]?.data?.short_description;
-    return desc && desc.trim() ? desc : null;
+    const data = json?.[String(appId)]?.data;
+    const desc = data?.short_description;
+    const img = data?.header_image;
+    return {
+      description: desc && desc.trim() ? desc : null,
+      image: img && /^https?:\/\//.test(img) ? img : null,
+    };
   } catch {
-    return null;
+    return { description: null, image: null };
   } finally {
     clearTimeout(timer);
   }

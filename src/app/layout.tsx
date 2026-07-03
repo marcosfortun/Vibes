@@ -59,15 +59,15 @@ export default async function RootLayout({
   // Script de arranque: fija data-skin ANTES del primer pintado para evitar
   // parpadeo. Precedencia: skin de BD (con sesión) → localStorage → por defecto.
   // Los casos sin resolver (sin BD ni localStorage) los completa SkinManager.
-  const skinBootstrap = `(function(){try{var valid=${JSON.stringify(
+  // Además reapunta el <link rel="manifest"> a la variante de la skin resuelta,
+  // para que la PWA se instale con el icono/colores de la skin activa.
+  const skinBootstrap = `(function(){var d=${JSON.stringify(DEFAULT_SKIN)};var k;try{var valid=${JSON.stringify(
     SKINS.map((s) => s.style),
   )};var s=${JSON.stringify(dbSkin)};var v=localStorage.getItem(${JSON.stringify(
     SKIN_STORAGE_KEY,
-  )});if(valid.indexOf(v)<0)v=null;document.documentElement.dataset.skin=s||v||${JSON.stringify(
-    DEFAULT_SKIN,
-  )};}catch(e){document.documentElement.dataset.skin=${JSON.stringify(
-    DEFAULT_SKIN,
-  )};}})();`;
+  )});if(valid.indexOf(v)<0)v=null;k=s||v||d;}catch(e){k=d;}
+document.documentElement.dataset.skin=k;
+try{var l=document.querySelector('link[rel="manifest"]');if(l)l.setAttribute('href','/manifest.webmanifest?skin='+encodeURIComponent(k));}catch(e){}})();`;
 
   return (
     <html lang={locale} suppressHydrationWarning className="h-full antialiased">

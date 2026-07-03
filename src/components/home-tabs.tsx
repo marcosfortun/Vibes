@@ -147,7 +147,7 @@ export function HomeTabs({
             {t(`empty.${tab}`)}
           </p>
         ) : (
-          <ul className="flex flex-col gap-4 pb-5 pt-1">
+          <ul className="flex flex-col gap-2 pb-5 pt-1">
             {items.map((item) => (
               <li key={item.id}>
                 <RecommendationCard item={item} showScore />
