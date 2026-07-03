@@ -2,10 +2,12 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [SemVer](https://semver.org/).
 
-## [Unreleased]
+## [1.4.4] — 2026-07-03
+
+Hotfix solo de BD (rama `hotfix/1.4.4`), sin redeploy de la app.
 
 ### Fixed
-- **Correos de amistad y personalización del OTP en prod**: `service_role` no tenía `GRANT` sobre `public.users` en producción (divergencia con local, donde los privilegios por defecto de la plataforma sí existen). El cliente admin fallaba con `42501 permission denied` (amistades sin correo) y el hook `send-email` caía a los defaults (OTP en inglés/Stick stack aunque el usuario tuviera otra skin/idioma). Migración `20260703130000_service_role_grants.sql`: `GRANT SELECT ON public.users TO service_role` (mínimo necesario).
+- **Correos de amistad y personalización del OTP en prod**: `service_role` no tenía `GRANT` sobre `public.users` en producción (divergencia con local, donde los privilegios por defecto de la plataforma sí existen). El cliente admin fallaba con `42501 permission denied` (amistades sin correo) y el hook `send-email` caía a los defaults (OTP en inglés/Stick stack aunque el usuario tuviera otra skin/idioma). Migración `20260703130000_service_role_grants.sql`: `GRANT SELECT ON public.users TO service_role` (mínimo necesario). *Verificado en prod: correos de amistad y OTP per-skin/idioma funcionando.*
 
 ## [1.4.3] — 2026-07-03
 
@@ -45,6 +47,13 @@ Hotfix de las pruebas en producción de la 1.4.0 (rama `hotfix/1.4.2`).
 
 ### Added
 - **Send Email Hook** (`supabase/functions/send-email`): OTP renderizado en la skin e idioma del usuario, enviado por Resend. **Deshabilitado** por defecto; verificado en local (skin, idioma, logo y validación del código OK); pendiente de desplegar la función y habilitar el hook + secreto en el panel de prod.
+
+## [1.4.1] — 2026-06-16
+
+Hotfix puntual sobre `main` (tag `v1.4.1`). *(Entrada reconstruida desde git al cerrar la serie 1.4.x.)*
+
+### Fixed
+- **Falso "usuario no disponible" en el signup**: la comprobación previa de username (`username_available`, 1.3.1) bloqueaba el alta cuando la RPC fallaba (`null` interpretado como "ocupado"). Ahora solo bloquea un `false` explícito; ante error, el trigger `handle_new_user` sigue siendo el gate final.
 
 ## [1.4.0] — 2026-06-15
 
