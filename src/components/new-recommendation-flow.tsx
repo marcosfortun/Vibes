@@ -184,7 +184,7 @@ function SearchStep({
 }
 
 // Buscador-autocompletado de categoría (filtro cliente; el catálogo es pequeño).
-function CategoryPicker({
+export function CategoryPicker({
   categories,
   value,
   onChange,

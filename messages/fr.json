@@ -88,6 +88,7 @@
   },
   "New": {
     "title": "Nouvelle recommandation",
+    "bulk": "Ajout en masse",
     "submit": "Créer",
     "back": "Retour",
     "similarHint": "Des éléments similaires existent déjà :",
@@ -241,6 +242,28 @@
       "cta": "Voir le feed",
       "signoff": "— Synchronisation optimisée,",
       "team": "L'équipe Vibes"
+    }
+  },
+  "Bulk": {
+    "title": "Ajout en masse",
+    "single": "Ajout simple",
+    "intro": "Choisis une catégorie et colle plusieurs titres, un par ligne. Nous afficherons les résultats de l’autocomplétion pour choisir le meilleur.",
+    "titlesLabel": "Titres (un par ligne)",
+    "titlesPlaceholder": "Le Parrain\nMatrix\nInterstellar",
+    "start": "Commencer",
+    "searching": "Recherche…",
+    "progress": "{current} sur {total}",
+    "createScratch": "Créer avec le titre seul",
+    "skip": "Ignorer ce titre",
+    "inCatalog": "Au catalogue",
+    "scratch": "Titre seul",
+    "summaryTitle": "Résumé",
+    "summaryCounts": "{created} créées · {skipped} ignorées · {failed} en erreur",
+    "goHome": "Aller à Ma liste",
+    "status": {
+      "created": "Créée",
+      "skipped": "Ignorée",
+      "failed": "Erreur"
     }
   }
 }

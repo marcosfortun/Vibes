@@ -180,8 +180,9 @@ export async function addExistingToList(recId: string): Promise<void> {
   redirect('/');
 }
 
-// Paso 2: alta de una recomendación nueva. Traduce título/descr./tags nuevos a
-// los 4 idiomas (si hay API key), crea vía RPC y la añade a "Mi Lista".
+type SupabaseServer = Awaited<ReturnType<typeof createClient>>;
+
+// Paso 2: alta de una recomendación nueva desde el formulario.
 export async function createRecommendation(
   _prev: NewRecState,
   formData: FormData,
@@ -217,8 +218,36 @@ export async function createRecommendation(
   if (!user) return { error: 'unauth' };
 
   const locale = await getLocale();
+  const recId = await insertRecommendationInCategory(
+    supabase,
+    user.id,
+    locale,
+    categoryId,
+    { title, description, url: urlRaw, imageUrl: imageUrlRaw, tags },
+  );
+  if (!recId) return { error: 'createFailed' };
 
-  // Tags que ya existen en el catálogo (no se retraducen).
+  revalidatePath('/');
+  redirect('/');
+}
+
+// Núcleo de creación reutilizable (paso 2 y carga masiva): traduce título/
+// descripción/tags nuevos, crea vía RPC en la categoría dada y la añade a "Mi
+// Lista". Devuelve el id o null. No hace redirect/revalidate: lo decide quien llama.
+async function insertRecommendationInCategory(
+  supabase: SupabaseServer,
+  userId: string,
+  locale: string,
+  categoryId: string,
+  data: {
+    title: string;
+    description: string;
+    url: string;
+    imageUrl: string;
+    tags: string[];
+  },
+): Promise<string | null> {
+  const { title, description, url, imageUrl, tags } = data;
   const { data: existingRows } = await supabase
     .from('tags')
     .select('name, name_i18n')
@@ -227,8 +256,6 @@ export async function createRecommendation(
     (existingRows ?? []).map((r) => [r.name, r.name_i18n as I18nJson]),
   );
   const newTags = tags.filter((t) => !existing.has(t));
-
-  // Traduce en una sola llamada: título, descripción y tags nuevos.
   const items = [
     { id: 'title', text: title },
     ...(description ? [{ id: 'description', text: description }] : []),
@@ -236,7 +263,6 @@ export async function createRecommendation(
   ];
   const translated = await translateItems(items, locale);
   const ok = translated !== null;
-
   const pTags = tags.map((name) => {
     if (existing.has(name)) {
       return { name, name_i18n: existing.get(name) ?? null, translated: true };
@@ -250,25 +276,101 @@ export async function createRecommendation(
     p_title_i18n: translated?.['title'] ?? null,
     p_description: description,
     p_description_i18n: description ? (translated?.['description'] ?? null) : null,
-    p_url: urlRaw,
+    p_url: url,
     p_category: categoryId,
     p_translated: ok,
     p_tags: pTags,
-    p_image_url: imageUrlRaw || null,
+    p_image_url: imageUrl || null,
   });
   if (error || !recId) {
-    logSupabaseError('createRecommendation.create_recommendation', error);
-    return { error: 'createFailed' };
+    logSupabaseError('insertRecommendation.create_recommendation', error);
+    return null;
   }
 
   const { error: saveError } = await supabase.from('user_interactions').insert({
-    user_id: user.id,
-    recommendation_id: recId,
+    user_id: userId,
+    recommendation_id: recId as string,
     saved: true,
     rating: null,
   });
-  logSupabaseError('createRecommendation.user_interactions.insert', saveError);
+  logSupabaseError('insertRecommendation.user_interactions.insert', saveError);
+  return recId as string;
+}
 
+// ─────────────────────────────────────────────────────────────────────────
+// Carga masiva: un candidato ya elegido en el wizard se materializa aquí.
+// Sin redirect (el wizard sigue con el siguiente título); revalida al cerrar.
+// ─────────────────────────────────────────────────────────────────────────
+export type BulkPick =
+  | { kind: 'existing'; id: string }
+  | {
+      kind: 'external';
+      title: string;
+      description: string | null;
+      url: string | null;
+      image: string | null;
+      tags: string[];
+    }
+  | { kind: 'scratch'; title: string };
+
+export async function bulkAddItem(
+  categoryId: string,
+  pick: BulkPick,
+): Promise<{ ok: boolean }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false };
+  if (!categoryId) return { ok: false };
+
+  // Existente: solo marcar saved (mismo patrón que addExistingToList, sin redirect).
+  if (pick.kind === 'existing') {
+    const { error } = await supabase
+      .from('user_interactions')
+      .insert({ user_id: user.id, recommendation_id: pick.id, saved: true });
+    if (error) {
+      await supabase
+        .from('user_interactions')
+        .update({ saved: true })
+        .eq('user_id', user.id)
+        .eq('recommendation_id', pick.id);
+    }
+    return { ok: true };
+  }
+
+  const locale = await getLocale();
+  const title = (pick.kind === 'scratch' ? pick.title : pick.title).trim().slice(0, LIMITS.title);
+  if (!title) return { ok: false };
+
+  const data =
+    pick.kind === 'external'
+      ? {
+          title,
+          description: (pick.description ?? '').slice(0, LIMITS.description),
+          url: pick.url && /^https?:\/\//.test(pick.url) ? pick.url.slice(0, LIMITS.url) : '',
+          imageUrl:
+            pick.image && /^https?:\/\//.test(pick.image)
+              ? pick.image.slice(0, LIMITS.imageUrl)
+              : '',
+          tags: (pick.tags ?? [])
+            .map((t) => norm(t).slice(0, LIMITS.tag))
+            .filter(Boolean)
+            .slice(0, 5),
+        }
+      : { title, description: '', url: '', imageUrl: '', tags: [] as string[] };
+
+  const recId = await insertRecommendationInCategory(
+    supabase,
+    user.id,
+    locale,
+    categoryId,
+    data,
+  );
+  return { ok: !!recId };
+}
+
+// Revalida la home tras terminar una tanda de carga masiva.
+export async function bulkAddDone(): Promise<void> {
   revalidatePath('/');
-  redirect('/');
 }

@@ -88,6 +88,7 @@
   },
   "New": {
     "title": "Nova recomendação",
+    "bulk": "Carga em massa",
     "submit": "Criar",
     "back": "Voltar",
     "similarHint": "Já existem itens semelhantes:",
@@ -241,6 +242,28 @@
       "cta": "Ver o feed",
       "signoff": "— Sintonia otimizada,",
       "team": "A equipe Vibes"
+    }
+  },
+  "Bulk": {
+    "title": "Carga em massa",
+    "single": "Adição simples",
+    "intro": "Escolhe uma categoria e cola vários títulos, um por linha. Mostraremos os resultados do preenchimento automático para escolheres o melhor.",
+    "titlesLabel": "Títulos (um por linha)",
+    "titlesPlaceholder": "O Padrinho\nMatrix\nInterstellar",
+    "start": "Começar",
+    "searching": "A procurar…",
+    "progress": "{current} de {total}",
+    "createScratch": "Criar só com o título",
+    "skip": "Ignorar este título",
+    "inCatalog": "No catálogo",
+    "scratch": "Só título",
+    "summaryTitle": "Resumo",
+    "summaryCounts": "{created} criadas · {skipped} ignoradas · {failed} com erro",
+    "goHome": "Ir para A minha lista",
+    "status": {
+      "created": "Criada",
+      "skipped": "Ignorada",
+      "failed": "Erro"
     }
   }
 }
