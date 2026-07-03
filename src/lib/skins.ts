@@ -22,6 +22,11 @@ export type Skin = {
   // Assets de marca adaptados al estilo de la skin (en /public).
   icon: string;
   logo: string;
+  // Icono cuadrado 512×512 para el manifest PWA (derivado de `icon`, relleno
+  // con el color de lienzo de la skin) y ese mismo color, usado como
+  // theme/background del manifest.
+  pwaIcon: string;
+  canvas: string;
 };
 
 export const SKINS: readonly Skin[] = [
@@ -30,30 +35,40 @@ export const SKINS: readonly Skin[] = [
     name: 'La vie en rose',
     icon: '/icon.jpg',
     logo: '/logo.jpg',
+    pwaIcon: '/pwa/icon-cyberbotanical-512.png',
+    canvas: '#000000',
   },
   {
     style: 'minimal',
     name: 'Simple man',
     icon: '/icon-minimal.png',
     logo: '/logo-minimal.png',
+    pwaIcon: '/pwa/icon-minimal-512.png',
+    canvas: '#f4f4f6',
   },
   {
     style: 'flat design',
     name: 'Speciality popcorn',
     icon: '/icon-flat.png',
     logo: '/logo-flat.png',
+    pwaIcon: '/pwa/icon-flat-512.png',
+    canvas: '#eef1f8',
   },
   {
     style: 'neobrutalism',
     name: 'Stick stack',
     icon: '/icon-neobrutalism.png',
     logo: '/logo-neobrutalism.png',
+    pwaIcon: '/pwa/icon-neobrutalism-512.png',
+    canvas: '#fdf7e3',
   },
   {
     style: 'pixel art',
     name: 'PICO-8 pop',
     icon: '/icon-pixel.png',
     logo: '/logo-pixel.png',
+    pwaIcon: '/pwa/icon-pixel-512.png',
+    canvas: '#1b2e2e',
   },
 ] as const;
 
