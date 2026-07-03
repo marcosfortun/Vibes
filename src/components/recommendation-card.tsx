@@ -268,18 +268,37 @@ function CardDetails({
 
         {/* Zona con scroll: solo imagen + descripción */}
         <div className="mt-4 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto">
-          {item.image_url && (
+          {item.image_url &&
             // Imagen remota de origen arbitrario (TMDB/Steam/URL del usuario):
             // <img> normal a propósito, sin pasar por el optimizador de next/image.
-            // Contenida sin recortes (feedback 1.5.0): centrada y a su aspecto.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={item.image_url}
-              alt=""
-              className="mx-auto max-h-60 max-w-fit rounded-xl object-contain"
-              loading="lazy"
-            />
-          )}
+            // Contenida sin recortes ni desbordes (w-fit, no max-w-fit: las
+            // imágenes panorámicas se encogen al ancho disponible), centrada.
+            // Con URL, el clic abre la misma pestaña nueva que el título.
+            (item.url ? (
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mx-auto w-fit max-w-full shrink-0"
+                aria-label={item.title}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={item.image_url}
+                  alt=""
+                  className="max-h-60 w-fit max-w-full rounded-xl object-contain"
+                  loading="lazy"
+                />
+              </a>
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={item.image_url}
+                alt=""
+                className="mx-auto max-h-60 w-fit max-w-full shrink-0 rounded-xl object-contain"
+                loading="lazy"
+              />
+            ))}
 
           {item.description && (
             <p className="text-base leading-relaxed text-muted">{item.description}</p>
