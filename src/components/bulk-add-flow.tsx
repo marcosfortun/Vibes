@@ -221,6 +221,7 @@ export function BulkAddFlow({ categories }: { categories: Category[] }) {
                           description: c.description,
                           url: c.url,
                           image: c.image,
+                          wikiTitle: c.wikiTitle,
                           tags: c.tags,
                         },
                     {

@@ -7,6 +7,9 @@ export type ExternalCandidate = {
   url?: string | null;
   // URL pública del póster/carátula, si el proveedor la ofrece (TMDB/Steam).
   image?: string | null;
+  // Título del artículo de Wikipedia (lo aporta la IA): permite resolver la
+  // imagen en el alta sin que el modelo invente URLs (resolve-image.ts).
+  wikiTitle?: string | null;
   tags?: string[];
   provider: string; // kind del proveedor (tmdb | steam | ai)
 };

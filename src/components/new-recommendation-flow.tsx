@@ -20,6 +20,9 @@ type Prefill = {
   description: string;
   url: string;
   imageUrl: string;
+  // Título del artículo de Wikipedia (candidatos IA): viaja oculto hasta la
+  // action para resolver la imagen en el alta.
+  wikiTitle: string;
   tags: string[];
 };
 
@@ -134,6 +137,7 @@ function SearchStep({
                         description: c.description ?? '',
                         url: c.url ?? '',
                         imageUrl: c.image ?? '',
+                        wikiTitle: c.wikiTitle ?? '',
                         tags: c.tags ?? [],
                       });
                     }
@@ -165,7 +169,14 @@ function SearchStep({
                 type="button"
                 disabled={pending}
                 onClick={() =>
-                  onPrefill({ title: q, description: '', url: '', imageUrl: '', tags: [] })
+                  onPrefill({
+                    title: q,
+                    description: '',
+                    url: '',
+                    imageUrl: '',
+                    wikiTitle: '',
+                    tags: [],
+                  })
                 }
                 className="list-row w-full text-left text-neon-pink transition-colors hover:bg-[var(--glass-bg)]"
               >
@@ -283,6 +294,7 @@ function DetailsStep({
   return (
     <form action={formAction} className="flex w-full flex-col gap-4">
       <input type="hidden" name="category_id" value={category.id} />
+      <input type="hidden" name="wiki_title" value={prefill.wikiTitle} />
 
       <div className="flex items-center gap-2 text-sm text-muted">
         <CategoryIcon name={category.icon} size={14} className="text-neon-pink" />

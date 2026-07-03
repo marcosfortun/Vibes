@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/server';
 import { logSupabaseError } from '@/lib/supabase/log';
 import { translateItems } from '@/lib/ai/translate';
 import { externalSearch } from '@/lib/providers/search';
+import { resolveImage } from '@/lib/providers/resolve-image';
 import { LIMITS } from '@/lib/limits';
 
 export type NewRecState = { error?: string };
@@ -27,6 +28,7 @@ export type Candidate =
       description: string | null;
       url: string | null;
       image: string | null;
+      wikiTitle: string | null;
       tags: string[];
       similarity: number;
     };
@@ -139,6 +141,7 @@ export async function searchCandidates(
     description: c.description ?? null,
     url: c.url ?? null,
     image: c.image ?? null,
+    wikiTitle: c.wikiTitle ?? null,
     tags: c.tags ?? [],
     similarity: similarity(c.title, q),
   }));
@@ -192,6 +195,7 @@ export async function createRecommendation(
   const categoryId = String(formData.get('category_id') ?? '');
   const urlRaw = String(formData.get('url') ?? '').trim();
   const imageUrlRaw = String(formData.get('image_url') ?? '').trim();
+  const wikiTitleRaw = String(formData.get('wiki_title') ?? '').trim();
   const tags = formData
     .getAll('tags')
     .map((t) => norm(String(t)).slice(0, LIMITS.tag))
@@ -218,17 +222,50 @@ export async function createRecommendation(
   if (!user) return { error: 'unauth' };
 
   const locale = await getLocale();
+
+  // Sin imagen en el formulario → intenta resolverla (Wikipedia/fuentes por
+  // categoría). Best-effort: si no hay, la recomendación se crea sin imagen.
+  let imageUrl = imageUrlRaw;
+  if (!imageUrl) {
+    imageUrl = (await resolveImageForCategory(supabase, categoryId, {
+      title,
+      locale,
+      wikiTitle: wikiTitleRaw || null,
+    })) ?? '';
+  }
+
   const recId = await insertRecommendationInCategory(
     supabase,
     user.id,
     locale,
     categoryId,
-    { title, description, url: urlRaw, imageUrl: imageUrlRaw, tags },
+    { title, description, url: urlRaw, imageUrl, tags },
   );
   if (!recId) return { error: 'createFailed' };
 
   revalidatePath('/');
   redirect('/');
+}
+
+// Resuelve la imagen para una categoría dada por id (necesita el nombre
+// canónico para elegir la fuente especializada). Devuelve null si no hay.
+async function resolveImageForCategory(
+  supabase: SupabaseServer,
+  categoryId: string,
+  args: { title: string; locale: string; wikiTitle: string | null },
+): Promise<string | null> {
+  const { data: cat } = await supabase
+    .from('categories')
+    .select('name')
+    .eq('id', categoryId)
+    .single();
+  const resolved = await resolveImage({
+    title: args.title,
+    categoryName: cat?.name ?? '',
+    locale: args.locale,
+    wikiTitle: args.wikiTitle,
+  });
+  return resolved && resolved.length <= LIMITS.imageUrl ? resolved : null;
 }
 
 // Núcleo de creación reutilizable (paso 2 y carga masiva): traduce título/
@@ -309,6 +346,7 @@ export type BulkPick =
       description: string | null;
       url: string | null;
       image: string | null;
+      wikiTitle: string | null;
       tags: string[];
     }
   | { kind: 'scratch'; title: string };
@@ -359,6 +397,16 @@ export async function bulkAddItem(
             .slice(0, 5),
         }
       : { title, description: '', url: '', imageUrl: '', tags: [] as string[] };
+
+  // Candidato sin imagen propia (IA o solo-título) → intenta resolverla.
+  if (!data.imageUrl) {
+    data.imageUrl =
+      (await resolveImageForCategory(supabase, categoryId, {
+        title,
+        locale,
+        wikiTitle: pick.kind === 'external' ? pick.wikiTitle : null,
+      })) ?? '';
+  }
 
   const recId = await insertRecommendationInCategory(
     supabase,
