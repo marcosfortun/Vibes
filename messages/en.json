@@ -97,6 +97,7 @@
       "category": "Category",
       "choose": "Choose a category",
       "url": "URL (optional)",
+      "imageUrl": "Image URL",
       "tags": "Tags",
       "tagsPlaceholder": "Add a tag and press Enter",
       "removeTag": "Remove tag"

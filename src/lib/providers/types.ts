@@ -5,6 +5,8 @@ export type ExternalCandidate = {
   title: string;
   description?: string | null;
   url?: string | null;
+  // URL pública del póster/carátula, si el proveedor la ofrece (TMDB/Steam).
+  image?: string | null;
   tags?: string[];
   provider: string; // kind del proveedor (tmdb | steam | ai)
 };

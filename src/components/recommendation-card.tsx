@@ -26,6 +26,7 @@ export type CardItem = {
   title: string;
   description: string | null;
   url?: string | null;
+  image_url?: string | null;
   global_score: number;
   // Score a mostrar: personalizado (afinidad) o global. Por defecto, global_score.
   score?: number;
@@ -279,6 +280,18 @@ function CardDetails({
             </span>
           )}
         </div>
+
+        {item.image_url && (
+          // Imagen remota de origen arbitrario (TMDB/Steam/URL del usuario):
+          // <img> normal a propósito, sin pasar por el optimizador de next/image.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={item.image_url}
+            alt=""
+            className="max-h-72 w-full rounded-xl border border-border-muted object-cover"
+            loading="lazy"
+          />
+        )}
 
         {item.description && (
           <p className="text-base leading-relaxed text-muted">{item.description}</p>

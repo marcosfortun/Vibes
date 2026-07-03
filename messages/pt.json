@@ -97,6 +97,7 @@
       "category": "Categoria",
       "choose": "Escolha uma categoria",
       "url": "URL (opcional)",
+      "imageUrl": "URL da imagem",
       "tags": "Etiquetas",
       "tagsPlaceholder": "Adicione uma etiqueta e pressione Enter",
       "removeTag": "Remover etiqueta"
