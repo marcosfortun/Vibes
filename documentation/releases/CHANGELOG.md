@@ -9,7 +9,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
 - **Imagen en las recomendaciones**: nueva columna `image_url` (RPC `create_recommendation` v3). Se autorellena con el póster de **TMDB** (`poster_path`) y la carátula de **Steam** (`header_image`) cuando el resultado viene del autocompletado, y hay un campo "URL de la imagen" editable en el alta. Se muestra en la vista ampliada de la tarjeta.
 
 ### Changed
-- **Vista compacta de las listas** (Mi Lista / De Amigos / Tendencias): cada recomendación pasa a una fila de una línea (icono de categoría, título, calificar, guardar, más info). La descripción, el scoring y las etiquetas se muestran en la **vista ampliada** a pantalla completa (botón "más info").
+- **Vista compacta de las listas** (Mi Lista / De Amigos / Tendencias): cada recomendación pasa a una fila de una línea (icono de categoría, título, calificar, guardar). La descripción, el scoring y las etiquetas se muestran en la **vista ampliada** a pantalla completa.
+- **Acabado de la vista ampliada (feedback de pruebas)**: se abre pulsando el **título** de la fila (adiós al botón "más info"); el título enlaza a la URL en **pestaña nueva**; la imagen se muestra **completa y centrada** (sin recortes, `object-contain`, máx. 240px de alto); botón de cierre con la estética estándar del botón de volver; **scoring abajo a la izquierda con etiqueta localizada** («Puntuación»/“Scoring”/«Score»/«Pontuação»); el **scroll afecta solo a imagen y descripción** — título, etiquetas, scoring y acciones quedan siempre visibles.
+- **"Suerte" y "Quedada" deshabilitadas temporalmente** en el dock para esta release ("suerte" aún no funciona; "quedada" pendiente de revisión del propietario): atenuadas, sin navegación y con `aria-disabled`.
 - **Instalación PWA por skin**: el manifest es dinámico (`/manifest.webmanifest?skin=<style>`); la app se instala con el **icono y los colores de la skin activa** manteniendo el nombre "Vibes". El `<link rel="manifest">` se sincroniza con la skin en el arranque y al cambiarla. *(Limitación: lo ya instalado no se actualiza al cambiar de skin; lo cachea el SO.)*
 
 ### Database
