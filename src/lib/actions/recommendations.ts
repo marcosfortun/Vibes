@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/server';
 import { logSupabaseError } from '@/lib/supabase/log';
 import { translateItems } from '@/lib/ai/translate';
 import { externalSearch } from '@/lib/providers/search';
-import { resolveImage } from '@/lib/providers/resolve-image';
+import { resolveImage, type ResolvedImage } from '@/lib/providers/resolve-image';
 import { LIMITS } from '@/lib/limits';
 
 export type NewRecState = { error?: string };
@@ -223,15 +223,22 @@ export async function createRecommendation(
 
   const locale = await getLocale();
 
-  // Sin imagen en el formulario → intenta resolverla (Wikipedia/fuentes por
-  // categoría). Best-effort: si no hay, la recomendación se crea sin imagen.
+  // Sin imagen en el formulario → intenta resolverla (fuentes por categoría /
+  // Wikipedia). Best-effort: si no hay, la recomendación se crea sin imagen.
+  // Si además no hay URL, se usa la de la fuente de la imagen (artículo/ficha)
+  // para que el título y la imagen de la tarjeta sean clicables.
   let imageUrl = imageUrlRaw;
+  let url = urlRaw;
   if (!imageUrl) {
-    imageUrl = (await resolveImageForCategory(supabase, categoryId, {
+    const resolved = await resolveImageForCategory(supabase, categoryId, {
       title,
       locale,
       wikiTitle: wikiTitleRaw || null,
-    })) ?? '';
+    });
+    if (resolved) {
+      imageUrl = resolved.image;
+      if (!url && resolved.sourceUrl) url = resolved.sourceUrl;
+    }
   }
 
   const recId = await insertRecommendationInCategory(
@@ -239,7 +246,7 @@ export async function createRecommendation(
     user.id,
     locale,
     categoryId,
-    { title, description, url: urlRaw, imageUrl, tags },
+    { title, description, url, imageUrl, tags },
   );
   if (!recId) return { error: 'createFailed' };
 
@@ -247,13 +254,14 @@ export async function createRecommendation(
   redirect('/');
 }
 
-// Resuelve la imagen para una categoría dada por id (necesita el nombre
-// canónico para elegir la fuente especializada). Devuelve null si no hay.
+// Resuelve la imagen (y la URL de su fuente) para una categoría dada por id
+// (necesita el nombre canónico para elegir la fuente especializada). Devuelve
+// null si no hay; los valores vienen ya validados contra los límites.
 async function resolveImageForCategory(
   supabase: SupabaseServer,
   categoryId: string,
   args: { title: string; locale: string; wikiTitle: string | null },
-): Promise<string | null> {
+): Promise<ResolvedImage | null> {
   const { data: cat } = await supabase
     .from('categories')
     .select('name')
@@ -265,7 +273,14 @@ async function resolveImageForCategory(
     locale: args.locale,
     wikiTitle: args.wikiTitle,
   });
-  return resolved && resolved.length <= LIMITS.imageUrl ? resolved : null;
+  if (!resolved || resolved.image.length > LIMITS.imageUrl) return null;
+  return {
+    image: resolved.image,
+    sourceUrl:
+      resolved.sourceUrl && resolved.sourceUrl.length <= LIMITS.url
+        ? resolved.sourceUrl
+        : null,
+  };
 }
 
 // Núcleo de creación reutilizable (paso 2 y carga masiva): traduce título/
@@ -398,14 +413,18 @@ export async function bulkAddItem(
         }
       : { title, description: '', url: '', imageUrl: '', tags: [] as string[] };
 
-  // Candidato sin imagen propia (IA o solo-título) → intenta resolverla.
+  // Candidato sin imagen propia (IA o solo-título) → intenta resolverla; si
+  // tampoco hay URL, se usa la de la fuente de la imagen (tarjeta clicable).
   if (!data.imageUrl) {
-    data.imageUrl =
-      (await resolveImageForCategory(supabase, categoryId, {
-        title,
-        locale,
-        wikiTitle: pick.kind === 'external' ? pick.wikiTitle : null,
-      })) ?? '';
+    const resolved = await resolveImageForCategory(supabase, categoryId, {
+      title,
+      locale,
+      wikiTitle: pick.kind === 'external' ? pick.wikiTitle : null,
+    });
+    if (resolved) {
+      data.imageUrl = resolved.image;
+      if (!data.url && resolved.sourceUrl) data.url = resolved.sourceUrl;
+    }
   }
 
   const recId = await insertRecommendationInCategory(
