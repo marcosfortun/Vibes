@@ -2,6 +2,11 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- **Correos de amistad y personalización del OTP en prod**: `service_role` no tenía `GRANT` sobre `public.users` en producción (divergencia con local, donde los privilegios por defecto de la plataforma sí existen). El cliente admin fallaba con `42501 permission denied` (amistades sin correo) y el hook `send-email` caía a los defaults (OTP en inglés/Stick stack aunque el usuario tuviera otra skin/idioma). Migración `20260703130000_service_role_grants.sql`: `GRANT SELECT ON public.users TO service_role` (mínimo necesario).
+
 ## [1.4.3] — 2026-07-03
 
 Hotfix del autocompletado y las notificaciones tras el despliegue de la 1.4.2 (rama `hotfix/1.4.3`).
