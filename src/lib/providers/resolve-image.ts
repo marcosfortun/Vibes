@@ -31,11 +31,14 @@ export type ResolvedImage = {
 
 const TIMEOUT_MS = 4000;
 
-async function fetchWithTimeout(url: string): Promise<Response | null> {
+async function fetchWithTimeout(
+  url: string,
+  headers?: Record<string, string>,
+): Promise<Response | null> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
-    const res = await fetch(url, { signal: ctrl.signal });
+    const res = await fetch(url, { signal: ctrl.signal, headers });
     return res.ok ? res : null;
   } catch {
     return null;
@@ -54,8 +57,11 @@ async function fetchJson(url: string): Promise<unknown> {
   }
 }
 
-async function fetchText(url: string): Promise<string | null> {
-  const res = await fetchWithTimeout(url);
+async function fetchText(
+  url: string,
+  headers?: Record<string, string>,
+): Promise<string | null> {
+  const res = await fetchWithTimeout(url, headers);
   if (!res) return null;
   try {
     return await res.text();
@@ -122,14 +128,24 @@ async function itunesImage(
   };
 }
 
-// ── 1. BoardGameGeek XML API2 (sin key): imagen de juegos de mesa ──
+// ── 1. BoardGameGeek XML API2: imagen de juegos de mesa ──
+// Desde finales de 2025 BGG exige registro y token Bearer (la API dejó de ser
+// pública). Si no hay BGG_API_TOKEN configurado, se omite la fuente y la
+// cascada sigue con Wikipedia. Registro: https://boardgamegeek.com/using_the_xml_api
 async function bggImage(title: string): Promise<ResolvedImage | null> {
+  const token = process.env.BGG_API_TOKEN;
+  if (!token) return null;
+  const headers = { Authorization: `Bearer ${token}` };
   const search = await fetchText(
     `https://boardgamegeek.com/xmlapi2/search?query=${encodeURIComponent(title)}&type=boardgame`,
+    headers,
   );
   const id = search?.match(/<item[^>]*\bid="(\d+)"/)?.[1];
   if (!id) return null;
-  const thing = await fetchText(`https://boardgamegeek.com/xmlapi2/thing?id=${id}`);
+  const thing = await fetchText(
+    `https://boardgamegeek.com/xmlapi2/thing?id=${id}`,
+    headers,
+  );
   const img = thing?.match(/<image>\s*([^<\s][^<]*?)\s*<\/image>/)?.[1];
   if (!isHttpUrl(img)) return null;
   return { image: img, sourceUrl: `https://boardgamegeek.com/boardgame/${id}` };

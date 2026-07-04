@@ -5,10 +5,12 @@ import { resolveImage } from './resolve-image';
 type Route = { match: RegExp; body: unknown; text?: boolean; ok?: boolean };
 function mockFetch(routes: Route[]) {
   const calls: string[] = [];
+  const headers: Array<Record<string, string> | undefined> = [];
   vi.stubGlobal(
     'fetch',
-    vi.fn().mockImplementation((url: string) => {
+    vi.fn().mockImplementation((url: string, init?: { headers?: Record<string, string> }) => {
       calls.push(url);
+      headers.push(init?.headers);
       const route = routes.find((r) => r.match.test(url));
       if (!route) return Promise.resolve({ ok: false });
       return Promise.resolve({
@@ -18,7 +20,7 @@ function mockFetch(routes: Route[]) {
       });
     }),
   );
-  return calls;
+  return Object.assign(calls, { headers });
 }
 
 const WIKI_HIT = {
@@ -108,8 +110,9 @@ describe('resolveImage (F5: imagen para resultados de IA)', () => {
     expect(img?.image).toBe('https://wiki.img/serial.jpg');
   });
 
-  it('juego de mesa: BoardGameGeek (búsqueda + ficha XML)', async () => {
-    mockFetch([
+  it('juego de mesa con BGG_API_TOKEN: BoardGameGeek con Bearer (búsqueda + ficha XML)', async () => {
+    vi.stubEnv('BGG_API_TOKEN', 'tok-123');
+    const calls = mockFetch([
       {
         match: /boardgamegeek\.com\/xmlapi2\/search/,
         body: '<items><item type="boardgame" id="13"><name value="Catan"/></item></items>',
@@ -128,6 +131,23 @@ describe('resolveImage (F5: imagen para resultados de IA)', () => {
       image: 'https://cf.geekdo/catan.jpg',
       sourceUrl: 'https://boardgamegeek.com/boardgame/13',
     });
+    // La API de BGG exige token desde 2026: ambas llamadas van con Bearer.
+    expect(calls.headers[0]).toEqual({ Authorization: 'Bearer tok-123' });
+    expect(calls.headers[1]).toEqual({ Authorization: 'Bearer tok-123' });
+    vi.unstubAllEnvs();
+  });
+
+  it('juego de mesa SIN token: BGG se omite y resuelve por Wikipedia', async () => {
+    vi.stubEnv('BGG_API_TOKEN', '');
+    const calls = mockFetch([{ match: /es\.wikipedia\.org/, body: WIKI_HIT }]);
+    const img = await resolveImage({
+      title: 'Sushi Go',
+      categoryName: 'Juego de mesa',
+      locale: 'es',
+    });
+    expect(img?.image).toBe('https://wiki.img/serial.jpg');
+    expect(calls.some((u) => u.includes('boardgamegeek.com'))).toBe(false);
+    vi.unstubAllEnvs();
   });
 
   it('cine: TMDB reutilizando el adaptador', async () => {

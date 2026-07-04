@@ -14,8 +14,7 @@ Los demás interesados pueden leerlo y tomarlo como guía para desarrollar el pr
 
 **En proceso**:
 
-- Cuando la imagen de la tarjeta es muy ancha, se desborda. Cambia la propiedad "max-width: fit-content;" por "width: fit-content;". Eso ya lo soluciona.
-- El click en la imagen de la tarjeta también debe abrir la URL en una pestaña nueva, igual que hace el click en el título.
+
 
 **Pendiente**:
 
