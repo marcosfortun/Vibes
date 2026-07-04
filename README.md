@@ -84,6 +84,7 @@ cp .env.example .env.local
 | `MAILPIT_API_URL` | Servidor (opcional) | `http://localhost:54324` (por defecto) | — |
 | `TMDB_API_KEY` | **Secreto** (solo servidor) | API key v3 de TMDB → habilita el proveedor TMDB | igual (en Vercel) |
 | `ANTHROPIC_API_KEY` | **Secreto** (solo servidor) | Clave de Anthropic → traducción i18n + proveedor IA | igual (en Vercel) |
+| `BGG_API_TOKEN` | **Secreto** (solo servidor, opcional) | Token XML API de BGG → imágenes de juegos de mesa (sin él: Wikipedia) | igual (en Vercel) |
 
 > **Convención Next.js:** las `NEXT_PUBLIC_*` se incrustan en el bundle del navegador (son
 > públicas); el resto son **solo de servidor** y no deben prefijarse con `NEXT_PUBLIC_`.
