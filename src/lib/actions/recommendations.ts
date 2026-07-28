@@ -14,6 +14,7 @@ import {
 import type { ResolvedImage } from '@/lib/providers/types';
 import {
   CATALOG_BONUS,
+  FALLBACK_RESULTS,
   MAX_RESULTS,
   MIN_QUERY_LENGTH,
   MIN_SIMILARITY,
@@ -183,7 +184,7 @@ export async function searchCandidates(
 
   // Fallback: ningún proveedor especializado dio un resultado válido.
   if (!external.length) {
-    const ai = await searchFallback(q, opts);
+    const ai = await searchFallback(q, { ...opts, limit: FALLBACK_RESULTS });
     // Sin filtro de similitud, y conservando el orden de relevancia del modelo.
     external = ai.map((c, i) => ({ ...toExternal(c), similarity: 1 - i / 100 }));
   }

@@ -24,6 +24,11 @@ export const MAX_PROVIDERS_PER_CATEGORY = 5;
 // Resultados mostrados en el alta (incluye los del catálogo).
 export const MAX_RESULTS = 10;
 
+// Candidatos que se piden al modelo de fallback. Menos que MAX_RESULTS a
+// propósito: el coste dominante de la llamada es generar tokens, así que pedir
+// 6 en vez de 10 acorta bastante la única espera larga del flujo.
+export const FALLBACK_RESULTS = 6;
+
 // Presupuesto global de la búsqueda en paralelo: lo que no llegue a tiempo se
 // descarta, pero los que sí respondieron valen (fallback solo si fallan todos).
 export const PROVIDER_TIMEOUT_MS = 5000;
