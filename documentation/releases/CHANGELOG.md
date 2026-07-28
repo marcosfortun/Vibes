@@ -31,7 +31,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
 ### Performance
 - **Funciones desplegadas en Dublín** (`vercel.json` con `"regions": ["dub1"]`, pegado al proyecto de Supabase en `eu-west-1`). Antes corrían en Washington: cada consulta pagaba ~100 ms de latencia transatlántica y una carga de la home encadenaba una docena.
 - **Home en paralelo**: las 7 consultas secuenciales pasan a 3 tandas según sus dependencias reales (sesión+idioma → datos del usuario → listas).
-- **Skeletons de carga** (`loading.tsx` en home, alta, amigos y ajustes): al pulsar un enlace la pantalla responde al instante con la forma real del contenido —filas, campos, botonera— en los colores de la skin activa, en vez de quedarse congelada hasta que el servidor termina.
+- **Skeletons de carga** (`loading.tsx` en home, alta, amigos y ajustes): al pulsar un enlace la pantalla responde al instante con la forma real del contenido —filas, campos, botonera— en los colores de la skin activa, en vez de quedarse congelada hasta que el servidor termina. **Todo lo que no depende de los datos se pinta ya definitivo y traducido**: las pestañas «Mi Lista / De Amigos / Tendencias», los títulos de cada pantalla, el enlace de carga masiva, la etiqueta de categoría y las opciones fijas de ajustes. Solo queda en gris lo que aún no se conoce (nombre de usuario, listas, afinidades). Se resuelven en cliente, así que en las navegaciones del dock el texto aparece sin esperar al servidor.
 - **Fallback de IA más ágil**: se le piden 6 candidatos en vez de 10 (el coste dominante es generar tokens, así que la única espera larga del flujo se acorta).
 
 ### Tests

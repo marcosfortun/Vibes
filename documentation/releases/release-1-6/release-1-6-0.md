@@ -5,9 +5,8 @@ Este documento contiene las especificaciones para el desarrollo de la release.
 Este documento es editable exclusivamente por el usuario propietario del proyecto.
 Los demás interesados pueden leerlo y tomarlo como guía para desarrollar el proyecto, pero no pueden editarlo.
 
-Release **de consolidación**: no añade funcionalidad nueva visible, sino que termina el
-trabajo de rendimiento que quedó fuera de la 1.5.0 (donde solo entraron las mejoras de
-bajo riesgo: región de Vercel, home en paralelo, skeletons y recorte del fallback de IA).
+Release **de consolidación**: no añade funcionalidad nueva visible, sino que termina el trabajo de rendimiento que quedó fuera de la 1.5.0 (donde solo entraron las mejoras de bajo riesgo: región de Vercel, home en paralelo, skeletons y recorte del fallback de IA).
+
 La siguiente será la **v2**, con las secciones hoy deshabilitadas ("suerte" y "quedada").
 
 **Hecho**:
