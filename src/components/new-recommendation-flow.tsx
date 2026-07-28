@@ -12,6 +12,7 @@ import {
   type NewRecState,
 } from '@/lib/actions/recommendations';
 import { TagsInput } from '@/components/tags-input';
+import { providerBadge } from '@/lib/provider-badge';
 import { LIMITS } from '@/lib/limits';
 
 type Category = { id: string; name: string; icon?: string | null };
@@ -155,9 +156,7 @@ function SearchStep({
                   <span className="ml-2 shrink-0 text-[10px] uppercase tracking-wide text-muted">
                     {c.kind === 'existing'
                       ? t('existingBadge')
-                      : ['tmdb', 'steam', 'ai'].includes(c.provider)
-                        ? t(`providerBadge.${c.provider}`)
-                        : c.provider}
+                      : providerBadge(t, c.provider)}
                   </span>
                 </button>
               </li>

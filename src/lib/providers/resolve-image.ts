@@ -1,4 +1,5 @@
 import 'server-only';
+import { bggAdapter } from './bgg';
 import { steamAdapter } from './steam';
 import { tmdbAdapter } from './tmdb';
 
@@ -31,42 +32,18 @@ export type ResolvedImage = {
 
 const TIMEOUT_MS = 4000;
 
-async function fetchWithTimeout(
-  url: string,
-  headers?: Record<string, string>,
-): Promise<Response | null> {
+// Las fuentes propias de este módulo (Wikipedia, iTunes) son JSON y públicas;
+// las que necesitan cabeceras o parseo XML viven en su adaptador (bgg.ts).
+async function fetchJson(url: string): Promise<unknown> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
-    const res = await fetch(url, { signal: ctrl.signal, headers });
-    return res.ok ? res : null;
+    const res = await fetch(url, { signal: ctrl.signal });
+    return res.ok ? await res.json() : null;
   } catch {
     return null;
   } finally {
     clearTimeout(timer);
-  }
-}
-
-async function fetchJson(url: string): Promise<unknown> {
-  const res = await fetchWithTimeout(url);
-  if (!res) return null;
-  try {
-    return await res.json();
-  } catch {
-    return null;
-  }
-}
-
-async function fetchText(
-  url: string,
-  headers?: Record<string, string>,
-): Promise<string | null> {
-  const res = await fetchWithTimeout(url, headers);
-  if (!res) return null;
-  try {
-    return await res.text();
-  } catch {
-    return null;
   }
 }
 
@@ -128,29 +105,6 @@ async function itunesImage(
   };
 }
 
-// ── 1. BoardGameGeek XML API2: imagen de juegos de mesa ──
-// Desde finales de 2025 BGG exige registro y token Bearer (la API dejó de ser
-// pública). Si no hay BGG_API_TOKEN configurado, se omite la fuente y la
-// cascada sigue con Wikipedia. Registro: https://boardgamegeek.com/using_the_xml_api
-async function bggImage(title: string): Promise<ResolvedImage | null> {
-  const token = process.env.BGG_API_TOKEN;
-  if (!token) return null;
-  const headers = { Authorization: `Bearer ${token}` };
-  const search = await fetchText(
-    `https://boardgamegeek.com/xmlapi2/search?query=${encodeURIComponent(title)}&type=boardgame`,
-    headers,
-  );
-  const id = search?.match(/<item[^>]*\bid="(\d+)"/)?.[1];
-  if (!id) return null;
-  const thing = await fetchText(
-    `https://boardgamegeek.com/xmlapi2/thing?id=${id}`,
-    headers,
-  );
-  const img = thing?.match(/<image>\s*([^<\s][^<]*?)\s*<\/image>/)?.[1];
-  if (!isHttpUrl(img)) return null;
-  return { image: img, sourceUrl: `https://boardgamegeek.com/boardgame/${id}` };
-}
-
 // Nombre canónico de categoría (columna categories.name, estable) → fuente.
 const TMDB_CATEGORIES = ['Película', 'Serie de televisión', 'Documental'];
 const STEAM_CATEGORIES = ['Videojuego', 'Juego VR'];
@@ -168,9 +122,14 @@ async function specializedImage(
       const [hit] = await steamAdapter.search(title, { limit: 1 });
       return hit?.image ? { image: hit.image, sourceUrl: hit.url ?? null } : null;
     }
+    if (categoryName === 'Juego de mesa') {
+      // BGG requiere BGG_API_TOKEN; sin él el adaptador devuelve [] y se cae a
+      // Wikipedia (ver bgg.ts).
+      const [hit] = await bggAdapter.search(title, { limit: 1 });
+      return hit?.image ? { image: hit.image, sourceUrl: hit.url ?? null } : null;
+    }
     if (categoryName === 'Podcast') return await itunesImage(title, 'podcast');
     if (categoryName === 'Grupo de música') return await itunesImage(title, 'music');
-    if (categoryName === 'Juego de mesa') return await bggImage(title);
   } catch {
     // Fuente caída → seguir la cascada.
   }

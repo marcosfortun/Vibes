@@ -2,11 +2,13 @@ import 'server-only';
 import type { ExternalCandidate, ProviderAdapter } from './types';
 import { steamAdapter } from './steam';
 import { tmdbAdapter } from './tmdb';
+import { bggAdapter } from './bgg';
 import { aiAdapter } from './ai';
 
 const ADAPTERS: Record<string, ProviderAdapter> = {
   steam: steamAdapter,
   tmdb: tmdbAdapter,
+  bgg: bggAdapter,
   ai: aiAdapter,
 };
 

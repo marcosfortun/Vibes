@@ -13,6 +13,7 @@ import {
   type Candidate,
 } from '@/lib/actions/recommendations';
 import { parseTitles } from '@/lib/bulk';
+import { providerBadge } from '@/lib/provider-badge';
 
 type Category = { id: string; name: string; icon?: string | null };
 
@@ -28,6 +29,8 @@ type ItemResult = {
 // piden en segundo plano mientras el usuario decide. Al final, un resumen.
 export function BulkAddFlow({ categories }: { categories: Category[] }) {
   const t = useTranslations('Bulk');
+  // Los badges de proveedor viven en el namespace del alta simple (compartidos).
+  const tNew = useTranslations('New');
   const router = useRouter();
   const [category, setCategory] = useState<Category | null>(null);
   const [raw, setRaw] = useState('');
@@ -227,7 +230,10 @@ export function BulkAddFlow({ categories }: { categories: Category[] }) {
                     {
                       title: c.title,
                       status: 'created',
-                      via: c.kind === 'existing' ? t('inCatalog') : c.provider,
+                      via:
+                        c.kind === 'existing'
+                          ? t('inCatalog')
+                          : providerBadge(tNew, c.provider),
                     },
                   )
                 }
@@ -240,7 +246,9 @@ export function BulkAddFlow({ categories }: { categories: Category[] }) {
                   )}
                 </span>
                 <span className="ml-2 shrink-0 text-[10px] uppercase tracking-wide text-muted">
-                  {c.kind === 'existing' ? t('inCatalog') : c.provider}
+                  {c.kind === 'existing'
+                    ? t('inCatalog')
+                    : providerBadge(tNew, c.provider)}
                 </span>
               </button>
             </li>

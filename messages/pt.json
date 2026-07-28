@@ -112,6 +112,7 @@
     "providerBadge": {
       "tmdb": "TMDB",
       "steam": "Steam",
+      "bgg": "BGG",
       "ai": "IA"
     },
     "fromScratch": "Criar “{title}” do zero",

@@ -119,7 +119,10 @@ describe('resolveImage (F5: imagen para resultados de IA)', () => {
       },
       {
         match: /boardgamegeek\.com\/xmlapi2\/thing/,
-        body: '<items><item id="13"><image>https://cf.geekdo/catan.jpg</image></item></items>',
+        body:
+          '<items><item type="boardgame" id="13">' +
+          '<name type="primary" value="Catan"/>' +
+          '<image>https://cf.geekdo/catan.jpg</image></item></items>',
       },
     ]);
     const img = await resolveImage({
