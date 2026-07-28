@@ -28,6 +28,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
 - Migración `20260703140000_recommendation_image.sql`: columna `image_url` + grants por columna y `create_recommendation` v3 (`p_image_url`).
 - Migración `20260728120000_providers_refactor.sql`: `providers` gana `can_search`, `can_resolve_image` y `requires_key` (describen las capacidades para la futura UI de admin; el nombre de la variable de entorno, nunca su valor); `ai` pasa a `ai_haiku_4.5` y se desvincula de todas las categorías; alta de **iTunes** (asignado a Podcast y Grupo de música) y **Wikipedia** en el catálogo; y RPC `enrich_recommendation` (`SECURITY DEFINER`, solo rellena NULL) documentada en `pd-security-design.md`.
 
+### Performance
+- **Funciones desplegadas en Dublín** (`vercel.json` con `"regions": ["dub1"]`, pegado al proyecto de Supabase en `eu-west-1`). Antes corrían en Washington: cada consulta pagaba ~100 ms de latencia transatlántica y una carga de la home encadenaba una docena.
+- **Home en paralelo**: las 7 consultas secuenciales pasan a 3 tandas según sus dependencias reales (sesión+idioma → datos del usuario → listas).
+- **Skeletons de carga** (`loading.tsx` en home, alta, amigos y ajustes): al pulsar un enlace la pantalla responde al instante con la forma real del contenido —filas, campos, botonera— en los colores de la skin activa, en vez de quedarse congelada hasta que el servidor termina.
+- **Fallback de IA más ágil**: se le piden 6 candidatos en vez de 10 (el coste dominante es generar tokens, así que la única espera larga del flujo se acorta).
+
 ### Tests
 - Cobertura del refactor de búsqueda: similitud (normalización, suelo por contención, umbral), orquestador (paralelismo, proveedores sin key omitidos sin llamada, éxito parcial, tope de 5 proveedores, fallback y cadena de imagen), adaptador de iTunes y **test de consistencia código↔BD** que falla si el registro de proveedores y el catálogo de la migración se desincronizan.
 - **Stack de tests** (Vitest + Testing Library, `npm test`): primer arnés automatizado del proyecto. 26 tests de regresión/smoke que blindan las 4 features de la 1.5.0: manifest PWA por skin, helpers de skins, adaptadores TMDB/Steam (póster/carátula, con `fetch` mockeado), vista compacta ↔ ampliada de la tarjeta y wizard de carga masiva (parseo de títulos + flujo de elección/creación/omisión). Extraído `parseTitles` a `src/lib/bulk.ts` para poder testearlo aislado.

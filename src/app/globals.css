@@ -538,3 +538,29 @@ body {
   border-radius: 12px;
   padding: 0.625rem 0.875rem;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Skeletons de carga (loading.tsx). Bloques con la forma real del
+   contenido que va a aparecer, en los colores de la skin activa, con un
+   pulso suave. Dan respuesta inmediata al pulsar un enlace mientras el
+   servidor renderiza.
+   ───────────────────────────────────────────────────────────── */
+.skeleton {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
