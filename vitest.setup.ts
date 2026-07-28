@@ -1,6 +1,10 @@
 import '@testing-library/jest-dom/vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
+
+// findBy* espera 1s por defecto: poco cuando varias suites de jsdom corren en
+// paralelo (falsos negativos por carga, no por el código).
+configure({ asyncUtilTimeout: 5000 });
 
 // (server-only se neutraliza vía alias en vitest.config.ts.)
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { tmdbAdapter } from './tmdb';
+import { tmdbProvider } from './tmdb';
 
 // Respuesta mínima de TMDB search/multi con un resultado de cine con póster.
 const TMDB_OK = {
@@ -15,7 +15,7 @@ const TMDB_OK = {
   ],
 };
 
-describe('tmdbAdapter (F3: póster automático)', () => {
+describe('tmdbProvider (búsqueda de cine/series)', () => {
   beforeEach(() => {
     vi.stubEnv('TMDB_API_KEY', 'test-key');
   });
@@ -29,7 +29,7 @@ describe('tmdbAdapter (F3: póster automático)', () => {
       'fetch',
       vi.fn().mockResolvedValue({ ok: true, json: async () => TMDB_OK }),
     );
-    const out = await tmdbAdapter.search('matrix');
+    const out = await tmdbProvider.search!('matrix');
     expect(out).toHaveLength(1); // person filtrado
     expect(out[0].title).toBe('The Matrix');
     expect(out[0].image).toBe('https://image.tmdb.org/t/p/w500/aaa.jpg');
@@ -46,7 +46,7 @@ describe('tmdbAdapter (F3: póster automático)', () => {
         }),
       }),
     );
-    const [c] = await tmdbAdapter.search('algo');
+    const [c] = await tmdbProvider.search!('algo');
     expect(c.image).toBeNull();
   });
 
@@ -54,7 +54,7 @@ describe('tmdbAdapter (F3: póster automático)', () => {
     vi.unstubAllEnvs();
     const f = vi.fn();
     vi.stubGlobal('fetch', f);
-    expect(await tmdbAdapter.search('matrix')).toEqual([]);
+    expect(await tmdbProvider.search!('matrix')).toEqual([]);
     expect(f).not.toHaveBeenCalled();
   });
 });

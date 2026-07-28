@@ -217,7 +217,7 @@ export function BulkAddFlow({ categories }: { categories: Category[] }) {
                 onClick={() =>
                   choose(
                     c.kind === 'existing'
-                      ? { kind: 'existing', id: c.id }
+                      ? { kind: 'existing', id: c.id, enrich: c.enrich }
                       : {
                           kind: 'external',
                           title: c.title,

@@ -13,6 +13,7 @@ import {
 } from '@/lib/actions/recommendations';
 import { TagsInput } from '@/components/tags-input';
 import { providerBadge } from '@/lib/provider-badge';
+import { MIN_QUERY_LENGTH, SEARCH_DEBOUNCE_MS } from '@/lib/providers/config';
 import { LIMITS } from '@/lib/limits';
 
 type Category = { id: string; name: string; icon?: string | null };
@@ -76,8 +77,9 @@ function SearchStep({
   const q = title.trim();
 
   useEffect(() => {
-    if (!category || q.length < 2) return;
+    if (!category || q.length < MIN_QUERY_LENGTH) return;
     let alive = true;
+    // Debounce alto: cada búsqueda abre en paralelo hasta 5 proveedores.
     const handle = setTimeout(async () => {
       setSearching(true);
       const data = await searchCandidates(category.id, q);
@@ -85,7 +87,7 @@ function SearchStep({
         setResults(data);
         setSearching(false);
       }
-    }, 400);
+    }, SEARCH_DEBOUNCE_MS);
     return () => {
       alive = false;
       clearTimeout(handle);
@@ -117,7 +119,7 @@ function SearchStep({
         </label>
       )}
 
-      {category && q.length >= 2 && (
+      {category && q.length >= MIN_QUERY_LENGTH && (
         <section className="flex flex-col gap-2">
           <p className="text-xs text-muted">
             {searching ? t('searching') : t('selectPrompt')}
@@ -131,7 +133,9 @@ function SearchStep({
                   disabled={pending}
                   onClick={() => {
                     if (c.kind === 'existing') {
-                      startTransition(() => addExistingToList(c.id));
+                      // Si el dedup le cedió imagen/URL de un externo, viajan
+                      // con la selección para completar la ficha existente.
+                      startTransition(() => addExistingToList(c.id, c.enrich));
                     } else {
                       onPrefill({
                         title: c.title,

@@ -113,7 +113,9 @@
       "tmdb": "TMDB",
       "steam": "Steam",
       "bgg": "BGG",
-      "ai": "AI"
+      "ai": "AI",
+      "itunes": "iTunes",
+      "wikipedia": "Wikipedia"
     },
     "fromScratch": "Create “{title}” from scratch",
     "createTag": "Create “{tag}”",

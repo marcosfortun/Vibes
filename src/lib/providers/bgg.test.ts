@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { bggAdapter } from './bgg';
+import { bggProvider } from './bgg';
 
 const SEARCH_XML = `<?xml version="1.0"?>
 <items total="2">
@@ -41,12 +41,12 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-describe('bggAdapter (proveedor de búsqueda para juegos de mesa)', () => {
+describe('bggProvider (búsqueda de juegos de mesa)', () => {
   it('sin BGG_API_TOKEN no llama a la red y devuelve []', async () => {
     vi.stubEnv('BGG_API_TOKEN', '');
     const f = vi.fn();
     vi.stubGlobal('fetch', f);
-    expect(await bggAdapter.search('catan')).toEqual([]);
+    expect(await bggProvider.search!('catan')).toEqual([]);
     expect(f).not.toHaveBeenCalled();
   });
 
@@ -54,7 +54,7 @@ describe('bggAdapter (proveedor de búsqueda para juegos de mesa)', () => {
     vi.stubEnv('BGG_API_TOKEN', 'tok');
     const headers = mockBgg({ search: SEARCH_XML, thing: THING_XML });
 
-    const out = await bggAdapter.search('catan');
+    const out = await bggProvider.search!('catan');
 
     expect(out).toHaveLength(2);
     expect(out[0]).toMatchObject({
@@ -76,20 +76,20 @@ describe('bggAdapter (proveedor de búsqueda para juegos de mesa)', () => {
   it('respeta el límite pedido', async () => {
     vi.stubEnv('BGG_API_TOKEN', 'tok');
     mockBgg({ search: SEARCH_XML, thing: THING_XML });
-    const out = await bggAdapter.search('catan', { limit: 1 });
+    const out = await bggProvider.search!('catan', { limit: 1 });
     expect(out).toHaveLength(1);
   });
 
   it('con token inválido (401) devuelve [] sin lanzar', async () => {
     vi.stubEnv('BGG_API_TOKEN', 'caducado');
     mockBgg({ status: 401 });
-    expect(await bggAdapter.search('catan')).toEqual([]);
+    expect(await bggProvider.search!('catan')).toEqual([]);
   });
 
   it('búsqueda sin resultados → [] sin pedir la ficha', async () => {
     vi.stubEnv('BGG_API_TOKEN', 'tok');
     const headers = mockBgg({ search: '<items total="0"></items>' });
-    expect(await bggAdapter.search('zzzz')).toEqual([]);
+    expect(await bggProvider.search!('zzzz')).toEqual([]);
     expect(headers).toHaveLength(1); // solo la búsqueda
   });
 });
