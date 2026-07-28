@@ -148,22 +148,31 @@ export type Database = {
       }
       providers: {
         Row: {
+          can_resolve_image: boolean
+          can_search: boolean
           created_at: string
           id: string
           kind: string
           name: string
+          requires_key: string | null
         }
         Insert: {
+          can_resolve_image?: boolean
+          can_search?: boolean
           created_at?: string
           id?: string
           kind: string
           name: string
+          requires_key?: string | null
         }
         Update: {
+          can_resolve_image?: boolean
+          can_search?: boolean
           created_at?: string
           id?: string
           kind?: string
           name?: string
+          requires_key?: string | null
         }
         Relationships: []
       }
@@ -206,6 +215,7 @@ export type Database = {
           description_i18n: Json | null
           global_score: number
           id: string
+          image_url: string | null
           title: string
           title_i18n: Json | null
           translated: boolean
@@ -219,6 +229,7 @@ export type Database = {
           description_i18n?: Json | null
           global_score?: number
           id?: string
+          image_url?: string | null
           title: string
           title_i18n?: Json | null
           translated?: boolean
@@ -232,6 +243,7 @@ export type Database = {
           description_i18n?: Json | null
           global_score?: number
           id?: string
+          image_url?: string | null
           title?: string
           title_i18n?: Json | null
           translated?: boolean
@@ -377,6 +389,7 @@ export type Database = {
           p_category: string
           p_description: string
           p_description_i18n: Json
+          p_image_url?: string
           p_tags?: Json
           p_title: string
           p_title_i18n: Json
@@ -384,6 +397,10 @@ export type Database = {
           p_url: string
         }
         Returns: string
+      }
+      enrich_recommendation: {
+        Args: { p_id: string; p_image_url?: string; p_url?: string }
+        Returns: undefined
       }
       ensure_invite: { Args: never; Returns: string }
       find_similar_in_category: {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { steamAdapter } from './steam';
+import { steamProvider } from './steam';
 
 // Steam usa dos endpoints: storesearch (lista) y appdetails (descripción+imagen).
 function mockSteam(detailsImage: string | null) {
@@ -26,12 +26,12 @@ function mockSteam(detailsImage: string | null) {
   });
 }
 
-describe('steamAdapter (F3: carátula automática)', () => {
+describe('steamProvider (búsqueda de videojuegos)', () => {
   afterEach(() => vi.restoreAllMocks());
 
   it('extrae la carátula (header_image) y la descripción', async () => {
     vi.stubGlobal('fetch', mockSteam('https://cdn.steam/header.jpg'));
-    const [c] = await steamAdapter.search('witcher');
+    const [c] = await steamProvider.search!('witcher');
     expect(c.title).toBe('The Witcher 3');
     expect(c.image).toBe('https://cdn.steam/header.jpg');
     expect(c.description).toContain('RPG');
@@ -40,7 +40,7 @@ describe('steamAdapter (F3: carátula automática)', () => {
 
   it('deja image en null si header_image no es una URL válida', async () => {
     vi.stubGlobal('fetch', mockSteam(null));
-    const [c] = await steamAdapter.search('witcher');
+    const [c] = await steamProvider.search!('witcher');
     expect(c.image).toBeNull();
   });
 });
