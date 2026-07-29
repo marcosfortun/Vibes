@@ -13,6 +13,9 @@ Nadie más debe leerlo ni tomarlo como guía para desarrollar el proyecto, y por
   - La primera página que diga "vamos a configurar tu experiencia".
   - Luego la página de selección de skin (que ya existe).
   - Página para sugerir la instalación.
+  - Crear varias recomendaciones en masa.
+  - Explicación de: de amigos y tendencias.
+  - Explicación de añadir a mi lista, mi lista y valoración.
 
 - Filtros de búsqueda en las listas (mi lista, amigos y tendencias). Tipo, tags, rango de valoración.
 

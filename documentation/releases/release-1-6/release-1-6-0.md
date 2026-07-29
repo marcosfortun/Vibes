@@ -14,6 +14,8 @@ La siguiente será la **v2**, con las secciones hoy deshabilitadas ("suerte" y "
 
 **Pendiente**:
 
+- Añadir BGG_API_TOKEN en dev (.env.local) y en prod (Vercel) cuando me lo aprueben los de BGG.
+
 ## 1. Una sola resolución de sesión y perfil por petición
 
 Hoy cada carga hace **4 llamadas `getUser()`** al Auth de Supabase (`proxy.ts`, `i18n/request.ts`, `layout.tsx` y la página) y **3 consultas distintas a `users`** para tres columnas (`language`, `skin`, `use_affinity_scoring`).
