@@ -2,15 +2,20 @@
 
 Este documento contiene las ideas (locas y no aterrizadas) que en un futuro quizá podrían convertirse en features de alguna release, o también podrían descartarse.
 
-Este documento es de uso esclusivo del usuario propietario del proyecto.
+Este documento es de uso exclusivo del usuario propietario del proyecto.
 Nadie más debe leerlo ni tomarlo como guía para desarrollar el proyecto, y por supuesto nadie más puede editarlo.
 
 ## Ideas
+
+- Añadir test automáticos (regresión y smoke).
 
 - Después del signup, aterrizar en una página/carrusel de onboarding.
   - La primera página que diga "vamos a configurar tu experiencia".
   - Luego la página de selección de skin (que ya existe).
   - Página para sugerir la instalación.
+  - Crear varias recomendaciones en masa.
+  - Explicación de: de amigos y tendencias.
+  - Explicación de añadir a mi lista, mi lista y valoración.
 
 - Filtros de búsqueda en las listas (mi lista, amigos y tendencias). Tipo, tags, rango de valoración.
 
@@ -25,8 +30,6 @@ Nadie más debe leerlo ni tomarlo como guía para desarrollar el proyecto, y por
 - Bajo el botón de "más opciones", añadir opción "eliminar". Solo si ningún otro usuario la tiene en "mi lista". En caso contrario, mostrar popup con mensaje explicativo del error.
 
 - En la lista de tendencias el tiempo también debería influir en el orden.
-
-- Caché: categorías, idioma...
 
 - Especialización de las categorías:
   - rango de precio

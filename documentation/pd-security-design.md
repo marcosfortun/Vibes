@@ -38,6 +38,8 @@ versionadas** (Docker), sin tocar cloud hasta el despliegue.
 - **UPDATE/DELETE:** ninguna política de cliente. `global_score` lo mantiene el trigger
   (`SECURITY DEFINER`). La recategorización masiva al borrar una categoría va por el RPC
   `admin_delete_category` (`SECURITY DEFINER`), única vía que reasigna `category_id`.
+  El enriquecimiento de `url`/`image_url` de una ficha existente va por el RPC
+  `enrich_recommendation` (`SECURITY DEFINER`), que **solo rellena valores NULL**.
 
 ### `tags` y `recommendation_tags` (catálogo compartido de etiquetas)
 - **SELECT:** todos los `authenticated` (catálogo de lectura global).
@@ -45,10 +47,13 @@ versionadas** (Docker), sin tocar cloud hasta el despliegue.
   `create_recommendation` (`SECURITY DEFINER`); el autocompletado lee vía `suggest_tags`.
 
 ### `providers` y `category_providers` (fuentes de búsqueda externa por categoría)
-- **SELECT:** todos los `authenticated` (lo lee la búsqueda del alta en 2 pasos).
-- **INSERT/UPDATE/DELETE:** ninguna política de cliente. Catálogo de proveedores sembrado
-  por migración (tmdb/steam/ai); las asignaciones por categoría se siembran en
-  `scripts/seed-pruebas.sql` (datos de runtime) — futura gestión vía admin.
+- **SELECT:** todos los `authenticated` (lo lee la búsqueda del alta en 2 pasos), incluidas
+  las columnas de capacidades `can_search` / `can_resolve_image` / `requires_key`. Estas solo
+  describen qué sabe hacer cada proveedor y **el nombre** de la variable de entorno que
+  necesita: nunca contienen la clave, que vive solo en el entorno del servidor.
+- **INSERT/UPDATE/DELETE:** ninguna política de cliente. Catálogo de proveedores y
+  asignaciones por categoría sembrados por migración (tmdb/steam/bgg/itunes/ai_haiku_4.5/
+  wikipedia) — futura gestión vía admin.
 
 ### Multi-idioma (i18n)
 - `recommendations.title_i18n/description_i18n`, `categories.name_i18n`, `tags.name_i18n`
@@ -107,6 +112,23 @@ versionadas** (Docker), sin tocar cloud hasta el despliegue.
   normalizados a minúsculas, deduplicados y en orden de entrada.
 - Crea los tags que no existan (conserva el i18n del existente). Reemplaza el INSERT directo
   del cliente porque `recommendations` es append-only y el cliente no escribe en tags.
+
+### Scoring por afinidad: reservado a `admin`
+- `updatePreferences` **ignora `use_affinity_scoring` si el usuario no es admin** (comprueba
+  `users.role` en servidor), de modo que una petición manipulada no puede activarlo aunque la
+  UI no ofrezca el control.
+- La home también condiciona el *efecto* a `role = 'admin'`: un valor antiguo en BD no sigue
+  aplicándose a un usuario normal.
+
+### `enrich_recommendation(p_id, p_url, p_image_url)` — completar huecos de una ficha
+- Exige sesión (`auth.uid()`); cualquier `authenticated` puede invocarlo.
+- **Solo escribe donde hay NULL** y solo en `url` / `image_url`, validando `^https?://`.
+  Nunca sobrescribe datos existentes ni toca textos, autoría o categoría, así que no permite
+  vandalizar fichas ajenas.
+- Necesario porque el cliente no tiene `UPDATE` sobre `recommendations` (append-only) y
+  concederlo por columna dejaría reescribir la URL/imagen de cualquier recomendación.
+- Lo usa el alta cuando una ficha del catálogo gana el dedup a un resultado externo que sí
+  traía imagen o enlace.
 
 ### `suggest_tags(p_query, p_limit, p_locale)` — autocompletado de tags
 - Devuelve `{name (canónico), label (localizado), uses}` casando por prefijo sobre el label

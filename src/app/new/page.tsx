@@ -1,4 +1,5 @@
 import { getLocale, getTranslations } from 'next-intl/server';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { NewRecommendationFlow } from '@/components/new-recommendation-flow';
 
@@ -20,7 +21,12 @@ export default async function NewPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 p-6">
-      <h1 className="text-2xl font-bold">{t('title')}</h1>
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
+        <Link href="/new/bulk" className="text-sm text-neon-pink">
+          {t('bulk')}
+        </Link>
+      </div>
       <NewRecommendationFlow categories={localized} />
     </main>
   );

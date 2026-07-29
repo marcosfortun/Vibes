@@ -4,7 +4,7 @@ import { HomeTabs, type TabKey } from '@/components/home-tabs';
 import type { CardItem } from '@/components/recommendation-card';
 
 const REC_SELECT =
-  'id,title,title_i18n,description,description_i18n,url,global_score,' +
+  'id,title,title_i18n,description,description_i18n,url,image_url,global_score,' +
   'category:categories(name,name_i18n,color,icon),' +
   'tags:recommendation_tags(tag:tags(name,name_i18n))';
 
@@ -52,24 +52,53 @@ function localizeRec(raw: RawRec, locale: string) {
 export default async function Home() {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // La home hacía 7 viajes a Supabase en serie. Se agrupan en tres tandas
+  // paralelas según sus dependencias reales: sesión/idioma → datos del usuario
+  // → listas que dependen de esos datos.
+  const [
+    {
+      data: { user },
+    },
+    locale,
+  ] = await Promise.all([supabase.auth.getUser(), getLocale()]);
   const uid = user!.id;
-  const locale = await getLocale();
 
-  const { data: profile } = await supabase
-    .from('users')
-    .select('use_affinity_scoring')
-    .eq('id', uid)
-    .single();
-  const affinityOn = profile?.use_affinity_scoring ?? false;
+  const [
+    { data: profile },
+    { data: myInteractions },
+    { data: friendships },
+    { data: ratedRows },
+    { data: savedRows },
+  ] = await Promise.all([
+    supabase.from('users').select('use_affinity_scoring, role').eq('id', uid).single(),
+    // Interacciones propias (saved + rating) por recomendación.
+    supabase
+      .from('user_interactions')
+      .select('recommendation_id, saved, rating')
+      .eq('user_id', uid),
+    // Afinidad del usuario hacia cada amigo (fila saliente).
+    supabase.from('friendships').select('friend_id, affinity').eq('user_id', uid),
+    // Scoring personalizado query-time: Σ(rating_amigo × afinidad / 5).
+    // RLS limita el select a friends con rating != null + interacciones propias.
+    supabase
+      .from('user_interactions')
+      .select('recommendation_id, user_id, rating')
+      .not('rating', 'is', null),
+    // Mi Lista: items con saved=true.
+    supabase
+      .from('user_interactions')
+      .select(`recommendation:recommendations(${REC_SELECT}), rating`)
+      .eq('user_id', uid)
+      .eq('saved', true)
+      .order('updated_at', { ascending: false }),
+  ]);
 
-  // Interacciones propias (saved + rating) por recomendación.
-  const { data: myInteractions } = await supabase
-    .from('user_interactions')
-    .select('recommendation_id, saved, rating')
-    .eq('user_id', uid);
+  // Scoring por afinidad: reservado a admin mientras se afina. Se comprueba
+  // también aquí (no solo al guardar la preferencia) para que un valor antiguo
+  // en BD no siga aplicándose a un usuario normal.
+  const affinityOn =
+    (profile?.use_affinity_scoring ?? false) && profile?.role === 'admin';
+
   const stateByRec = new Map(
     (myInteractions ?? []).map((r) => [
       r.recommendation_id,
@@ -81,21 +110,10 @@ export default async function Home() {
     (myInteractions ?? []).filter((r) => r.saved).map((r) => r.recommendation_id),
   );
 
-  // Afinidad del usuario hacia cada amigo (fila saliente).
-  const { data: friendships } = await supabase
-    .from('friendships')
-    .select('friend_id, affinity')
-    .eq('user_id', uid);
   const affinityByFriend = new Map(
     (friendships ?? []).map((f) => [f.friend_id, Number(f.affinity)]),
   );
 
-  // Scoring personalizado query-time: Σ(rating_amigo × afinidad_hacia_amigo / 5).
-  // RLS limita el select a friends con rating != null + interacciones propias.
-  const { data: ratedRows } = await supabase
-    .from('user_interactions')
-    .select('recommendation_id, user_id, rating')
-    .not('rating', 'is', null);
   const personalized = new Map<string, number>();
   for (const r of ratedRows ?? []) {
     if (r.user_id === uid || r.rating == null) continue;
@@ -110,13 +128,6 @@ export default async function Home() {
   const scoreOf = (rec: CardItem) =>
     affinityOn ? round1(personalized.get(rec.id) ?? 0) : rec.global_score;
 
-  // Mi Lista: items con saved=true.
-  const { data: savedRows } = await supabase
-    .from('user_interactions')
-    .select(`recommendation:recommendations(${REC_SELECT}), rating`)
-    .eq('user_id', uid)
-    .eq('saved', true)
-    .order('updated_at', { ascending: false });
   const myList = (savedRows ?? [])
     .filter((r) => r.recommendation)
     .map((r) => {
@@ -134,31 +145,30 @@ export default async function Home() {
     (c.score ?? 0) - (c.state?.rating != null ? 100000 : 0);
   myList.sort((a, b) => myListRank(b) - myListRank(a));
 
-  // De Amigos: items con rating de algún amigo, excluyendo los que ya están en Mi Lista.
-  const friendRecIds = [...personalized.keys()].filter(
-    (id) => !savedIds.has(id),
-  );
-  let friends: CardItem[] = [];
-  if (friendRecIds.length > 0) {
-    const { data } = await supabase
-      .from('recommendations')
-      .select(REC_SELECT)
-      .in('id', friendRecIds);
-    friends = ((data ?? []) as unknown as CardItem[])
-      .map((rec) => ({
-        ...rec,
-        ...localizeRec(rec as unknown as RawRec, locale),
-        score: scoreOf(rec),
-        state: stateByRec.get(rec.id) ?? null,
-      }))
-      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
-  }
-
-  // Tendencias: todo el catálogo excluyendo items en Mi Lista.
+  // Última tanda: las dos listas que dependen de lo anterior, en paralelo.
+  // De Amigos: items con rating de algún amigo, excluyendo los de Mi Lista.
+  const friendRecIds = [...personalized.keys()].filter((id) => !savedIds.has(id));
   const trendingQuery = supabase.from('recommendations').select(REC_SELECT);
-  const { data: trendingData } = affinityOn
-    ? await trendingQuery.limit(200)
-    : await trendingQuery.order('global_score', { ascending: false }).limit(50);
+
+  const [friendsRes, { data: trendingData }] = await Promise.all([
+    friendRecIds.length > 0
+      ? supabase.from('recommendations').select(REC_SELECT).in('id', friendRecIds)
+      : Promise.resolve({ data: [] }),
+    // Tendencias: todo el catálogo excluyendo items en Mi Lista.
+    affinityOn
+      ? trendingQuery.limit(200)
+      : trendingQuery.order('global_score', { ascending: false }).limit(50),
+  ]);
+
+  const friends = ((friendsRes.data ?? []) as unknown as CardItem[])
+    .map((rec) => ({
+      ...rec,
+      ...localizeRec(rec as unknown as RawRec, locale),
+      score: scoreOf(rec),
+      state: stateByRec.get(rec.id) ?? null,
+    }))
+    .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+
   const trending = ((trendingData ?? []) as unknown as CardItem[])
     .filter((rec) => !savedIds.has(rec.id))
     .map((rec) => ({

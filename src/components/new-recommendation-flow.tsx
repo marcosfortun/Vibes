@@ -12,6 +12,8 @@ import {
   type NewRecState,
 } from '@/lib/actions/recommendations';
 import { TagsInput } from '@/components/tags-input';
+import { providerBadge } from '@/lib/provider-badge';
+import { MIN_QUERY_LENGTH, SEARCH_DEBOUNCE_MS } from '@/lib/providers/config';
 import { LIMITS } from '@/lib/limits';
 
 type Category = { id: string; name: string; icon?: string | null };
@@ -19,6 +21,10 @@ type Prefill = {
   title: string;
   description: string;
   url: string;
+  imageUrl: string;
+  // Título del artículo de Wikipedia (candidatos IA): viaja oculto hasta la
+  // action para resolver la imagen en el alta.
+  wikiTitle: string;
   tags: string[];
 };
 
@@ -71,8 +77,9 @@ function SearchStep({
   const q = title.trim();
 
   useEffect(() => {
-    if (!category || q.length < 2) return;
+    if (!category || q.length < MIN_QUERY_LENGTH) return;
     let alive = true;
+    // Debounce alto: cada búsqueda abre en paralelo hasta 5 proveedores.
     const handle = setTimeout(async () => {
       setSearching(true);
       const data = await searchCandidates(category.id, q);
@@ -80,7 +87,7 @@ function SearchStep({
         setResults(data);
         setSearching(false);
       }
-    }, 400);
+    }, SEARCH_DEBOUNCE_MS);
     return () => {
       alive = false;
       clearTimeout(handle);
@@ -112,7 +119,7 @@ function SearchStep({
         </label>
       )}
 
-      {category && q.length >= 2 && (
+      {category && q.length >= MIN_QUERY_LENGTH && (
         <section className="flex flex-col gap-2">
           <p className="text-xs text-muted">
             {searching ? t('searching') : t('selectPrompt')}
@@ -126,12 +133,16 @@ function SearchStep({
                   disabled={pending}
                   onClick={() => {
                     if (c.kind === 'existing') {
-                      startTransition(() => addExistingToList(c.id));
+                      // Si el dedup le cedió imagen/URL de un externo, viajan
+                      // con la selección para completar la ficha existente.
+                      startTransition(() => addExistingToList(c.id, c.enrich));
                     } else {
                       onPrefill({
                         title: c.title,
                         description: c.description ?? '',
                         url: c.url ?? '',
+                        imageUrl: c.image ?? '',
+                        wikiTitle: c.wikiTitle ?? '',
                         tags: c.tags ?? [],
                       });
                     }
@@ -149,9 +160,7 @@ function SearchStep({
                   <span className="ml-2 shrink-0 text-[10px] uppercase tracking-wide text-muted">
                     {c.kind === 'existing'
                       ? t('existingBadge')
-                      : ['tmdb', 'steam', 'ai'].includes(c.provider)
-                        ? t(`providerBadge.${c.provider}`)
-                        : c.provider}
+                      : providerBadge(t, c.provider)}
                   </span>
                 </button>
               </li>
@@ -163,7 +172,14 @@ function SearchStep({
                 type="button"
                 disabled={pending}
                 onClick={() =>
-                  onPrefill({ title: q, description: '', url: '', tags: [] })
+                  onPrefill({
+                    title: q,
+                    description: '',
+                    url: '',
+                    imageUrl: '',
+                    wikiTitle: '',
+                    tags: [],
+                  })
                 }
                 className="list-row w-full text-left text-neon-pink transition-colors hover:bg-[var(--glass-bg)]"
               >
@@ -182,7 +198,7 @@ function SearchStep({
 }
 
 // Buscador-autocompletado de categoría (filtro cliente; el catálogo es pequeño).
-function CategoryPicker({
+export function CategoryPicker({
   categories,
   value,
   onChange,
@@ -281,6 +297,7 @@ function DetailsStep({
   return (
     <form action={formAction} className="flex w-full flex-col gap-4">
       <input type="hidden" name="category_id" value={category.id} />
+      <input type="hidden" name="wiki_title" value={prefill.wikiTitle} />
 
       <div className="flex items-center gap-2 text-sm text-muted">
         <CategoryIcon name={category.icon} size={14} className="text-neon-pink" />
@@ -322,6 +339,19 @@ function DetailsStep({
           maxLength={LIMITS.url}
           placeholder="https://"
           defaultValue={prefill.url}
+          className="field"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1 text-sm text-muted">
+        {t('fields.imageUrl')}
+        <input
+          type="url"
+          name="image_url"
+          inputMode="url"
+          maxLength={LIMITS.imageUrl}
+          placeholder="https://"
+          defaultValue={prefill.imageUrl}
           className="field"
         />
       </label>

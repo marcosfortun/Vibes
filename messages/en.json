@@ -63,7 +63,8 @@
   },
   "Install": {
     "install": "Install Vibes",
-    "done": "You've got good Vibes already"
+    "done": "You've got good Vibes already",
+    "unavailable": "Can't be installed on this device"
   },
   "Dock": {
     "myList": "My list",
@@ -78,6 +79,7 @@
     "saved": "In your list",
     "allTags": "All tags",
     "close": "Close",
+    "score": "Scoring",
     "rate": {
       "add": "Rate",
       "dislike": "Didn't like",
@@ -87,6 +89,7 @@
   },
   "New": {
     "title": "New recommendation",
+    "bulk": "Bulk add",
     "submit": "Create",
     "back": "Back",
     "similarHint": "Similar items already exist:",
@@ -96,6 +99,7 @@
       "category": "Category",
       "choose": "Choose a category",
       "url": "URL (optional)",
+      "imageUrl": "Image URL",
       "tags": "Tags",
       "tagsPlaceholder": "Add a tag and press Enter",
       "removeTag": "Remove tag"
@@ -109,7 +113,10 @@
     "providerBadge": {
       "tmdb": "TMDB",
       "steam": "Steam",
-      "ai": "AI"
+      "bgg": "BGG",
+      "ai": "AI",
+      "itunes": "iTunes",
+      "wikipedia": "Wikipedia"
     },
     "fromScratch": "Create “{title}” from scratch",
     "createTag": "Create “{tag}”",
@@ -195,6 +202,14 @@
         "duplicate": "That category already exists.",
         "failed": "Could not save the category."
       }
+    },
+    "info": {
+      "title": "App information",
+      "version": "Version",
+      "serverRegion": "Server region",
+      "dbRegion": "Database region",
+      "domain": "Domain",
+      "ip": "Server IP"
     }
   },
   "Invite": {
@@ -239,6 +254,28 @@
       "cta": "View the feed",
       "signoff": "— Sync optimized,",
       "team": "The Vibes team"
+    }
+  },
+  "Bulk": {
+    "title": "Bulk add",
+    "single": "Single add",
+    "intro": "Pick a category and paste several titles, one per line. We’ll show the autocomplete results so you can choose the best for each.",
+    "titlesLabel": "Titles (one per line)",
+    "titlesPlaceholder": "The Godfather\nThe Matrix\nInterstellar",
+    "start": "Start",
+    "searching": "Searching…",
+    "progress": "{current} of {total}",
+    "createScratch": "Create with title only",
+    "skip": "Skip this title",
+    "inCatalog": "In catalog",
+    "scratch": "Title only",
+    "summaryTitle": "Summary",
+    "summaryCounts": "{created} created · {skipped} skipped · {failed} failed",
+    "goHome": "Go to My list",
+    "status": {
+      "created": "Created",
+      "skipped": "Skipped",
+      "failed": "Failed"
     }
   }
 }

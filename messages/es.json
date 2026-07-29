@@ -63,7 +63,8 @@
   },
   "Install": {
     "install": "Instalar Vibes",
-    "done": "Ya tienes buenas Vibes"
+    "done": "Ya tienes buenas Vibes",
+    "unavailable": "No se puede instalar en este dispositivo"
   },
   "Dock": {
     "myList": "Mi lista",
@@ -78,6 +79,7 @@
     "saved": "En tu lista",
     "allTags": "Todas las etiquetas",
     "close": "Cerrar",
+    "score": "Puntuación",
     "rate": {
       "add": "Calificar",
       "dislike": "No me gusta",
@@ -87,6 +89,7 @@
   },
   "New": {
     "title": "Nueva recomendación",
+    "bulk": "Carga masiva",
     "submit": "Crear",
     "back": "Volver",
     "similarHint": "Ya existen elementos similares:",
@@ -96,6 +99,7 @@
       "category": "Categoría",
       "choose": "Elige una categoría",
       "url": "URL (opcional)",
+      "imageUrl": "URL de la imagen",
       "tags": "Etiquetas",
       "tagsPlaceholder": "Añade una etiqueta y pulsa Enter",
       "removeTag": "Quitar etiqueta"
@@ -109,7 +113,10 @@
     "providerBadge": {
       "tmdb": "TMDB",
       "steam": "Steam",
-      "ai": "IA"
+      "bgg": "BGG",
+      "ai": "IA",
+      "itunes": "iTunes",
+      "wikipedia": "Wikipedia"
     },
     "fromScratch": "Crear «{title}» desde cero",
     "createTag": "Crear «{tag}»",
@@ -195,6 +202,14 @@
         "duplicate": "Esa categoría ya existe.",
         "failed": "No se pudo guardar la categoría."
       }
+    },
+    "info": {
+      "title": "Información de la app",
+      "version": "Versión",
+      "serverRegion": "Región del servidor",
+      "dbRegion": "Región de la base de datos",
+      "domain": "Dominio",
+      "ip": "IP del servidor"
     }
   },
   "Invite": {
@@ -239,6 +254,28 @@
       "cta": "Ver el feed",
       "signoff": "— Sintonía optimizada,",
       "team": "El equipo de Vibes"
+    }
+  },
+  "Bulk": {
+    "title": "Carga masiva",
+    "single": "Alta simple",
+    "intro": "Elige una categoría y pega varios títulos, uno por línea. Te mostraremos los resultados del autocompletado para que elijas el mejor de cada uno.",
+    "titlesLabel": "Títulos (uno por línea)",
+    "titlesPlaceholder": "El Padrino\nMatrix\nInterstellar",
+    "start": "Empezar",
+    "searching": "Buscando…",
+    "progress": "{current} de {total}",
+    "createScratch": "Crear solo con el título",
+    "skip": "Omitir este título",
+    "inCatalog": "En el catálogo",
+    "scratch": "Solo título",
+    "summaryTitle": "Resumen",
+    "summaryCounts": "{created} creadas · {skipped} omitidas · {failed} con error",
+    "goHome": "Ir a Mi Lista",
+    "status": {
+      "created": "Creada",
+      "skipped": "Omitida",
+      "failed": "Error"
     }
   }
 }
