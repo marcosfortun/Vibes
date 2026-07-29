@@ -113,6 +113,13 @@ versionadas** (Docker), sin tocar cloud hasta el despliegue.
 - Crea los tags que no existan (conserva el i18n del existente). Reemplaza el INSERT directo
   del cliente porque `recommendations` es append-only y el cliente no escribe en tags.
 
+### Scoring por afinidad: reservado a `admin`
+- `updatePreferences` **ignora `use_affinity_scoring` si el usuario no es admin** (comprueba
+  `users.role` en servidor), de modo que una petición manipulada no puede activarlo aunque la
+  UI no ofrezca el control.
+- La home también condiciona el *efecto* a `role = 'admin'`: un valor antiguo en BD no sigue
+  aplicándose a un usuario normal.
+
 ### `enrich_recommendation(p_id, p_url, p_image_url)` — completar huecos de una ficha
 - Exige sesión (`auth.uid()`); cualquier `authenticated` puede invocarlo.
 - **Solo escribe donde hay NULL** y solo en `url` / `image_url`, validando `^https?://`.

@@ -28,6 +28,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [
 - Migración `20260703140000_recommendation_image.sql`: columna `image_url` + grants por columna y `create_recommendation` v3 (`p_image_url`).
 - Migración `20260728120000_providers_refactor.sql`: `providers` gana `can_search`, `can_resolve_image` y `requires_key` (describen las capacidades para la futura UI de admin; el nombre de la variable de entorno, nunca su valor); `ai` pasa a `ai_haiku_4.5` y se desvincula de todas las categorías; alta de **iTunes** (asignado a Podcast y Grupo de música) y **Wikipedia** en el catálogo; y RPC `enrich_recommendation` (`SECURITY DEFINER`, solo rellena NULL) documentada en `pd-security-design.md`.
 
+### Admin
+- **Información del despliegue en la pantalla de administración**, bajo las opciones: versión de la app, región del servidor en Vercel, región de la base de datos en Supabase, dominio que sirve la petición e IP pública de salida (útil para diagnosticar latencia o configurar listas de permitidos). La consulta de IP es best-effort: si falla, se muestra un guion en vez de romper la pantalla.
+
+### Security
+- **El scoring por afinidad queda reservado a `admin`** mientras se termina de afinar: el control desaparece de ajustes para el resto, la server action ignora el campo aunque llegue en una petición manipulada, y la home condiciona también el *efecto* al rol (un valor antiguo en BD deja de aplicarse). Documentado en `pd-security-design.md`.
+
 ### Performance
 - **Funciones desplegadas en Dublín** (`vercel.json` con `"regions": ["dub1"]`, pegado al proyecto de Supabase en `eu-west-1`). Antes corrían en Washington: cada consulta pagaba ~100 ms de latencia transatlántica y una carga de la home encadenaba una docena.
 - **Home en paralelo**: las 7 consultas secuenciales pasan a 3 tandas según sus dependencias reales (sesión+idioma → datos del usuario → listas).

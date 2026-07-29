@@ -70,7 +70,7 @@ export default async function Home() {
     { data: ratedRows },
     { data: savedRows },
   ] = await Promise.all([
-    supabase.from('users').select('use_affinity_scoring').eq('id', uid).single(),
+    supabase.from('users').select('use_affinity_scoring, role').eq('id', uid).single(),
     // Interacciones propias (saved + rating) por recomendación.
     supabase
       .from('user_interactions')
@@ -93,7 +93,11 @@ export default async function Home() {
       .order('updated_at', { ascending: false }),
   ]);
 
-  const affinityOn = profile?.use_affinity_scoring ?? false;
+  // Scoring por afinidad: reservado a admin mientras se afina. Se comprueba
+  // también aquí (no solo al guardar la preferencia) para que un valor antiguo
+  // en BD no siga aplicándose a un usuario normal.
+  const affinityOn =
+    (profile?.use_affinity_scoring ?? false) && profile?.role === 'admin';
 
   const stateByRec = new Map(
     (myInteractions ?? []).map((r) => [

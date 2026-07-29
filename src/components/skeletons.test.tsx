@@ -85,10 +85,17 @@ describe('skeletons de carga', () => {
     }
   });
 
-  it('admin: cabecera y acceso a categorías', () => {
+  it('admin: cabecera, acceso a categorías e info de la app con sus huecos', () => {
     render(<AdminLoading />);
-    expect(screen.getByRole('heading', { name: 'title' })).toBeInTheDocument();
+    // Con el mock de i18n, Admin.title y Admin.info.title comparten literal:
+    // se distinguen por nivel de encabezado.
+    expect(screen.getByRole('heading', { level: 1, name: 'title' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'title' })).toBeInTheDocument();
     expect(screen.getByText('categories')).toBeInTheDocument();
+    // Etiquetas fijas del bloque de información.
+    for (const label of ['version', 'serverRegion', 'dbRegion', 'domain', 'ip']) {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    }
   });
 
   it('categorías: cabecera con botón de crear y filas en carga', () => {

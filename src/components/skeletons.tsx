@@ -297,7 +297,7 @@ export function AppearanceSkeleton() {
   );
 }
 
-// ── Admin: menú ─────────────────────────────────────────────────────────────
+// ── Admin: menú + información del despliegue ────────────────────────────────
 export function AdminSkeleton() {
   const t = useTranslations('Admin');
   return (
@@ -309,6 +309,23 @@ export function AdminSkeleton() {
           label={t('menu.categories')}
         />
       </nav>
+      {/* Información de la app: las etiquetas son fijas; los valores llegan
+          del servidor, así que se reserva su hueco. */}
+      <section className="flex flex-col gap-3 border-t border-border-muted pt-5">
+        <h2 className="text-sm font-semibold text-foreground">{t('info.title')}</h2>
+        <dl className="flex flex-col gap-2 text-sm">
+          {(['version', 'serverRegion', 'dbRegion', 'domain', 'ip'] as const).map(
+            (key) => (
+              <div key={key} className="flex items-baseline justify-between gap-3">
+                <dt className="shrink-0 text-muted">{t(`info.${key}`)}</dt>
+                <dd className="min-w-0 flex-1">
+                  <SkeletonBlock className="ml-auto h-3 w-28" />
+                </dd>
+              </div>
+            ),
+          )}
+        </dl>
+      </section>
     </main>
   );
 }

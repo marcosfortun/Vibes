@@ -9,9 +9,13 @@ const LANGUAGES = ['en', 'es', 'fr', 'pt'] as const;
 export function SettingsForm({
   language,
   useAffinity,
+  // El scoring por afinidad solo se ofrece a admin mientras se termina de
+  // afinar; para el resto ni siquiera se pinta el control.
+  showAffinity = false,
 }: {
   language: string;
   useAffinity: boolean;
+  showAffinity?: boolean;
 }) {
   const t = useTranslations('Settings');
   const formRef = useRef<HTMLFormElement>(null);
@@ -43,20 +47,22 @@ export function SettingsForm({
         </select>
       </label>
 
-      <label className="flex items-start gap-3 text-sm">
-        <input
-          type="checkbox"
-          name="use_affinity_scoring"
-          defaultChecked={useAffinity}
-          disabled={pending}
-          onChange={save}
-          className="checkbox mt-0.5"
-        />
-        <span>
-          {t('affinityScoring')}
-          <span className="block text-xs text-muted">{t('affinityHint')}</span>
-        </span>
-      </label>
+      {showAffinity && (
+        <label className="flex items-start gap-3 text-sm">
+          <input
+            type="checkbox"
+            name="use_affinity_scoring"
+            defaultChecked={useAffinity}
+            disabled={pending}
+            onChange={save}
+            className="checkbox mt-0.5"
+          />
+          <span>
+            {t('affinityScoring')}
+            <span className="block text-xs text-muted">{t('affinityHint')}</span>
+          </span>
+        </label>
+      )}
     </form>
   );
 }
