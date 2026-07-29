@@ -2,7 +2,7 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/) y versionado [SemVer](https://semver.org/).
 
-## [Unreleased] — release 1.5.0 (en `release/1.5.0`, sin desplegar)
+## [1.5.0] — 2026-07-29
 
 ### Added
 - **BoardGameGeek como proveedor de búsqueda externa** para la categoría "Juego de mesa" (adaptador `bgg` + migración `20260704120000_bgg_provider.sql`, con la IA como fallback). Devuelve título, descripción, imagen y enlace a la ficha del juego. Requiere `BGG_API_TOKEN` (la XML API de BGG dejó de ser pública en 2025): sin token el adaptador se omite sin llamada fallida y la búsqueda cae a la IA, como hasta ahora.
