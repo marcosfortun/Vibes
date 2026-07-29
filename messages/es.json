@@ -63,7 +63,8 @@
   },
   "Install": {
     "install": "Instalar Vibes",
-    "done": "Ya tienes buenas Vibes"
+    "done": "Ya tienes buenas Vibes",
+    "unavailable": "No se puede instalar en este dispositivo"
   },
   "Dock": {
     "myList": "Mi lista",

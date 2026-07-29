@@ -22,30 +22,37 @@ export function InstallButtonFloating() {
   );
 }
 
-// Variante en línea (settings). Botón + mensaje al lado.
-// - No instalada: blanco encendido + "Instalar Vibes".
-// - Instalada: blanco apagado, deshabilitado + "Ya tienes buenas Vibes".
-// - Si el navegador no soporta la instalación y no está instalada: nada.
+// Variante en línea (settings). Botón + mensaje al lado. SIEMPRE ocupa su
+// sitio (antes desaparecía y la pantalla daba un salto al terminar de cargar),
+// con tres estados:
+// - Instalable: blanco encendido + "Instalar Vibes".
+// - Ya instalada: apagado y deshabilitado + "Ya tienes buenas Vibes".
+// - Navegador que no lo soporta: apagado y deshabilitado + aviso.
 export function InstallButtonInline() {
   const { canInstall, isInstalled, install } = useInstallPrompt();
   const t = useTranslations('Install');
-  if (!isInstalled && !canInstall) return null;
+
+  const label = isInstalled
+    ? t('done')
+    : canInstall
+      ? t('install')
+      : t('unavailable');
+  const disabled = isInstalled || !canInstall;
+
   return (
     <div className="flex items-center gap-3">
       <button
         type="button"
         onClick={install}
-        disabled={isInstalled}
-        aria-label={isInstalled ? t('done') : t('install')}
-        className={`flex h-9 w-9 items-center justify-center rounded-full border border-current text-foreground transition-opacity disabled:cursor-default ${
-          isInstalled ? 'opacity-20' : 'opacity-70 hover:opacity-100'
+        disabled={disabled}
+        aria-label={label}
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-current text-foreground transition-opacity disabled:cursor-default ${
+          disabled ? 'opacity-20' : 'opacity-70 hover:opacity-100'
         }`}
       >
         <Download size={18} />
       </button>
-      <span className="text-sm text-muted">
-        {isInstalled ? t('done') : t('install')}
-      </span>
+      <span className="text-sm text-muted">{label}</span>
     </div>
   );
 }

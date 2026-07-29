@@ -2,7 +2,7 @@
 
 Este documento contiene las ideas (locas y no aterrizadas) que en un futuro quizá podrían convertirse en features de alguna release, o también podrían descartarse.
 
-Este documento es de uso esclusivo del usuario propietario del proyecto.
+Este documento es de uso exclusivo del usuario propietario del proyecto.
 Nadie más debe leerlo ni tomarlo como guía para desarrollar el proyecto, y por supuesto nadie más puede editarlo.
 
 ## Ideas
