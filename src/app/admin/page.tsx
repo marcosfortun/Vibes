@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import { Tags, ChevronRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { BackButton } from '@/components/back-button';
+import { getAppInfo } from '@/lib/app-info';
 
 export default async function AdminPage() {
   const t = await getTranslations('Admin');
@@ -21,6 +22,8 @@ export default async function AdminPage() {
 
   // Solo admin (refuerzo en UI; la RLS ya bloquea escrituras de no-admin).
   if (profile?.role !== 'admin') redirect('/');
+
+  const info = await getAppInfo();
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 p-6">
@@ -41,6 +44,30 @@ export default async function AdminPage() {
           <ChevronRight size={18} className="shrink-0 text-muted" />
         </Link>
       </nav>
+
+      {/* Datos del despliegue vivo: versión, dónde corre cada pieza y a qué
+          dominio/IP responde. Útil para diagnosticar sin abrir los paneles. */}
+      <section className="flex flex-col gap-3 border-t border-border-muted pt-5">
+        <h2 className="text-sm font-semibold text-foreground">{t('info.title')}</h2>
+        <dl className="flex flex-col gap-2 text-sm">
+          {(
+            [
+              ['version', info.version],
+              ['serverRegion', info.serverRegion],
+              ['dbRegion', info.dbRegion],
+              ['domain', info.domain],
+              ['ip', info.ip],
+            ] as const
+          ).map(([key, value]) => (
+            <div key={key} className="flex items-baseline justify-between gap-3">
+              <dt className="shrink-0 text-muted">{t(`info.${key}`)}</dt>
+              <dd className="min-w-0 truncate text-right font-mono text-xs text-foreground">
+                {value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
     </main>
   );
 }

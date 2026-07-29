@@ -32,6 +32,7 @@ export default async function SettingsPage() {
       <SettingsForm
         language={profile?.language ?? 'en'}
         useAffinity={profile?.use_affinity_scoring ?? false}
+        showAffinity={profile?.role === 'admin'}
       />
 
       <InstallButtonInline />

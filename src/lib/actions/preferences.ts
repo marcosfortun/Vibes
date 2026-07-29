@@ -20,9 +20,21 @@ export async function updatePreferences(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) return;
 
+  // El scoring por afinidad está reservado a admin mientras se afina: la UI no
+  // ofrece el control al resto, y aquí se ignora el campo por si llega igual en
+  // una petición manipulada (ver pd-security-design.md).
+  const { data: profile } = await supabase
+    .from('users')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+  const isAdmin = profile?.role === 'admin';
+
   await supabase
     .from('users')
-    .update({ language, use_affinity_scoring: useAffinity })
+    .update(
+      isAdmin ? { language, use_affinity_scoring: useAffinity } : { language },
+    )
     .eq('id', user.id);
 
   // Sincroniza la cookie de locale para que la interfaz cambie de idioma.

@@ -94,8 +94,12 @@ describe('BulkAddFlow (F4: carga masiva)', () => {
     // Dune: crear solo con el título.
     await user.click(screen.getByRole('button', { name: 'createScratch' }));
     await screen.findByRole('heading', { name: 'Akira' });
-    // Akira: omitir.
-    await user.click(screen.getByRole('button', { name: 'skip' }));
+    // Akira: omitir. Los botones se deshabilitan mientras se crea el anterior,
+    // así que hay que esperar a que vuelvan a estar activos (como haría una
+    // persona); si no, el clic se pierde y el test falla de forma aleatoria.
+    const skip = screen.getByRole('button', { name: 'skip' });
+    await waitFor(() => expect(skip).not.toBeDisabled());
+    await user.click(skip);
 
     // Resumen.
     expect(await screen.findByRole('heading', { name: 'summaryTitle' })).toBeInTheDocument();

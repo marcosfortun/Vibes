@@ -202,6 +202,14 @@
         "duplicate": "Essa categoria já existe.",
         "failed": "Não foi possível salvar a categoria."
       }
+    },
+    "info": {
+      "title": "Informação da app",
+      "version": "Versão",
+      "serverRegion": "Região do servidor",
+      "dbRegion": "Região da base de dados",
+      "domain": "Domínio",
+      "ip": "IP do servidor"
     }
   },
   "Invite": {
